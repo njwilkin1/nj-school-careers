@@ -7,8 +7,7 @@ type PageProps = {
 
 export default async function JobDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const job = jobs.find((item) => item.slug === slug);
-
+const job = jobs.find((item: { slug: string }) => item.slug === slug);
   if (!job) {
     notFound();
   }
