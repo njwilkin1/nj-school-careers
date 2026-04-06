@@ -1,9 +1,6 @@
 // @ts-ignore
 import nodemailer from "nodemailer";
-<<<<<<< HEAD
 
-=======
->>>>>>> 36eb83795f05457b4fcfb04886e195a8553c493a
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -78,8 +75,4 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 36eb83795f05457b4fcfb04886e195a8553c493a
