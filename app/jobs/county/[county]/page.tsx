@@ -31,10 +31,10 @@ export default async function CountyJobsPage({ params }: PageProps) {
   const countySlug = county.toLowerCase();
   const countyName = formatCountyName(countySlug);
 
-  const filteredJobs = jobs.filter((job) =>
-    job.location.toLowerCase().includes(countySlug)
-  );
-
+const filteredJobs = jobs.filter(
+  (job): job is NonNullable<(typeof jobs)[number]> =>
+    !!job?.location?.toLowerCase().includes(countySlug)
+);
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
       <div className="mx-auto max-w-5xl">

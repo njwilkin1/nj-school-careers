@@ -1,8 +1,9 @@
 import { jobs } from "../../../data/jobs";
 
 export default function EssexCountyTeachingJobsPage() {
-  const filteredJobs = jobs.filter((job) =>
-    job.location.toLowerCase().includes("essex")
+  const filteredJobs = jobs.filter(
+    (job): job is NonNullable<(typeof jobs)[number]> =>
+      !!job?.location?.toLowerCase().includes("essex")
   );
 
   return (
@@ -13,16 +14,15 @@ export default function EssexCountyTeachingJobsPage() {
         </h1>
 
         <p className="mt-4 text-slate-600">
-          Browse current school job opportunities in Essex County, New Jersey.
-          Apply directly with no account required.
+          Explore current school job opportunities in Essex County.
         </p>
 
         <div className="mt-10 grid gap-5">
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job) => (
-              <div
+              <article
                 key={job.slug}
-                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
               >
                 <h2 className="text-2xl font-semibold">{job.title}</h2>
                 <p className="mt-2 text-slate-700">{job.district}</p>
@@ -30,7 +30,7 @@ export default function EssexCountyTeachingJobsPage() {
                   {job.location} · {job.type}
                 </p>
 
-                <div className="mt-4 flex gap-3">
+                <div className="mt-4 flex flex-wrap gap-3">
                   <a
                     href={`/jobs/${job.slug}`}
                     className="rounded-xl border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50"
@@ -47,24 +47,15 @@ export default function EssexCountyTeachingJobsPage() {
                     Apply Now
                   </a>
                 </div>
-              </div>
+              </article>
             ))
           ) : (
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <p className="text-slate-500">
-                No Essex County jobs available right now.
+                No Essex County jobs are available right now.
               </p>
             </div>
           )}
-        </div>
-
-        <div className="mt-10">
-          <a
-            href="/jobs"
-            className="rounded-xl border border-slate-300 px-5 py-3 text-sm hover:bg-slate-50"
-          >
-            View All Jobs
-          </a>
         </div>
       </div>
     </main>

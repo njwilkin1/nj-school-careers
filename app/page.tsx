@@ -10,8 +10,9 @@ export default function Home() {
     "Bilingual Roles",
   ];
 
-  const featuredJobs = jobs.slice(0, 4);
-
+const featuredJobs = jobs
+  .filter((job): job is NonNullable<(typeof jobs)[number]> => !!job)
+  .slice(0, 4);
   const popularSearches = [
     "Assistant Principal",
     "Spanish Teacher",
@@ -206,7 +207,17 @@ export default function Home() {
               Browse roles by focus area
             </h2>
           </div>
-
+<a
+  href="/jobs/teaching-jobs-new-jersey"
+  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+>
+  <div className="text-lg font-semibold">
+    Teaching Jobs in New Jersey
+  </div>
+  <div className="mt-2 text-sm text-slate-500">
+    Explore teaching opportunities across New Jersey school districts.
+  </div>
+</a>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <a
               href="/jobs/role/spanish-teacher"

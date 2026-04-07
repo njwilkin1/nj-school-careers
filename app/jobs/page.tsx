@@ -1,43 +1,48 @@
+"use client";
+
+import { Suspense } from "react";
 import { jobs } from "../../data/jobs";
+import { useSearchParams } from "next/navigation";
 
-type JobsPageProps = {
-  searchParams: Promise<{
-    search?: string;
-    location?: string;
-  }>;
-};
+function JobsPageContent() {
+  const searchParams = useSearchParams();
 
-export default async function JobsPage({ searchParams }: JobsPageProps) {
-  const params = await searchParams;
-  const search = params.search?.toLowerCase().trim() || "";
-  const location = params.location?.toLowerCase().trim() || "";
+  const rawSearch = searchParams.get("search") || "";
+  const rawLocation = searchParams.get("location") || "";
 
-  const filteredJobs = jobs.filter((job) => {
-    const haystack = [
-      job.title,
-      job.district,
-      job.location,
-      job.type,
-    ]
-      .join(" ")
-      .toLowerCase();
+  const search = rawSearch.toLowerCase().trim();
+  const location = rawLocation.toLowerCase().trim();
 
-    const normalizedSearch = search
-      .replace(/\bap\b/g, "assistant principal")
-      .replace(/\bsub\b/g, "substitute")
-      .trim();
+  const normalizedSearch = search
+    .replace(/\bap\b/g, "assistant principal")
+    .replace(/\bsub\b/g, "substitute")
+    .trim();
 
-    const searchWords = normalizedSearch.split(/\s+/).filter(Boolean);
+  const searchWords = normalizedSearch.split(/\s+/).filter(Boolean);
 
-    const matchesSearch =
-      normalizedSearch === "" ||
-      searchWords.every((word) => haystack.includes(word));
+  const filteredJobs = jobs.filter(
+    (job): job is NonNullable<(typeof jobs)[number]> => {
+      if (!job) return false;
 
-    const matchesLocation =
-      location === "" || job.location.toLowerCase().includes(location);
+      const haystack = [
+        job.title ?? "",
+        job.district ?? "",
+        job.location ?? "",
+        job.type ?? "",
+      ]
+        .join(" ")
+        .toLowerCase();
 
-    return matchesSearch && matchesLocation;
-  });
+      const matchesSearch =
+        normalizedSearch === "" ||
+        searchWords.every((word) => haystack.includes(word));
+
+      const matchesLocation =
+        location === "" || (job.location ?? "").toLowerCase().includes(location);
+
+      return matchesSearch && matchesLocation;
+    }
+  );
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
@@ -54,14 +59,14 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         >
           <input
             name="search"
-            defaultValue={params.search || ""}
+            defaultValue={rawSearch}
             className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none"
             placeholder="Job title, district, or keyword"
           />
 
           <input
             name="location"
-            defaultValue={params.location || ""}
+            defaultValue={rawLocation}
             className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none"
             placeholder="City or county"
           />
@@ -78,13 +83,13 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
           <p className="mt-4 text-sm text-slate-500">
             Showing results for{" "}
             <span className="font-medium text-slate-700">
-              {params.search || "all jobs"}
+              {rawSearch || "all jobs"}
             </span>
-            {params.location && (
+            {rawLocation && (
               <>
                 {" "}in{" "}
                 <span className="font-medium text-slate-700">
-                  {params.location}
+                  {rawLocation}
                 </span>
               </>
             )}
@@ -133,5 +138,13 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function JobsPage() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading jobs...</div>}>
+      <JobsPageContent />
+    </Suspense>
   );
 }

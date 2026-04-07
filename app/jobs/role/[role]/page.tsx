@@ -1,54 +1,43 @@
 import { jobs } from "../../../../data/jobs";
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ role: string }>;
-}) {
-  const { role } = await params;
-
-  const roleName = role
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
-
-  return {
-    title: `${roleName} Jobs in New Jersey | NJSchoolCareers`,
-    description: `Browse ${roleName.toLowerCase()} jobs across New Jersey schools. Apply directly with no account required.`,
-  };
-}
+import { notFound } from "next/navigation";
 
 type PageProps = {
-  params: Promise<{
-    role: string;
-  }>;
+  params: { role: string };
 };
 
-function formatRoleName(slug: string) {
-  return slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
+const roleNames: Record<string, string> = {
+  "assistant-principal": "Assistant Principal",
+  "spanish-teacher": "Spanish Teacher",
+  "substitute-teacher": "Substitute Teacher",
+  paraprofessional: "Paraprofessional",
+};
 
-export default async function RoleJobsPage({ params }: PageProps) {
-  const { role } = await params;
-  const roleSlug = role.toLowerCase();
-  const roleName = formatRoleName(roleSlug);
+export default function RolePage({ params }: PageProps) {
+  const roleSlug = params.role.toLowerCase();
+  const roleName = roleNames[roleSlug];
 
-const searchTerm = roleSlug.replace(/-/g, " ");
+  if (!roleName) {
+    notFound();
+  }
 
-const filteredJobs = jobs.filter((job) => {
-  const haystack = [
-    job.title,
-    job.district,
-    job.location,
-  ]
-    .join(" ")
-    .toLowerCase();
+  const searchTerm = roleSlug.replace(/-/g, " ");
 
-  return haystack.includes(searchTerm);
-});
+  const filteredJobs = jobs.filter(
+    (job): job is NonNullable<(typeof jobs)[number]> => {
+      if (!job) return false;
+
+      const haystack = [
+        job.title ?? "",
+        job.district ?? "",
+        job.location ?? "",
+        job.type ?? "",
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return haystack.includes(searchTerm);
+    }
+  );
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
@@ -57,27 +46,24 @@ const filteredJobs = jobs.filter((job) => {
           {roleName} Jobs in New Jersey
         </h1>
 
-        <p className="mt-3 max-w-2xl text-slate-600">
-          Find current {roleName.toLowerCase()} jobs across New Jersey public
-          and private schools. Apply directly with no account required.
+        <p className="mt-4 text-slate-600">
+          Explore current {roleName.toLowerCase()} opportunities across New Jersey schools.
         </p>
 
         <div className="mt-10 grid gap-5">
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job) => (
-              <div
+              <article
                 key={job.slug}
-                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
               >
                 <h2 className="text-2xl font-semibold">{job.title}</h2>
-
                 <p className="mt-2 text-slate-700">{job.district}</p>
-
                 <p className="text-sm text-slate-500">
                   {job.location} · {job.type}
                 </p>
 
-                <div className="mt-4 flex gap-3">
+                <div className="mt-4 flex flex-wrap gap-3">
                   <a
                     href={`/jobs/${job.slug}`}
                     className="rounded-xl border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50"
@@ -94,24 +80,15 @@ const filteredJobs = jobs.filter((job) => {
                     Apply Now
                   </a>
                 </div>
-              </div>
+              </article>
             ))
           ) : (
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <p className="text-slate-500">
-                No {roleName.toLowerCase()} jobs available right now.
+                No {roleName.toLowerCase()} jobs are available right now.
               </p>
             </div>
           )}
-        </div>
-
-        <div className="mt-10">
-          <a
-            href="/jobs"
-            className="rounded-xl border border-slate-300 px-5 py-3 text-sm hover:bg-slate-50"
-          >
-            View All Jobs
-          </a>
         </div>
       </div>
     </main>

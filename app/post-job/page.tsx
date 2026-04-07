@@ -10,6 +10,8 @@ export default function PostJobPage() {
     jobType: "",
     description: "",
     applicationLink: "",
+    contactName: "",
+    contactEmail: "",
   });
 
   const [status, setStatus] = useState("");
@@ -21,24 +23,37 @@ export default function PostJobPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setStatus("");
 
     try {
-      const res = await fetch("/api/post-job", {
+      const formspreeEndpoint = "https://formspree.io/f/xlgozdbp";
+
+      const response = await fetch(formspreeEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          jobTitle: form.jobTitle,
+          district: form.district,
+          location: form.location,
+          jobType: form.jobType,
+          description: form.description,
+          applicationLink: form.applicationLink,
+          contactName: form.contactName,
+          contactEmail: form.contactEmail,
+          source: "NJ School Careers - Post a Job Page",
+        }),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      if (res.ok) {
-        setStatus("Job submitted successfully.");
+      if (response.ok) {
+        setStatus("Thank you. Your job was submitted successfully.");
         setForm({
           jobTitle: "",
           district: "",
@@ -46,12 +61,14 @@ export default function PostJobPage() {
           jobType: "",
           description: "",
           applicationLink: "",
+          contactName: "",
+          contactEmail: "",
         });
       } else {
-        setStatus(data.error || "Something went wrong.");
+        setStatus(data?.errors?.[0]?.message || "Something went wrong. Please try again.");
       }
-    } catch (error) {
-      setStatus("Something went wrong.");
+    } catch {
+      setStatus("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -62,7 +79,7 @@ export default function PostJobPage() {
       <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-3xl font-bold">Post a Job</h1>
         <p className="mt-2 text-slate-600">
-          Reach candidates across New Jersey.
+          Reach candidates across New Jersey. No account required.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
@@ -71,6 +88,7 @@ export default function PostJobPage() {
             value={form.jobTitle}
             onChange={handleChange}
             placeholder="Job Title"
+            required
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
           />
 
@@ -79,6 +97,7 @@ export default function PostJobPage() {
             value={form.district}
             onChange={handleChange}
             placeholder="School / District Name"
+            required
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
           />
 
@@ -87,6 +106,7 @@ export default function PostJobPage() {
             value={form.location}
             onChange={handleChange}
             placeholder="Location (City, County)"
+            required
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
           />
 
@@ -94,6 +114,7 @@ export default function PostJobPage() {
             name="jobType"
             value={form.jobType}
             onChange={handleChange}
+            required
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
           >
             <option value="">Job Type</option>
@@ -109,7 +130,8 @@ export default function PostJobPage() {
             value={form.description}
             onChange={handleChange}
             placeholder="Job Description"
-            rows={5}
+            rows={6}
+            required
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
           />
 
@@ -117,7 +139,27 @@ export default function PostJobPage() {
             name="applicationLink"
             value={form.applicationLink}
             onChange={handleChange}
-            placeholder="Application Email or URL"
+            placeholder="Application URL or email"
+            required
+            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+          />
+
+          <input
+            name="contactName"
+            value={form.contactName}
+            onChange={handleChange}
+            placeholder="Contact Name"
+            required
+            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+          />
+
+          <input
+            type="email"
+            name="contactEmail"
+            value={form.contactEmail}
+            onChange={handleChange}
+            placeholder="Contact Email"
+            required
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
           />
 
@@ -130,11 +172,7 @@ export default function PostJobPage() {
           </button>
         </form>
 
-        {status && (
-          <p className="mt-4 text-sm text-slate-600">
-            {status}
-          </p>
-        )}
+        {status && <p className="mt-4 text-sm text-slate-600">{status}</p>}
       </div>
     </main>
   );
