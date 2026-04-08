@@ -134,7 +134,7 @@ export const jobs = [
   },
   {
     "title": "Elementary School Teacher",
-    "district": "Glen Rock PubliSchools",
+    "district": "Glen Rock Public Schools",
     "location": "Glen Rock NJ",
     "type": "Full Time",
     "posted": "2026-04-07",
@@ -152,7 +152,7 @@ export const jobs = [
       "Experience with special needs students preferred",
       "Excellent communication and classro"
     ],
-    "slug": "elementary-school-teacher-glen-rock-publischools-glen-rock-nj"
+    "slug": "elementary-school-teacher-glen-rock-public-schools-glen-rock-nj"
   },
   {
     "title": "Substitute Teacher",

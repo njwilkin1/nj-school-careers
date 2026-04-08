@@ -1,4 +1,4 @@
-  import fs from "fs";
+import fs from "fs";
 import path from "path";
 import { parse } from "csv-parse/sync";
 
@@ -16,22 +16,29 @@ function normalize(value: string) {
   return String(value || "").trim().toLowerCase();
 }
 
+function isValidUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const {
-      adminSecret,
-      title,
-      district,
-      location,
-      type,
-      posted,
-      applyUrl,
-      overview,
-      responsibilities,
-      requirements,
-    } = body;
+    const adminSecret = String(body.adminSecret || "").trim();
+    const title = String(body.title || "").trim();
+    const district = String(body.district || "").trim();
+    const location = String(body.location || "").trim();
+    const type = String(body.type || "").trim();
+    const posted = String(body.posted || "").trim();
+    const applyUrl = String(body.applyUrl || "").trim();
+    const overview = String(body.overview || "").trim();
+    const responsibilities = String(body.responsibilities || "").trim();
+    const requirements = String(body.requirements || "").trim();
 
     if (!process.env.ADMIN_SECRET) {
       return Response.json(
@@ -47,12 +54,48 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!title || !district || !location || !type || !applyUrl || !overview) {
+    if (!title) {
+      return Response.json({ error: "Job title is required." }, { status: 400 });
+    }
+
+    if (!district) {
+      return Response.json({ error: "District is required." }, { status: 400 });
+    }
+
+    if (!location) {
+      return Response.json({ error: "Location is required." }, { status: 400 });
+    }
+
+    if (!type) {
+      return Response.json({ error: "Job type is required." }, { status: 400 });
+    }
+
+    if (!posted) {
+      return Response.json({ error: "Posted date is required." }, { status: 400 });
+    }
+
+    if (!applyUrl) {
+      return Response.json({ error: "Apply URL is required." }, { status: 400 });
+    }
+
+    if (!isValidUrl(applyUrl)) {
+      return Response.json({ error: "Apply URL must be valid." }, { status: 400 });
+    }
+
+    if (!overview) {
+      return Response.json({ error: "Overview is required." }, { status: 400 });
+    }
+
+    if (!responsibilities) {
       return Response.json(
-        {
-          error:
-            "Missing required fields. Required: title, district, location, type, applyUrl, overview.",
-        },
+        { error: "Responsibilities are required." },
+        { status: 400 }
+      );
+    }
+
+    if (!requirements) {
+      return Response.json(
+        { error: "Requirements are required." },
         { status: 400 }
       );
     }
@@ -95,12 +138,12 @@ export async function POST(req: Request) {
       title,
       district,
       location,
-      type || "Full Time",
-      posted || new Date().toISOString().slice(0, 10),
+      type,
+      posted,
       applyUrl,
       overview,
-      String(responsibilities || ""),
-      String(requirements || ""),
+      responsibilities,
+      requirements,
     ]
       .map(escapeCsv)
       .join(",");
