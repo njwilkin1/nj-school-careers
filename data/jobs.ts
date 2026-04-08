@@ -153,5 +153,22 @@ export const jobs = [
       "Excellent communication and classroom management skills."
     ],
     "slug": "elementary-school-teacher-glen-rock-public-schools-glen-rock-nj"
+  },
+  {
+    "title": "Substitute Teacher",
+    "district": "Guttenberg School District",
+    "location": "Guttenberg NJ",
+    "type": "Full Time",
+    "posted": "2026-04-08",
+    "applyUrl": "https://www.applitrack.com/alkschool/onlineapp/_application.aspx?posJobCodes=243&posFirstChoice=Substitute&posSpecialty=Substitute%20Teacher",
+    "overview": "We are seeking an experienced and reliable Substitute Teacher to help us fill gaps in our schedule due to sick days and vacation time. When we have an opening, we will call you in to fill in for an absent teacher. You will often have materials available to cover with the students for the day. Occasionally, we will require long-term subs for extended teacher absences. Our ideal candidate has some classroom teaching experience and possesses the skills needed to cover daily instruction and run the classroom environment in an orderly fashion.",
+    "responsibilities": [
+      "Take attendance according to the procedures of the school, keep classroom and work orderly, and maintain normal classroom rhythms",
+      "Direct the classroom, accomplishing curriculum objectives and goals outlined in the lesson plans",
+      "Comply with guidelines and policies of the school at all times",
+      "Maintain a professional attitude in all manner of conduct with students, faculty, and parents"
+    ],
+    "requirements": [],
+    "slug": "substitute-teacher-guttenberg-school-district-guttenberg-nj"
   }
 ];
