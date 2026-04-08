@@ -170,5 +170,26 @@ export const jobs = [
     ],
     "requirements": [],
     "slug": "substitute-teacher-guttenberg-school-district-guttenberg-nj"
+  },
+  {
+    "title": "Spanish Teacher",
+    "district": "Garfield School District",
+    "location": "Garfield NJ",
+    "type": "Full Time",
+    "posted": "2026-04-08",
+    "applyUrl": "https://www.applitrack.com/gboe/onlineapp/_application.aspx?posJobCodes=1458&posFirstChoice=Middle%20School%20Teaching&posSpecialty=Foreign%20Language%20-%20Spanish",
+    "overview": "The Garfield School District is seeking to hire a tenure-track Spanish World Language Teacher. Garfield Middle School covers Grades 6-8. Please include a resume as part of Applitrack application",
+    "responsibilities": [
+      "Build students' bilingual skills and enhance their understanding of the Spanish language",
+      "Teach students how to build and enhance their foreign language skills--reading, writing, speaking and listening",
+      "Cultivate students' cultural awareness by helping them learn a new language",
+      "Build students' skill and comfort with engaging in conversation in Spanish",
+      "Work with the World Language Department to develop academic and engagement goals for students"
+    ],
+    "requirements": [
+      "Must have NJ HS Spanish teacher certification",
+      "Must complete criminal history process"
+    ],
+    "slug": "spanish-teacher-garfield-school-district-garfield-nj"
   }
 ];
