@@ -59,13 +59,13 @@ try {
 
   const seenSlugs = new Set();
   const skippedExpired = [];
-
   const jobs = [];
 
   records.forEach((row, index) => {
     const title = safe(row.title);
     const district = safe(row.district);
     const location = safe(row.location);
+    const county = safe(row.county);
     const type = safe(row.type);
     const posted = safe(row.posted) || new Date().toISOString().slice(0, 10);
     const applyUrl = safe(row.applyUrl);
@@ -73,7 +73,15 @@ try {
     const responsibilities = splitList(row.responsibilities);
     const requirements = splitList(row.requirements);
 
-    if (!title || !district || !location || !type || !applyUrl || !overview) {
+    if (
+      !title ||
+      !district ||
+      !location ||
+      !county ||
+      !type ||
+      !applyUrl ||
+      !overview
+    ) {
       return;
     }
 
@@ -102,6 +110,7 @@ try {
       title,
       district,
       location,
+      county,
       type,
       posted,
       applyUrl,
