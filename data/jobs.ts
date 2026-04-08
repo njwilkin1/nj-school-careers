@@ -4,7 +4,7 @@ export const jobs = [
     "district": "Weehawken Township School District",
     "location": "Weehawken Township NJ",
     "type": "Full Time",
-    "posted": "2026-04-07",
+    "posted": "2026-04-07s",
     "applyUrl": "https://jobs.leadline.io/jobs/9953",
     "overview": "Support student learning and development in an elementary classroom",
     "responsibilities": [
@@ -134,7 +134,7 @@ export const jobs = [
   },
   {
     "title": "Elementary School Teacher",
-    "district": "Glen Rock Public Schools",
+    "district": "Glen Rock PubliSchools",
     "location": "Glen Rock NJ",
     "type": "Full Time",
     "posted": "2026-04-07",
@@ -150,9 +150,9 @@ export const jobs = [
       "Knowledge of hands-on approach to math",
       "Strong knowledge of incorporating technology into the curriculum",
       "Experience with special needs students preferred",
-      "Excellent communication and classroom management skills."
+      "Excellent communication and classro"
     ],
-    "slug": "elementary-school-teacher-glen-rock-public-schools-glen-rock-nj"
+    "slug": "elementary-school-teacher-glen-rock-publischools-glen-rock-nj"
   },
   {
     "title": "Substitute Teacher",
