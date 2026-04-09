@@ -1,3 +1,4 @@
+import EmailSignup from "./components/EmailSignup";
 import { jobs } from "../data/jobs";
 
 export default function Home() {
@@ -10,9 +11,10 @@ export default function Home() {
     "Bilingual Roles",
   ];
 
-const featuredJobs = jobs
-  .filter((job): job is NonNullable<(typeof jobs)[number]> => !!job)
-  .slice(0, 4);
+  const featuredJobs = jobs
+    .filter((job): job is NonNullable<(typeof jobs)[number]> => !!job)
+    .slice(0, 4);
+
   const popularSearches = [
     "Assistant Principal",
     "Spanish Teacher",
@@ -76,13 +78,13 @@ const featuredJobs = jobs
               Find school jobs across New Jersey — fast.
             </h1>
 
-           <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200">
-  Apply directly to schools. No accounts. No complicated systems.
-</p>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200">
+              Apply directly to schools. No accounts. No complicated systems.
+            </p>
 
-<p className="mt-3 text-sm text-slate-300">
-  Real New Jersey school jobs. Updated daily.
-</p>
+            <p className="mt-3 text-sm text-slate-300">
+              Real New Jersey school jobs. Updated daily.
+            </p>
 
             <div className="mt-8 rounded-3xl bg-white p-4 shadow-2xl">
               <form action="/jobs" className="grid gap-3 md:grid-cols-[1.2fr_1fr_auto]">
@@ -163,6 +165,10 @@ const featuredJobs = jobs
         </div>
       </section>
 
+      <section className="mx-auto max-w-7xl px-6 py-12">
+        <EmailSignup />
+      </section>
+
       <section id="why-us" className="mx-auto max-w-7xl px-6 py-14">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
@@ -207,25 +213,23 @@ const featuredJobs = jobs
               Browse roles by focus area
             </h2>
           </div>
-<a
-  href="/jobs/teaching-jobs-new-jersey"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Teaching Jobs in New Jersey
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Explore teaching opportunities across New Jersey school districts.
-  </div>
-</a>
+
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <a
+              href="/jobs/teaching-jobs-new-jersey"
+              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="text-lg font-semibold">Teaching Jobs in New Jersey</div>
+              <div className="mt-2 text-sm text-slate-500">
+                Explore teaching opportunities across New Jersey school districts.
+              </div>
+            </a>
+
             <a
               href="/jobs/role/spanish-teacher"
               className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="text-lg font-semibold">
-                Spanish Teacher Jobs in NJ
-              </div>
+              <div className="text-lg font-semibold">Spanish Teacher Jobs in NJ</div>
               <div className="mt-2 text-sm text-slate-500">
                 Explore Spanish teaching opportunities across New Jersey.
               </div>
@@ -235,9 +239,7 @@ const featuredJobs = jobs
               href="/jobs/role/assistant-principal"
               className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="text-lg font-semibold">
-                Assistant Principal Jobs in NJ
-              </div>
+              <div className="text-lg font-semibold">Assistant Principal Jobs in NJ</div>
               <div className="mt-2 text-sm text-slate-500">
                 Explore assistant principal opportunities across New Jersey.
               </div>
@@ -247,120 +249,82 @@ const featuredJobs = jobs
               href="/jobs/county/bergen"
               className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="text-lg font-semibold">
-                Bergen County Teaching Jobs
-              </div>
+              <div className="text-lg font-semibold">Bergen County Teaching Jobs</div>
               <div className="mt-2 text-sm text-slate-500">
                 Explore current school job opportunities in Bergen County.
               </div>
             </a>
+
             <a
-  href="/jobs/role/substitute-teacher"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Substitute Teacher Jobs in NJ
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Browse substitute teaching opportunities across New Jersey.
-  </div>
-</a><a
-  href="/jobs/role/substitute-teacher"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Substitute Teacher Jobs in NJ
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Browse substitute teaching opportunities across New Jersey.
-  </div>
-</a><a
-  href="/jobs/role/paraprofessional"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Paraprofessional Jobs in NJ
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Explore paraprofessional opportunities across New Jersey.
-  </div>
-</a>
+              href="/jobs/role/substitute-teacher"
+              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="text-lg font-semibold">Substitute Teacher Jobs in NJ</div>
+              <div className="mt-2 text-sm text-slate-500">
+                Browse substitute teaching opportunities across New Jersey.
+              </div>
+            </a>
+
             <a
-  href="/jobs/county/passaic"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Passaic County Teaching Jobs
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Explore current school job opportunities in Passaic County.
-  </div>
-</a>
-<a
-  href="/jobs/county/essex"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Essex County Teaching Jobs
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Explore current school job opportunities in Essex County.
-  </div>
-</a>
-<a
-  href="/jobs/county/hudson"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Hudson County Teaching Jobs
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Explore current school job opportunities in Hudson County.
-  </div>
-</a>
-<a
-  href="/jobs/role/substitute-teacher"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Substitute Teacher Jobs in NJ
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Explore substitute teacher opportunities across New Jersey.
-  </div>
-</a>
-<a
-  href="/jobs/county/union"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Union County Teaching Jobs
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Explore current school job opportunities in Union County.
-  </div>
-</a>
-<a
-  href="/jobs/role/paraprofessional"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Paraprofessional Jobs in NJ
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Explore paraprofessional opportunities across New Jersey.
-  </div>
-</a><a
-  href="/jobs/county/middlesex"
-  className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
->
-  <div className="text-lg font-semibold">
-    Middlesex County Teaching Jobs
-  </div>
-  <div className="mt-2 text-sm text-slate-500">
-    Explore current school job opportunities in Middlesex County.
-  </div>
-</a>
+              href="/jobs/role/paraprofessional"
+              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="text-lg font-semibold">Paraprofessional Jobs in NJ</div>
+              <div className="mt-2 text-sm text-slate-500">
+                Explore paraprofessional opportunities across New Jersey.
+              </div>
+            </a>
+
+            <a
+              href="/jobs/county/passaic"
+              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="text-lg font-semibold">Passaic County Teaching Jobs</div>
+              <div className="mt-2 text-sm text-slate-500">
+                Explore current school job opportunities in Passaic County.
+              </div>
+            </a>
+
+            <a
+              href="/jobs/county/essex"
+              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="text-lg font-semibold">Essex County Teaching Jobs</div>
+              <div className="mt-2 text-sm text-slate-500">
+                Explore current school job opportunities in Essex County.
+              </div>
+            </a>
+
+            <a
+              href="/jobs/county/hudson"
+              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="text-lg font-semibold">Hudson County Teaching Jobs</div>
+              <div className="mt-2 text-sm text-slate-500">
+                Explore current school job opportunities in Hudson County.
+              </div>
+            </a>
+
+            <a
+              href="/jobs/county/union"
+              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="text-lg font-semibold">Union County Teaching Jobs</div>
+              <div className="mt-2 text-sm text-slate-500">
+                Explore current school job opportunities in Union County.
+              </div>
+            </a>
+
+            <a
+              href="/jobs/county/middlesex"
+              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="text-lg font-semibold">Middlesex County Teaching Jobs</div>
+              <div className="mt-2 text-sm text-slate-500">
+                Explore current school job opportunities in Middlesex County.
+              </div>
+            </a>
+
             {categories.map((category) => (
               <a
                 key={category}

@@ -50,7 +50,10 @@ export default function AdminPage() {
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   }
 
   function isValidUrl(value: string) {
@@ -79,7 +82,7 @@ export default function AdminPage() {
     return null;
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setMessage("");
     setMessageType("");
@@ -93,7 +96,7 @@ export default function AdminPage() {
 
     setSubmitting(true);
 
-    const cleanedForm = {
+    const cleanedForm: FormState = {
       ...form,
       title: form.title.trim(),
       district: form.district.trim(),
