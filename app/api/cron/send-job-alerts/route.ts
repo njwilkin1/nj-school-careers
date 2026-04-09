@@ -18,11 +18,14 @@ function normalize(value: string | undefined | null) {
   return String(value || "").trim().toLowerCase();
 }
 
-function matchesSubscriber(job: Job, subscriber: {
-  county: string | null;
-  keyword: string | null;
-  job_type: string | null;
-}) {
+function matchesSubscriber(
+  job: Job,
+  subscriber: {
+    county: string | null;
+    keyword: string | null;
+    job_type: string | null;
+  }
+) {
   const countyMatch =
     !subscriber.county ||
     normalize(job.county).includes(normalize(subscriber.county));
@@ -80,6 +83,7 @@ function buildEmailHtml(email: string, matchedJobs: Job[]) {
 export async function GET(req: Request) {
   try {
     const authHeader = req.headers.get("authorization");
+
     if (authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -92,10 +96,17 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const results: Array<{ email: string; sent: boolean; count: number; error?: string }> = [];
+    const results: Array<{
+      email: string;
+      sent: boolean;
+      count: number;
+      error?: string;
+    }> = [];
 
     for (const subscriber of subscribers || []) {
-      const matchedJobs = jobs.filter((job) => matchesSubscriber(job, subscriber));
+      const matchedJobs = jobs.filter((job) =>
+        matchesSubscriber(job, subscriber)
+      );
 
       if (matchedJobs.length === 0) {
         results.push({
@@ -136,6 +147,7 @@ export async function GET(req: Request) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Server error";
+
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
