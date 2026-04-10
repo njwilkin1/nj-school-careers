@@ -3,15 +3,6 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { jobs } from "../../../../data/jobs";
 
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const resendApiKey = process.env.RESEND_API_KEY!;
-const fromEmail = process.env.ALERTS_FROM_EMAIL!;
-const cronSecret = process.env.CRON_SECRET!;
-
-const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-const resend = new Resend(resendApiKey);
-
 type Job = (typeof jobs)[number];
 
 function normalize(value: string | undefined | null) {
@@ -82,11 +73,32 @@ function buildEmailHtml(email: string, matchedJobs: Job[]) {
 
 export async function GET(req: Request) {
   try {
-    const authHeader = req.headers.get("authorization");
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.ALERTS_FROM_EMAIL;
+    const cronSecret = process.env.CRON_SECRET;
 
+    if (
+      !supabaseUrl ||
+      !supabaseServiceRoleKey ||
+      !resendApiKey ||
+      !fromEmail ||
+      !cronSecret
+    ) {
+      return NextResponse.json(
+        { error: "Missing required environment variables." },
+        { status: 500 }
+      );
+    }
+
+    const authHeader = req.headers.get("authorization");
     if (authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const resend = new Resend(resendApiKey);
 
     const { data: subscribers, error } = await supabase
       .from("job_alert_subscribers")
@@ -147,7 +159,6 @@ export async function GET(req: Request) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Server error";
-
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
