@@ -26,17 +26,36 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email is required." }, { status: 400 });
     }
 
-    const { error } = await supabase.from("job_alert_subscribers").insert([
-      {
-        email,
-        county,
-        keyword,
-        job_type: jobType,
-      },
-    ]);
+    const { data: existing, error: selectError } = await supabase
+      .from("job_alert_subscribers")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (selectError) {
+      return NextResponse.json({ error: selectError.message }, { status: 500 });
+    }
+
+    if (existing) {
+      return NextResponse.json(
+        { error: "This email is already subscribed." },
+        { status: 409 }
+      );
+    }
+
+    const { error: insertError } = await supabase
+      .from("job_alert_subscribers")
+      .insert([
+        {
+          email,
+          county,
+          keyword,
+          job_type: jobType,
+        },
+      ]);
+
+    if (insertError) {
+      return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
