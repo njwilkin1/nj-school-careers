@@ -61,7 +61,7 @@ export default function EmailSignup() {
 
   return (
     <div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="text-2xl font-semibold">Get New NJ School Jobs by Email</h2>
+<h2 className="text-2xl font-semibold text-red-500">Get New NJ School Jobs by Email</h2>
       <p className="mt-2 text-slate-600">
         Subscribe for alerts based on county, keyword, and job type.
       </p>
