@@ -13,8 +13,6 @@ export async function POST(req: Request) {
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-
     const body = await req.json();
 
     const email = String(body.email || "").trim().toLowerCase();
@@ -26,6 +24,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email is required." }, { status: 400 });
     }
 
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    });
+
     const { data: existing, error: selectError } = await supabase
       .from("job_alert_subscribers")
       .select("id")
@@ -33,7 +38,11 @@ export async function POST(req: Request) {
       .maybeSingle();
 
     if (selectError) {
-      return NextResponse.json({ error: selectError.message }, { status: 500 });
+      console.error("Supabase select error:", selectError);
+      return NextResponse.json(
+        { error: `Supabase select error: ${selectError.message}` },
+        { status: 500 }
+      );
     }
 
     if (existing) {
@@ -55,12 +64,30 @@ export async function POST(req: Request) {
       ]);
 
     if (insertError) {
-      return NextResponse.json({ error: insertError.message }, { status: 500 });
+      console.error("Supabase insert error:", insertError);
+      return NextResponse.json(
+        { error: `Supabase insert error: ${insertError.message}` },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Server error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("Subscribe route crashed:", error);
+
+    const message =
+      error instanceof Error ? error.message : "Unknown server error";
+
+    return NextResponse.json(
+      { error: `Server error: ${message}` },
+      { status: 500 }
+    );
   }
+}
+
+export async function GET() {
+  return NextResponse.json(
+    { error: "Method not allowed. Use POST." },
+    { status: 405 }
+  );
 }
