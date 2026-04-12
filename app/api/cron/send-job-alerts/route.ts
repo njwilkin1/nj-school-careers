@@ -3,90 +3,162 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { jobs } from "@/data/jobs";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.ALERTS_FROM_EMAIL;
 
-    const resend = new Resend(process.env.RESEND_API_KEY!);
+    if (!supabaseUrl || !supabaseServiceRoleKey || !resendApiKey || !fromEmail) {
+      return NextResponse.json(
+        { error: "Missing environment variables." },
+        { status: 500 }
+      );
+    }
 
-    const { data: subscribers, error } = await supabase
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const resend = new Resend(resendApiKey);
+
+    const { data: subscribers, error: subscriberError } = await supabase
       .from("job_alert_subscribers")
       .select("*");
 
-    if (error) throw error;
+    if (subscriberError) {
+      return NextResponse.json(
+        { error: `Subscriber fetch failed: ${subscriberError.message}` },
+        { status: 500 }
+      );
+    }
 
-    for (const sub of subscribers) {
+    const debugResults: any[] = [];
+
+    for (const sub of subscribers || []) {
       const matches = jobs.filter((job) => {
         const matchCounty =
-          !sub.county || job.county?.includes(sub.county);
+          !sub.county ||
+          String(job.county || "").toLowerCase().includes(String(sub.county || "").toLowerCase());
 
         const matchKeyword =
           !sub.keyword ||
-          job.title.toLowerCase().includes(sub.keyword.toLowerCase());
+          [
+            job.title,
+            job.district,
+            job.location,
+            job.overview,
+            ...(job.responsibilities || []),
+            ...(job.requirements || []),
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(String(sub.keyword || "").toLowerCase());
 
         const matchType =
-          !sub.job_type || job.type === sub.job_type;
+          !sub.job_type ||
+          String(job.type || "").toLowerCase() === String(sub.job_type || "").toLowerCase();
 
         return matchCounty && matchKeyword && matchType;
       });
 
-      const newJobs = [];
+      const unsentJobs = [];
 
       for (const job of matches) {
-        const { data: alreadySent } = await supabase
+        const { data: alreadySent, error: sentCheckError } = await supabase
           .from("sent_job_alerts")
           .select("id")
           .eq("subscriber_email", sub.email)
           .eq("job_slug", job.slug)
           .maybeSingle();
 
+        if (sentCheckError) {
+          return NextResponse.json(
+            { error: `Sent check failed: ${sentCheckError.message}` },
+            { status: 500 }
+          );
+        }
+
         if (!alreadySent) {
-          newJobs.push(job);
+          unsentJobs.push(job);
         }
       }
 
-      if (newJobs.length === 0) continue;
+      if (unsentJobs.length === 0) {
+        debugResults.push({
+          email: sub.email,
+          matchedJobs: matches.length,
+          newJobs: 0,
+          sent: false,
+        });
+        continue;
+      }
 
-      // Build email HTML
-      const jobList = newJobs
+      const jobList = unsentJobs
         .map(
           (job) => `
             <li>
               <strong>${job.title}</strong> – ${job.district}<br/>
+              ${job.location}<br/>
               <a href="${job.applyUrl}">Apply here</a>
             </li>
           `
         )
         .join("");
 
-      await resend.emails.send({
-        from: process.env.ALERTS_FROM_EMAIL!,
+      const emailResult = await resend.emails.send({
+        from: fromEmail,
         to: sub.email,
-        subject: "New NJ School Jobs for You",
+        subject: `New NJ School Jobs for You (${unsentJobs.length})`,
         html: `
-          <h2>New Job Alerts 🎯</h2>
+          <h2>New Job Alerts</h2>
           <p>Here are new jobs matching your preferences:</p>
           <ul>${jobList}</ul>
-          <br/>
           <p>— NJ School Careers</p>
         `,
       });
 
-      // Save sent jobs
-      const inserts = newJobs.map((job) => ({
+      if ((emailResult as any)?.error) {
+        debugResults.push({
+          email: sub.email,
+          matchedJobs: matches.length,
+          newJobs: unsentJobs.length,
+          sent: false,
+          error: (emailResult as any).error,
+        });
+        continue;
+      }
+
+      const inserts = unsentJobs.map((job) => ({
         subscriber_email: sub.email,
         job_slug: job.slug,
       }));
 
-      await supabase.from("sent_job_alerts").insert(inserts);
+      const { error: insertSentError } = await supabase
+        .from("sent_job_alerts")
+        .insert(inserts);
+
+      if (insertSentError) {
+        return NextResponse.json(
+          { error: `Saving sent jobs failed: ${insertSentError.message}` },
+          { status: 500 }
+        );
+      }
+
+      debugResults.push({
+        email: sub.email,
+        matchedJobs: matches.length,
+        newJobs: unsentJobs.length,
+        sent: true,
+      });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      totalSubscribers: subscribers?.length || 0,
+      totalJobsInSystem: jobs.length,
+      results: debugResults,
+    });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Cron failed" }, { status: 500 });
+    const message = err instanceof Error ? err.message : "Cron failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
