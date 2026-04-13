@@ -201,5 +201,29 @@ export const jobs = [
       "Must complete criminal history process"
     ],
     "slug": "spanish-teacher-garfield-school-district-garfield-nj"
+  },
+  {
+    "title": "Teacher of Kindergarten",
+    "district": "Teaneck Public Schools",
+    "location": "Teaneck NJ",
+    "county": "Bergen County",
+    "type": "Full Time",
+    "posted": "2026-04-02",
+    "applyUrl": "https://www.applitrack.com/teaneck/onlineapp/_application.aspx?posJobCodes=1923&posFirstChoice=Elementary%20School%20Teaching&posSpecialty=",
+    "overview": "Under the direction of the Building Principal is responsible for instructing students in Kindergarten by creating lesson plans in subjects such as reading, writing, math, social studies and social and emotional learning as well as integrating with specialists in foreign languages, science, physical education, design, and music.",
+    "responsibilities": [
+      "Demonstrate a comprehensive knowledge of the content field and describe ways in which the content can be organized into lessons for elementary students",
+      "Ability to maintain a positive learning environment and develop students' knowledge and skills",
+      "Proven ability to work harmoniously with diverse populations Become an expert with established curricula",
+      "Meet, take attendance and instruct assigned classes in the locations and at the times designated",
+      "Develop and implement daily or weekly lesson plans and instructional materials in order to adapt the curriculum to the needs of the students",
+      "Create a classroom environment that is conducive to learning and appropriate to the maturity and interests of the students.",
+      "Establish and maintain standards of student behavior needed to achieve a functional learning atmosphere in the classroom"
+    ],
+    "requirements": [
+      "Standards New Jersey Department of Education Teacher of Elementary P3 or K6.",
+      "Qualified candidates must have strong collaborative, planning and performance assessment skills; be knowledgeable in a variety of teaching strategies and a demonstrated ability to work harmoniously in a multicultural, diverse community."
+    ],
+    "slug": "teacher-of-kindergarten-teaneck-public-schools-teaneck-nj"
   }
 ];
