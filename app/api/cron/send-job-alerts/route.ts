@@ -31,7 +31,7 @@ function buildJobCards(unsentJobs: Job[]): string {
   return unsentJobs
     .map(
       (job) => `
-        <div style="margin-bottom:20px;padding:20px;border:1px solid #e5e7eb;border-radius:12px;background:#ffffff;">
+        <div style="margin-bottom:18px;padding:20px;border:1px solid #e2e8f0;border-radius:12px;background:#ffffff;">
           <div style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:8px;">
             ${job.title}
           </div>
@@ -40,13 +40,13 @@ function buildJobCards(unsentJobs: Job[]): string {
             <strong>${job.district}</strong>
           </div>
 
-          <div style="font-size:14px;color:#64748b;margin-bottom:14px;">
+          <div style="font-size:14px;color:#64748b;margin-bottom:14px;line-height:1.6;">
             ${job.location}${job.county ? ` • ${job.county}` : ""}${job.type ? ` • ${job.type}` : ""}
           </div>
 
           ${
             job.overview
-              ? `<div style="font-size:14px;line-height:1.6;color:#475569;margin-bottom:14px;">
+              ? `<div style="font-size:14px;line-height:1.7;color:#475569;margin-bottom:14px;">
                    ${job.overview}
                  </div>`
               : ""
@@ -79,35 +79,45 @@ function buildEmailHtml(unsentJobs: Job[], email: string): string {
       ? "We found 1 new job matching your preferences."
       : `We found ${unsentJobs.length} new jobs matching your preferences.`;
 
-  const jobCards = buildJobCards(unsentJobs);
-
   const unsubscribeUrl = `https://njschoolcareers.com/api/unsubscribe?email=${encodeURIComponent(
     email
   )}`;
 
   return `
-    <div style="margin:0;padding:0;background:#f8fafc;">
-      <div style="max-width:680px;margin:0 auto;padding:32px 20px;font-family:Arial,Helvetica,sans-serif;color:#0f172a;">
-        <div style="background:#ffffff;border-radius:18px;padding:32px;border:1px solid #e2e8f0;">
-          <div style="font-size:28px;font-weight:800;margin-bottom:10px;color:#0f172a;">
+    <div style="background:#f8fafc;padding:40px 0;font-family:Arial,Helvetica,sans-serif;">
+      <div style="max-width:680px;margin:auto;background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;overflow:hidden;">
+
+        <div style="background:#0f172a;padding:24px 28px;">
+          <div style="color:#ffffff;font-size:24px;font-weight:700;">
+            NJ School Careers
+          </div>
+          <div style="color:#cbd5e1;font-size:14px;margin-top:4px;">
+            New Jersey education job alerts
+          </div>
+        </div>
+
+        <div style="padding:30px 28px;">
+          <div style="font-size:28px;font-weight:800;color:#0f172a;margin-bottom:10px;">
             New NJ School Jobs for You
           </div>
 
-          <div style="font-size:16px;line-height:1.6;color:#475569;margin-bottom:24px;">
+          <div style="font-size:16px;line-height:1.7;color:#475569;margin-bottom:22px;">
             ${headingText}
           </div>
 
-          <div style="margin-bottom:28px;">
-            ${jobCards}
+          <div style="background:#f1f5f9;border-radius:12px;padding:14px 16px;margin-bottom:24px;font-size:14px;color:#475569;line-height:1.8;">
+            These matches are based on your saved alert preferences.
           </div>
 
-          <div style="font-size:13px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:18px;line-height:1.6;">
-            You’re receiving this email because you subscribed at NJ School Careers.
-            <br /><br />
-            <a href="${unsubscribeUrl}" style="color:#ef4444;text-decoration:none;font-weight:600;">
-              Unsubscribe
-            </a>
-          </div>
+          ${buildJobCards(unsentJobs)}
+        </div>
+
+        <div style="padding:18px 28px;border-top:1px solid #e2e8f0;font-size:13px;color:#94a3b8;line-height:1.7;">
+          You’re receiving this email because you subscribed at NJ School Careers.
+          <br /><br />
+          <a href="${unsubscribeUrl}" style="color:#ef4444;text-decoration:none;font-weight:600;">
+            Unsubscribe
+          </a>
         </div>
       </div>
     </div>
@@ -153,8 +163,7 @@ export async function GET() {
     for (const sub of (subscribers || []) as Subscriber[]) {
       const matches = (jobs as Job[]).filter((job) => {
         const matchCounty =
-          !sub.county ||
-          normalize(job.county).includes(normalize(sub.county));
+          !sub.county || normalize(job.county).includes(normalize(sub.county));
 
         const haystack = [
           job.title,
