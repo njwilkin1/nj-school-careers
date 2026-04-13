@@ -73,13 +73,17 @@ function buildJobCards(unsentJobs: Job[]): string {
     .join("");
 }
 
-function buildEmailHtml(unsentJobs: Job[]): string {
+function buildEmailHtml(unsentJobs: Job[], email: string): string {
   const headingText =
     unsentJobs.length === 1
       ? "We found 1 new job matching your preferences."
       : `We found ${unsentJobs.length} new jobs matching your preferences.`;
 
   const jobCards = buildJobCards(unsentJobs);
+
+  const unsubscribeUrl = `https://njschoolcareers.com/api/unsubscribe?email=${encodeURIComponent(
+    email
+  )}`;
 
   return `
     <div style="margin:0;padding:0;background:#f8fafc;">
@@ -97,8 +101,12 @@ function buildEmailHtml(unsentJobs: Job[]): string {
             ${jobCards}
           </div>
 
-          <div style="font-size:13px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:18px;">
+          <div style="font-size:13px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:18px;line-height:1.6;">
             You’re receiving this email because you subscribed at NJ School Careers.
+            <br /><br />
+            <a href="${unsubscribeUrl}" style="color:#ef4444;text-decoration:none;font-weight:600;">
+              Unsubscribe
+            </a>
           </div>
         </div>
       </div>
@@ -200,7 +208,7 @@ export async function GET() {
         continue;
       }
 
-      const emailHtml = buildEmailHtml(unsentJobs);
+      const emailHtml = buildEmailHtml(unsentJobs, sub.email);
 
       const emailResult = await resend.emails.send({
         from: fromEmail,
