@@ -1,19 +1,15 @@
-import fs from "fs";
-import path from "path";
-import { parse } from "csv-parse/sync";
-
-function escapeCsv(value: string) {
-  const safe = String(value ?? "").replace(/\r?\n|\r/g, " ").trim();
-
-  if (safe.includes(",") || safe.includes('"')) {
-    return `"${safe.replace(/"/g, '""')}"`;
-  }
-
-  return safe;
-}
+import { createClient } from "@supabase/supabase-js";
 
 function normalize(value: string) {
   return String(value || "").trim().toLowerCase();
+}
+
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function isValidUrl(value: string) {
@@ -38,12 +34,19 @@ export async function POST(req: Request) {
     const posted = String(body.posted || "").trim();
     const applyUrl = String(body.applyUrl || "").trim();
     const overview = String(body.overview || "").trim();
-    const responsibilities = String(body.responsibilities || "").trim();
-    const requirements = String(body.requirements || "").trim();
+    const responsibilitiesRaw = String(body.responsibilities || "").trim();
+    const requirementsRaw = String(body.requirements || "").trim();
 
     if (!process.env.ADMIN_SECRET) {
       return Response.json(
-        { error: "ADMIN_SECRET is missing in .env.local" },
+        { error: "ADMIN_SECRET is missing from environment variables." },
+        { status: 500 }
+      );
+    }
+
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return Response.json(
+        { error: "Supabase environment variables are missing." },
         { status: 500 }
       );
     }
@@ -91,40 +94,49 @@ export async function POST(req: Request) {
       return Response.json({ error: "Overview is required." }, { status: 400 });
     }
 
-    if (!responsibilities) {
+    if (!responsibilitiesRaw) {
       return Response.json(
         { error: "Responsibilities are required." },
         { status: 400 }
       );
     }
 
-    if (!requirements) {
+    if (!requirementsRaw) {
       return Response.json(
         { error: "Requirements are required." },
         { status: 400 }
       );
     }
 
-    const csvPath = path.join(process.cwd(), "imports", "jobs.csv");
+    const responsibilities = responsibilitiesRaw
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
 
-    if (!fs.existsSync(csvPath)) {
-      return Response.json(
-        { error: "imports/jobs.csv not found." },
-        { status: 500 }
+    const requirements = requirementsRaw
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    const slug = slugify(`${title}-${district}-${location}`);
+
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+
+    const { data: existing, error: checkError } = await supabase
+      .from("jobs")
+      .select("id, title, district, applyUrl")
+      .or(
+        `slug.eq.${slug},and(title.ilike.${title},district.ilike.${district},applyUrl.ilike.${applyUrl})`
       );
+
+    if (checkError) {
+      return Response.json({ error: checkError.message }, { status: 500 });
     }
 
-    const csvContent = fs.readFileSync(csvPath, "utf8");
-
-    const existingRows = parse(csvContent, {
-      columns: true,
-      skip_empty_lines: true,
-      relax_quotes: true,
-      relax_column_count: true,
-      trim: true,
-    });
-
-    const duplicate = existingRows.find((row: any) => {
+    const duplicate = (existing || []).find((row: any) => {
       return (
         normalize(row.title) === normalize(title) &&
         normalize(row.district) === normalize(district) &&
@@ -134,12 +146,12 @@ export async function POST(req: Request) {
 
     if (duplicate) {
       return Response.json(
-        { error: "Duplicate job detected. This job already exists in your CSV." },
+        { error: "Duplicate job detected. This job already exists." },
         { status: 409 }
       );
     }
 
-    const row = [
+    const { error: insertError } = await supabase.from("jobs").insert({
       title,
       district,
       location,
@@ -150,15 +162,17 @@ export async function POST(req: Request) {
       overview,
       responsibilities,
       requirements,
-    ]
-      .map(escapeCsv)
-      .join(",");
+      slug,
+    });
 
-    fs.appendFileSync(csvPath, `\n${row}`, "utf8");
+    if (insertError) {
+      return Response.json({ error: insertError.message }, { status: 500 });
+    }
 
     return Response.json({
       success: true,
-      message: "Job added to CSV successfully.",
+      message: "Job added successfully.",
+      slug,
     });
   } catch (error) {
     const message =
