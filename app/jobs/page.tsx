@@ -50,7 +50,13 @@ export default async function JobsPage({ searchParams }: PageProps) {
     process.env.SUPABASE_ANON_KEY!
   );
 
-  const { data: jobs = [] } = await supabase.from("jobs").select("*");
+  const { data, error } = await supabase.from("jobs").select("*");
+
+if (error) {
+  console.error(error);
+}
+
+const jobs = data ?? [];
 
   const filteredJobs = jobs
     .filter(Boolean)
