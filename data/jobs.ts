@@ -1,229 +1,183 @@
-export const jobs = [
-  {
-    "title": "Elementary Teacher",
-    "district": "Weehawken Township School District",
-    "location": "Weehawken Township NJ",
-    "county": "Hudson County",
-    "type": "Full Time",
-    "posted": "2026-04-07s",
-    "applyUrl": "https://jobs.leadline.io/jobs/9953",
-    "overview": "Support student learning and development in an elementary classroom",
-    "responsibilities": [
-      "Deliver curriculum using adaptive teaching strategies",
-      "Support diverse learners",
-      "Maintain classroom environment"
-    ],
-    "requirements": [
-      "Bachelor's degree in Education",
-      "Valid NJ teaching certification",
-      "Strong classroom management"
-    ],
-    "slug": "elementary-teacher-weehawken-township-school-district-weehawken-township-nj"
-  },
-  {
-    "title": "High School Assistant Principal",
-    "district": "Glen Ridge School District",
-    "location": "Glen Ridge NJ",
-    "county": "Essex County",
-    "type": "Full Time",
-    "posted": "2026-04-07",
-    "applyUrl": "https://www.applitrack.com/glenridge/onlineapp/_application.aspx?posJobCodes=909&posFirstChoice=Administration&posSpecialty=Assistant%20Principal",
-    "overview": "Assist the Principal in providing leadership and supervision in administering the educational program of Glen Ridge High School in order to promote the educational development and achievement of students in accordance with Board of Education policies, administrative procedures, rules and regulations, and applicable law.",
-    "responsibilities": [
-      "Assists in the development and administration of school programs consistent with school district goals and objectives",
-      "Ensures that student conduct and attendance conforms with the school's standards and school district policies",
-      "Promotes a school environment that is safe and conducive to individualized instruction, cooperative curriculum development, and student learning",
-      "Manages daily operations involving staff absences and substitute teacher coverage",
-      "Supervises and evaluates teaching staff and other building employees in accordance with the school district's evaluation plan, and makes recommendations regarding goals, areas needing improvement and continued employment"
-    ],
-    "requirements": [
-      "NJ State Principal Certification requiredExtensive successful teaching experience required at the High School level, preferably in more than one grade level",
-      "Demonstrated leadership experience at the High School level required"
-    ],
-    "slug": "high-school-assistant-principal-glen-ridge-school-district-glen-ridge-nj"
-  },
-  {
-    "title": "Spanish Teacher",
-    "district": "Westwood Regional School District",
-    "location": "Township of Washington NJ",
-    "county": "Bergen County",
-    "type": "Full Time",
-    "posted": "2026-04-07",
-    "applyUrl": "https://www.applitrack.com/westwood/onlineapp/_application.aspx?posJobCodes=1659&posFirstChoice=Elementary%20School%20Teaching&posSpecialty=Teacher%20of%20Spanish",
-    "overview": "Valid New Jersey Instructional certificate and subject area endorsement or eligibility: Spanish Demonstrated knowledge of subject specialty and effective teaching methods Berkeley and Brookside Elementary Schools Tenure Track 2026 - 2027 School Year",
-    "responsibilities": [
-      "Valid New Jersey Instructional certificate and subject area endorsement or eligibility: Spanish Demonstrated knowledge of subject specialty and effective teaching methods Ability to maintain a positive learning environment",
-      "Strong interpersonal and communication skills",
-      "Required criminal history background check and proof of U.S. citizenship or legal resident alien status"
-    ],
-    "requirements": [],
-    "slug": "spanish-teacher-westwood-regional-school-district-township-of-washington-nj"
-  },
-  {
-    "title": "Special education Teacher",
-    "district": "Clifton Public Schools",
-    "location": "Clifton, NJ",
-    "county": "Passaic County",
-    "type": "Full Time",
-    "posted": "2026-04-07",
-    "applyUrl": "https://www.applitrack.com/cliftonschools/onlineapp/_application.aspx?posJobCodes=1999&posFirstChoice=Special%20Education&posSpecialty=Teacher",
-    "overview": "TOSD/TOH required",
-    "responsibilities": [
-      "Salary Guide $64,240 - $96,050",
-      "Full Time staff are eligible for Medical",
-      "Prescription and Dental Sick",
-      "Personal and Bereavement days."
-    ],
-    "requirements": [],
-    "slug": "special-education-teacher-clifton-public-schools-clifton-nj"
-  },
-  {
-    "title": "Elementary School Teacher",
-    "district": "Old Tappan Public School District",
-    "location": "Old Tappan NJ",
-    "county": "Bergen County",
-    "type": "Full Time",
-    "posted": "2026-04-07",
-    "applyUrl": "https://www.applitrack.com/cliftonschools/onlineapp/_application.aspx?posJobCodes=1999&posFirstChoice=Special%20Education&posSpecialty=Teacher",
-    "overview": "Tenure Track. Elementary K-4. T. Baldwin Demarest Elementary School",
-    "responsibilities": [],
-    "requirements": [
-      "K-6 Certification or P-3 Certification",
-      "Additional Students with Disabilities Certification, preferred",
-      "Criminal History Background Check"
-    ],
-    "slug": "elementary-school-teacher-old-tappan-public-school-district-old-tappan-nj"
-  },
-  {
-    "title": "Supervisor of Curriculum and Instruction",
-    "district": "University Academy Charter High School District",
-    "location": "Jersey City NJ",
-    "county": "Hudson County",
-    "type": "Full Time",
-    "posted": "2026-04-07",
-    "applyUrl": "https://www.applitrack.com/uachs/onlineapp/_application.aspx?posJobCodes=214&posFirstChoice=Administration&posSpecialty=Curriculum%20Supervisor",
-    "overview": "We are seeking a dedicated and experienced Supervisor of Curriculum and Instruction to lead the development and implementation of educational programs in our Math and Science departments, including our recently launched STEAAM (Science, Technology, Arts, Agriculture, and Science) Program. The ideal candidate will possess a strong background in student-centered, NJSLS-aligned, culturally responsive instruction, curriculum development, data-driven instruction, and professional development, with a focus on enhancing learning outcomes for diverse high school learners. The Supervisor of Curriculum and Instruction-Math/Science will work in collaboration with the Supervisor for Humanities and the school administrative team. This role requires effective project management skills and the ability to collaborate with various school stakeholders in working toward the school's mission of \"Educating Tomorrow's Leaders Today.\"",
-    "responsibilities": [
-      "Supervise development, evaluation, and/or selection of curricula for all science, math, and technology courses",
-      "Review and provide feedback on weekly lesson plans for all science, math, and technology teachers",
-      "Conduct formal and informal teacher observations",
-      "Plan and conduct professional development sessions for faculty and staff on curriculum implementation, instructional technology, and best practices in secondary education, etc",
-      "Assess the effectiveness of instructional and professional development initiatives through data analysis and feedback mechanisms, making necessary adjustments to improve outcomes",
-      "Facilitate professional development workshops focused on teaching strategies, classroom management, data-driven instruction, etc",
-      "Oversee quantitative and qualitative data collection in terms of student outcomes and supervise utilization of data to inform instruction in collaboration with humanities curriculum supervisor and data coaches",
-      "Stay current with emerging trends in teaching strategies, education technology, and NJDOE curricular and professional development mandates",
-      "Supervise mentoring and induction of teachers new to the school",
-      "Lead hiring process for all instructional positions"
-    ],
-    "requirements": [
-      "Valid NJDOE supervisor certificate",
-      "Teaching certificate in science, math, computers, or engineering",
-      "Master's degree"
-    ],
-    "slug": "supervisor-of-curriculum-and-instruction-university-academy-charter-high-school-district-jersey-city-nj"
-  },
-  {
-    "title": "Secretary to the Principal",
-    "district": "Hillside Public Schools",
-    "location": "Hillside NJ",
-    "county": "Union County",
-    "type": "Full Time",
-    "posted": "2026-04-07",
-    "applyUrl": "https://www.applitrack.com/hillsidek12/onlineapp/_application.aspx?posJobCodes=1988&posFirstChoice=Secretarial/Clerical&posSpecialty=Secretary%20-%2012-Months",
-    "overview": "The function of this position is to manage the main office operations and provide direct support to students, families, and staff in a manner consistent with district policy, NJ Administrative Code and confidentiality requirements.",
-    "responsibilities": [
-      "Manages calendars, meetings, correspondence, visitors, and communication l Maintains professional front-office operations; phones, parent/community inquiries, staff support message routing, customer service l Coordinates and processes student registration and enrollment, including collection, verification and entry of required documentation and data l Enters/updates enrollment data in the SIS, including withdrawals, demographic updates, guardian contacts, emergency contacts, and related records l Communicates registration needs to appropriate departments l Maintains and safeguards student records and ensures access/release is handled only for authorized persons consistent with N.J.A.C. 6A:32 l Ensures records are handled securely and supports retention/disposal practices under district supervision consistent with N.J.A.C. 6A:32 l Supports daily attendance processes l Assists with routine student issues in the main office. l Supports visitor management procedures"
-    ],
-    "requirements": [
-      "High school diploma/GED required; additional training/college credits preferred l Prior secretarial/administrative experience (school setting experience strongly preferred) l Demonstrated aptitude for successful completion of assigned tasks l Understands the importance of confidentiality l Such alternatives to the qualifications as the Board may find appropriate"
-    ],
-    "slug": "secretary-to-the-principal-hillside-public-schools-hillside-nj"
-  },
-  {
-    "title": "Elementary School Teacher",
-    "district": "Glen Rock Public Schools",
-    "location": "Glen Rock NJ",
-    "county": "Bergen County",
-    "type": "Full Time",
-    "posted": "2026-04-07",
-    "applyUrl": "https://www.applitrack.com/glenrock/onlineapp/_application.aspx?posJobCodes=1141&posFirstChoice=Elementary%20School%20Teaching&posSpecialty=Elementary%20K-5",
-    "overview": "Various District Elementary Schools - Multiple Positions Available",
-    "responsibilities": [
-      "Position available September 1, 2026",
-      "Tenure track position."
-    ],
-    "requirements": [
-      "Must hold NJ Elementary Education Certification",
-      "Knowledge of balanced literacy",
-      "Knowledge of hands-on approach to math",
-      "Strong knowledge of incorporating technology into the curriculum",
-      "Experience with special needs students preferred",
-      "Excellent communication and classro"
-    ],
-    "slug": "elementary-school-teacher-glen-rock-public-schools-glen-rock-nj"
-  },
-  {
-    "title": "Substitute Teacher",
-    "district": "Guttenberg School District",
-    "location": "Guttenberg NJ",
-    "county": "Hudson County",
-    "type": "Full Time",
-    "posted": "2026-04-08",
-    "applyUrl": "https://www.applitrack.com/alkschool/onlineapp/_application.aspx?posJobCodes=243&posFirstChoice=Substitute&posSpecialty=Substitute%20Teacher",
-    "overview": "We are seeking an experienced and reliable Substitute Teacher to help us fill gaps in our schedule due to sick days and vacation time. When we have an opening, we will call you in to fill in for an absent teacher. You will often have materials available to cover with the students for the day. Occasionally, we will require long-term subs for extended teacher absences. Our ideal candidate has some classroom teaching experience and possesses the skills needed to cover daily instruction and run the classroom environment in an orderly fashion.",
-    "responsibilities": [
-      "Take attendance according to the procedures of the school, keep classroom and work orderly, and maintain normal classroom rhythms",
-      "Direct the classroom, accomplishing curriculum objectives and goals outlined in the lesson plans",
-      "Comply with guidelines and policies of the school at all times",
-      "Maintain a professional attitude in all manner of conduct with students, faculty, and parents"
-    ],
-    "requirements": [],
-    "slug": "substitute-teacher-guttenberg-school-district-guttenberg-nj"
-  },
-  {
-    "title": "Spanish Teacher",
-    "district": "Garfield School District",
-    "location": "Garfield NJ",
-    "county": "Bergen County",
-    "type": "Full Time",
-    "posted": "2026-04-08",
-    "applyUrl": "https://www.applitrack.com/gboe/onlineapp/_application.aspx?posJobCodes=1458&posFirstChoice=Middle%20School%20Teaching&posSpecialty=Foreign%20Language%20-%20Spanish",
-    "overview": "The Garfield School District is seeking to hire a tenure-track Spanish World Language Teacher. Garfield Middle School covers Grades 6-8. Please include a resume as part of Applitrack application",
-    "responsibilities": [
-      "Build students' bilingual skills and enhance their understanding of the Spanish language",
-      "Teach students how to build and enhance their foreign language skills--reading, writing, speaking and listening",
-      "Cultivate students' cultural awareness by helping them learn a new language",
-      "Build students' skill and comfort with engaging in conversation in Spanish",
-      "Work with the World Language Department to develop academic and engagement goals for students"
-    ],
-    "requirements": [
-      "Must have NJ HS Spanish teacher certification",
-      "Must complete criminal history process"
-    ],
-    "slug": "spanish-teacher-garfield-school-district-garfield-nj"
-  },
-  {
-    "title": "Teacher of Kindergarten",
-    "district": "Teaneck Public Schools",
-    "location": "Teaneck NJ",
-    "county": "Bergen County",
-    "type": "Full Time",
-    "posted": "2026-04-02",
-    "applyUrl": "https://www.applitrack.com/teaneck/onlineapp/_application.aspx?posJobCodes=1923&posFirstChoice=Elementary%20School%20Teaching&posSpecialty=",
-    "overview": "Under the direction of the Building Principal is responsible for instructing students in Kindergarten by creating lesson plans in subjects such as reading, writing, math, social studies and social and emotional learning as well as integrating with specialists in foreign languages, science, physical education, design, and music.",
-    "responsibilities": [
-      "Demonstrate a comprehensive knowledge of the content field and describe ways in which the content can be organized into lessons for elementary students",
-      "Ability to maintain a positive learning environment and develop students' knowledge and skills",
-      "Proven ability to work harmoniously with diverse populations Become an expert with established curricula",
-      "Meet, take attendance and instruct assigned classes in the locations and at the times designated",
-      "Develop and implement daily or weekly lesson plans and instructional materials in order to adapt the curriculum to the needs of the students",
-      "Create a classroom environment that is conducive to learning and appropriate to the maturity and interests of the students.",
-      "Establish and maintain standards of student behavior needed to achieve a functional learning atmosphere in the classroom"
-    ],
-    "requirements": [
-      "Standards New Jersey Department of Education Teacher of Elementary P3 or K6.",
-      "Qualified candidates must have strong collaborative, planning and performance assessment skills; be knowledgeable in a variety of teaching strategies and a demonstrated ability to work harmoniously in a multicultural, diverse community."
-    ],
-    "slug": "teacher-of-kindergarten-teaneck-public-schools-teaneck-nj"
+import { createClient } from "@supabase/supabase-js";
+
+function normalize(value: string) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function isValidUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
   }
-];
+}
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    const adminSecret = String(body.adminSecret || "").trim();
+    const title = String(body.title || "").trim();
+    const district = String(body.district || "").trim();
+    const location = String(body.location || "").trim();
+    const county = String(body.county || "").trim();
+    const type = String(body.type || "").trim();
+    const posted = String(body.posted || "").trim();
+    const applyUrl = String(body.applyUrl || "").trim();
+    const overview = String(body.overview || "").trim();
+    const responsibilitiesRaw = String(body.responsibilities || "").trim();
+    const requirementsRaw = String(body.requirements || "").trim();
+
+    if (!process.env.ADMIN_SECRET) {
+      return Response.json(
+        { error: "ADMIN_SECRET is missing from environment variables." },
+        { status: 500 }
+      );
+    }
+
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return Response.json(
+        { error: "Supabase environment variables are missing." },
+        { status: 500 }
+      );
+    }
+
+    if (adminSecret !== process.env.ADMIN_SECRET) {
+      return Response.json(
+        { error: "Invalid admin password." },
+        { status: 401 }
+      );
+    }
+
+    if (!title) {
+      return Response.json({ error: "Job title is required." }, { status: 400 });
+    }
+
+    if (!district) {
+      return Response.json({ error: "District is required." }, { status: 400 });
+    }
+
+    if (!location) {
+      return Response.json({ error: "Location is required." }, { status: 400 });
+    }
+
+    if (!county) {
+      return Response.json({ error: "County is required." }, { status: 400 });
+    }
+
+    if (!type) {
+      return Response.json({ error: "Job type is required." }, { status: 400 });
+    }
+
+    if (!posted) {
+      return Response.json({ error: "Posted date is required." }, { status: 400 });
+    }
+
+    if (!applyUrl) {
+      return Response.json({ error: "Apply URL is required." }, { status: 400 });
+    }
+
+    if (!isValidUrl(applyUrl)) {
+      return Response.json({ error: "Apply URL must be valid." }, { status: 400 });
+    }
+
+    if (!overview) {
+      return Response.json({ error: "Overview is required." }, { status: 400 });
+    }
+
+    if (!responsibilitiesRaw) {
+      return Response.json(
+        { error: "Responsibilities are required." },
+        { status: 400 }
+      );
+    }
+
+    if (!requirementsRaw) {
+      return Response.json(
+        { error: "Requirements are required." },
+        { status: 400 }
+      );
+    }
+
+    const responsibilities = responsibilitiesRaw
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    const requirements = requirementsRaw
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    const slug = slugify(`${title}-${district}-${location}`);
+
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+
+    const { data: existing, error: checkError } = await supabase
+      .from("jobs")
+      .select("id, title, district, applyUrl")
+      .or(
+        `slug.eq.${slug},and(title.ilike.${title},district.ilike.${district},applyUrl.ilike.${applyUrl})`
+      );
+
+    if (checkError) {
+      return Response.json({ error: checkError.message }, { status: 500 });
+    }
+
+    const duplicate = (existing || []).find((row: any) => {
+      return (
+        normalize(row.title) === normalize(title) &&
+        normalize(row.district) === normalize(district) &&
+        normalize(row.applyUrl) === normalize(applyUrl)
+      );
+    });
+
+    if (duplicate) {
+      return Response.json(
+        { error: "Duplicate job detected. This job already exists." },
+        { status: 409 }
+      );
+    }
+
+    const { error: insertError } = await supabase.from("jobs").insert({
+      title,
+      district,
+      location,
+      county,
+      type,
+      posted,
+      applyUrl,
+      overview,
+      responsibilities,
+      requirements,
+      slug,
+    });
+
+    if (insertError) {
+      return Response.json({ error: insertError.message }, { status: 500 });
+    }
+
+    return Response.json({
+      success: true,
+      message: "Job added successfully.",
+      slug,
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unknown server error";
+
+    return Response.json({ error: message }, { status: 500 });
+  }
+}
