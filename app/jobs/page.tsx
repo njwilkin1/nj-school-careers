@@ -10,6 +10,17 @@ type PageProps = {
   }>;
 };
 
+type Job = {
+  slug: string;
+  title: string;
+  district: string;
+  location: string;
+  county?: string;
+  type?: string;
+  posted?: string;
+  applyUrl: string;
+};
+
 function getDaysAgo(posted: string) {
   const postedDate = new Date(posted);
   const now = new Date();
@@ -44,53 +55,48 @@ export default async function JobsPage({ searchParams }: PageProps) {
 
   const searchWords = normalizedSearch.split(/\s+/).filter(Boolean);
 
-  // 🔥 FETCH FROM SUPABASE
   const supabase = createClient(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_ANON_KEY!
   );
 
-  const { data, error } = await supabase.from("jobs").select("*");
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("slug, title, district, location, county, type, posted, applyUrl")
+    .order("posted", { ascending: false });
 
-if (error) {
-  console.error(error);
-}
+  if (error) {
+    console.error("Jobs page fetch error:", error);
+  }
 
-const jobs = data ?? [];
+  const jobs: Job[] = data ?? [];
 
-  const filteredJobs = jobs
-    .filter(Boolean)
-    .filter((job: any) => {
-      const haystack = [
-        job.title ?? "",
-        job.district ?? "",
-        job.location ?? "",
-        job.type ?? "",
-        job.county ?? "",
-      ]
-        .join(" ")
-        .toLowerCase();
+  const filteredJobs = jobs.filter((job) => {
+    const haystack = [
+      job.title ?? "",
+      job.district ?? "",
+      job.location ?? "",
+      job.type ?? "",
+      job.county ?? "",
+    ]
+      .join(" ")
+      .toLowerCase();
 
-      const matchesSearch =
-        normalizedSearch === "" ||
-        searchWords.every((word) => haystack.includes(word));
+    const matchesSearch =
+      normalizedSearch === "" ||
+      searchWords.every((word) => haystack.includes(word));
 
-      const matchesLocation =
-        location === "" || (job.location ?? "").toLowerCase().includes(location);
+    const matchesLocation =
+      location === "" || (job.location ?? "").toLowerCase().includes(location);
 
-      const matchesCounty =
-        county === "" || (job.county ?? "").toLowerCase() === county;
+    const matchesCounty =
+      county === "" || (job.county ?? "").toLowerCase() === county;
 
-      const matchesType =
-        type === "" || (job.type ?? "").toLowerCase() === type;
+    const matchesType =
+      type === "" || (job.type ?? "").toLowerCase() === type;
 
-      return matchesSearch && matchesLocation && matchesCounty && matchesType;
-    })
-    .sort((a: any, b: any) => {
-      const dateA = new Date(a.posted ?? "").getTime();
-      const dateB = new Date(b.posted ?? "").getTime();
-      return dateB - dateA;
-    });
+    return matchesSearch && matchesLocation && matchesCounty && matchesType;
+  });
 
   const countyOptions = [
     "Bergen County",
@@ -171,27 +177,61 @@ const jobs = data ?? [];
           </button>
         </form>
 
+        {(search || location || county || type) && (
+          <div className="mt-4 flex flex-wrap gap-2 text-sm text-slate-500">
+            <span>Showing filtered results</span>
+            {rawSearch && (
+              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
+                Search: {rawSearch}
+              </span>
+            )}
+            {rawLocation && (
+              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
+                City: {rawLocation}
+              </span>
+            )}
+            {rawCounty && (
+              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
+                County: {rawCounty}
+              </span>
+            )}
+            {rawType && (
+              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
+                Type: {rawType}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="mt-6 text-sm text-slate-500">
           {filteredJobs.length} job{filteredJobs.length === 1 ? "" : "s"} found
         </div>
 
         <div className="mt-8 grid gap-5">
           {filteredJobs.length > 0 ? (
-            filteredJobs.map((job: any) => (
+            filteredJobs.map((job) => (
               <article
                 key={job.slug}
                 className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
               >
-                <h2 className="text-2xl font-semibold">{job.title}</h2>
-                <p className="mt-2 text-slate-700">{job.district}</p>
-                <p className="text-sm text-slate-500">
-                  {job.location} · {job.type} · {job.county}
-                </p>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-semibold">{job.title}</h2>
+                    <p className="mt-2 text-slate-700">{job.district}</p>
+                    <p className="text-sm text-slate-500">
+                      {job.location} · {job.type} · {job.county}
+                    </p>
+                  </div>
 
-                <div className="mt-4 flex gap-3">
+                  <div className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">
+                    {getDaysAgo(job.posted ?? "")}
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-3">
                   <Link
                     href={`/jobs/${job.slug}`}
-                    className="rounded-xl border px-4 py-2 text-sm"
+                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50"
                   >
                     View Details
                   </Link>
@@ -199,7 +239,8 @@ const jobs = data ?? [];
                   <a
                     href={job.applyUrl}
                     target="_blank"
-                    className="rounded-xl bg-slate-900 px-4 py-2 text-sm text-white"
+                    rel="noreferrer"
+                    className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
                   >
                     Apply Now
                   </a>
@@ -207,7 +248,12 @@ const jobs = data ?? [];
               </article>
             ))
           ) : (
-            <p>No jobs found.</p>
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <p className="text-slate-500">
+                No jobs matched your search. Try a different title, district,
+                city, county, or job type.
+              </p>
+            </div>
           )}
         </div>
       </div>
