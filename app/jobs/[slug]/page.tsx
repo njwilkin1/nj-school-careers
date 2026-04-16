@@ -11,16 +11,16 @@ type Job = {
   title: string;
   district: string;
   location: string;
-  county?: string;
-  type?: string;
-  posted?: string;
+  county?: string | null;
+  type?: string | null;
+  posted?: string | null;
   applyUrl: string;
-  overview?: string;
-  responsibilities?: string[];
-  requirements?: string[];
+  overview?: string | null;
+  responsibilities?: string[] | null;
+  requirements?: string[] | null;
 };
 
-function formatPostedDate(posted?: string) {
+function formatPostedDate(posted?: string | null) {
   if (!posted) return "";
   const date = new Date(posted);
   if (Number.isNaN(date.getTime())) return posted;
@@ -34,6 +34,10 @@ function formatPostedDate(posted?: string) {
 export default async function JobDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
+  if (!slug) {
+    notFound();
+  }
+
   const supabase = createClient(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_ANON_KEY!
@@ -43,18 +47,20 @@ export default async function JobDetailPage({ params }: PageProps) {
     .from("jobs")
     .select("*")
     .eq("slug", slug)
+    .limit(1)
     .maybeSingle();
 
   if (error) {
-    console.error("Supabase job detail fetch error:", error);
+    console.error("Job detail fetch error:", error, "slug:", slug);
     notFound();
   }
 
-  const job = data as Job | null;
-
-  if (!job) {
+  if (!data) {
+    console.error("No job found for slug:", slug);
     notFound();
   }
+
+  const job = data as Job;
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
