@@ -1,13 +1,9 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
 type PageProps = {
-  searchParams?: Promise<{
-    search?: string;
-    location?: string;
-    county?: string;
-    type?: string;
-  }>;
+  params: Promise<{ slug: string }>;
 };
 
 type Job = {
@@ -15,45 +11,41 @@ type Job = {
   title: string;
   district: string;
   location: string;
-  county?: string;
-  type?: string;
-  posted?: string;
+  county?: string | null;
+  type?: string | null;
+  posted?: string | null;
   applyUrl: string;
+  overview?: string | null;
+  responsibilities?: string[] | string | null;
+  requirements?: string[] | string | null;
 };
 
-function getDaysAgo(posted: string) {
-  const postedDate = new Date(posted);
-  const now = new Date();
-
-  if (Number.isNaN(postedDate.getTime())) return "";
-
-  const diffMs = now.getTime() - postedDate.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays <= 0) return "Posted today";
-  if (diffDays === 1) return "Posted 1 day ago";
-  return `Posted ${diffDays} days ago`;
+function formatPostedDate(posted?: string | null) {
+  if (!posted) return "";
+  const date = new Date(posted);
+  if (Number.isNaN(date.getTime())) return posted;
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
-export default async function JobsPage({ searchParams }: PageProps) {
-  const params = (await searchParams) || {};
+function toList(value?: string[] | string | null) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.filter(Boolean);
+  return String(value)
+    .split("|")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
 
-  const rawSearch = params.search || "";
-  const rawLocation = params.location || "";
-  const rawCounty = params.county || "";
-  const rawType = params.type || "";
+export default async function JobDetailPage({ params }: PageProps) {
+  const { slug } = await params;
 
-  const search = rawSearch.toLowerCase().trim();
-  const location = rawLocation.toLowerCase().trim();
-  const county = rawCounty.toLowerCase().trim();
-  const type = rawType.toLowerCase().trim();
-
-  const normalizedSearch = search
-    .replace(/\bap\b/g, "assistant principal")
-    .replace(/\bsub\b/g, "substitute")
-    .trim();
-
-  const searchWords = normalizedSearch.split(/\s+/).filter(Boolean);
+  if (!slug) {
+    notFound();
+  }
 
   const supabase = createClient(
     process.env.SUPABASE_URL!,
@@ -62,200 +54,102 @@ export default async function JobsPage({ searchParams }: PageProps) {
 
   const { data, error } = await supabase
     .from("jobs")
-    .select("slug, title, district, location, county, type, posted, applyUrl")
-    .order("posted", { ascending: false });
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
 
   if (error) {
-    console.error("Jobs page fetch error:", error);
+    console.error("Job detail fetch error:", error);
+    notFound();
   }
 
-  const jobs: Job[] = data ?? [];
+  if (!data) {
+    console.error("No job found for slug:", slug);
+    notFound();
+  }
 
-  const filteredJobs = jobs.filter((job) => {
-    const haystack = [
-      job.title ?? "",
-      job.district ?? "",
-      job.location ?? "",
-      job.type ?? "",
-      job.county ?? "",
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    const matchesSearch =
-      normalizedSearch === "" ||
-      searchWords.every((word) => haystack.includes(word));
-
-    const matchesLocation =
-      location === "" || (job.location ?? "").toLowerCase().includes(location);
-
-    const matchesCounty =
-      county === "" || (job.county ?? "").toLowerCase() === county;
-
-    const matchesType =
-      type === "" || (job.type ?? "").toLowerCase() === type;
-
-    return matchesSearch && matchesLocation && matchesCounty && matchesType;
-  });
-
-  const countyOptions = [
-    "Bergen County",
-    "Hudson County",
-    "Essex County",
-    "Passaic County",
-    "Union County",
-    "Middlesex County",
-    "Morris County",
-    "Other NJ",
-  ];
-
-  const typeOptions = [
-    "Full Time",
-    "Part Time",
-    "Substitute",
-    "Administrative",
-  ];
+  const job = data as Job;
+  const responsibilities = toList(job.responsibilities);
+  const requirements = toList(job.requirements);
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="text-4xl font-bold tracking-tight">Browse Jobs</h1>
-
-        <p className="mt-4 text-slate-600">
-          Explore school career opportunities across New Jersey.
-        </p>
-
-        <form
-          action="/jobs"
-          className="mt-8 grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-2 xl:grid-cols-[1.3fr_1fr_1fr_1fr_auto]"
+      <div className="mx-auto max-w-4xl">
+        <Link
+          href="/jobs"
+          className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm hover:bg-slate-50"
         >
-          <input
-            name="search"
-            defaultValue={rawSearch}
-            className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none"
-            placeholder="Job title, district, or keyword"
-          />
+          ← Back to Jobs
+        </Link>
 
-          <input
-            name="location"
-            defaultValue={rawLocation}
-            className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none"
-            placeholder="City"
-          />
-
-          <select
-            name="county"
-            defaultValue={rawCounty}
-            className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none"
-          >
-            <option value="">All counties</option>
-            {countyOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-
-          <select
-            name="type"
-            defaultValue={rawType}
-            className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none"
-          >
-            <option value="">All job types</option>
-            {typeOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-
-          <button
-            type="submit"
-            className="rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800"
-          >
-            Search
-          </button>
-        </form>
-
-        {(search || location || county || type) && (
-          <div className="mt-4 flex flex-wrap gap-2 text-sm text-slate-500">
-            <span>Showing filtered results</span>
-            {rawSearch && (
-              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
-                Search: {rawSearch}
-              </span>
-            )}
-            {rawLocation && (
-              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
-                City: {rawLocation}
-              </span>
-            )}
-            {rawCounty && (
-              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
-                County: {rawCounty}
-              </span>
-            )}
-            {rawType && (
-              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
-                Type: {rawType}
-              </span>
-            )}
-          </div>
-        )}
-
-        <div className="mt-6 text-sm text-slate-500">
-          {filteredJobs.length} job{filteredJobs.length === 1 ? "" : "s"} found
-        </div>
-
-        <div className="mt-8 grid gap-5">
-          {filteredJobs.length > 0 ? (
-            filteredJobs.map((job) => (
-              <article
-                key={job.slug}
-                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <h2 className="text-2xl font-semibold">{job.title}</h2>
-                    <p className="mt-2 text-slate-700">{job.district}</p>
-                    <p className="text-sm text-slate-500">
-                      {job.location} · {job.type} · {job.county}
-                    </p>
-                  </div>
-
-                  <div className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">
-                    {getDaysAgo(job.posted ?? "")}
-                  </div>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-3">
-                  <Link
-                    href={`/jobs/${job.slug}`}
-                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50"
-                  >
-                    View Details
-                  </Link>
-
-                  <a
-                    href={job.applyUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-                  >
-                    Apply Now
-                  </a>
-                </div>
-              </article>
-            ))
-          ) : (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-slate-500">
-                No jobs matched your search. Try a different title, district,
-                city, county, or job type.
+        <article className="mt-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight">{job.title}</h1>
+              <p className="mt-3 text-lg text-slate-700">{job.district}</p>
+              <p className="mt-2 text-sm text-slate-500">
+                {job.location}
+                {job.type ? ` · ${job.type}` : ""}
+                {job.county ? ` · ${job.county}` : ""}
               </p>
             </div>
+
+            <a
+              href={job.applyUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800"
+            >
+              Apply Now
+            </a>
+          </div>
+
+          {job.posted && (
+            <div className="mt-6 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+              Posted: {formatPostedDate(job.posted)}
+            </div>
           )}
-        </div>
+
+          {job.overview && (
+            <section className="mt-8">
+              <h2 className="text-2xl font-semibold">Overview</h2>
+              <p className="mt-3 leading-7 text-slate-700">{job.overview}</p>
+            </section>
+          )}
+
+          {responsibilities.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-2xl font-semibold">Responsibilities</h2>
+              <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
+                {responsibilities.map((item, index) => (
+                  <li key={`resp-${index}`}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {requirements.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-2xl font-semibold">Requirements</h2>
+              <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
+                {requirements.map((item, index) => (
+                  <li key={`req-${index}`}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <div className="mt-10 border-t border-slate-200 pt-6">
+            <a
+              href={job.applyUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800"
+            >
+              Apply for This Job
+            </a>
+          </div>
+        </article>
       </div>
     </main>
   );
