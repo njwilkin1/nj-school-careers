@@ -75,9 +75,6 @@ export default function AdminPage() {
     if (!form.posted.trim()) return "Posted date is required.";
     if (!form.applyUrl.trim()) return "Apply URL is required.";
     if (!isValidUrl(form.applyUrl.trim())) return "Apply URL must be a valid link.";
-    if (!form.overview.trim()) return "Overview is required.";
-    if (!form.responsibilities.trim()) return "Responsibilities are required.";
-    if (!form.requirements.trim()) return "Requirements are required.";
 
     return null;
   }
@@ -123,14 +120,14 @@ export default function AdminPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setMessage("Job added successfully to jobs.csv.");
+        setMessage("Job added successfully.");
         setMessageType("success");
         setForm({
           ...initialForm,
           adminSecret: cleanedForm.adminSecret,
         });
       } else if (res.status === 409) {
-        setMessage("Duplicate job detected. This one is already in your CSV.");
+        setMessage("Duplicate job detected. This job already exists.");
         setMessageType("error");
       } else {
         setMessage(data.error || "Error adding job.");
@@ -150,11 +147,7 @@ export default function AdminPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight">Admin Job Entry</h1>
           <p className="mt-2 text-slate-600">
-            Add a real job safely to your CSV. Then run{" "}
-            <code className="rounded bg-slate-100 px-2 py-1 text-sm">
-              npm run import:jobs
-            </code>{" "}
-            and push your changes.
+            Add a job directly to your database. Only the basic fields are required. You can add extra details later.
           </p>
         </div>
 
@@ -290,11 +283,11 @@ export default function AdminPage() {
 
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
-              Overview
+              Overview <span className="text-slate-400">(optional)</span>
             </label>
             <textarea
               name="overview"
-              placeholder="One or two clean sentences describing the role."
+              placeholder="Optional: one or two clear sentences about the role."
               value={form.overview}
               onChange={handleChange}
               rows={4}
@@ -304,11 +297,11 @@ export default function AdminPage() {
 
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
-              Responsibilities
+              Responsibilities <span className="text-slate-400">(optional)</span>
             </label>
             <textarea
               name="responsibilities"
-              placeholder="Use | between items"
+              placeholder="Optional: one item per line or use | between items"
               value={form.responsibilities}
               onChange={handleChange}
               rows={4}
@@ -318,11 +311,11 @@ export default function AdminPage() {
 
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
-              Requirements
+              Requirements <span className="text-slate-400">(optional)</span>
             </label>
             <textarea
               name="requirements"
-              placeholder="Use | between items"
+              placeholder="Optional: one item per line or use | between items"
               value={form.requirements}
               onChange={handleChange}
               rows={4}
@@ -332,7 +325,7 @@ export default function AdminPage() {
 
           <div className="flex items-center justify-between gap-4 pt-2">
             <p className="text-sm text-slate-500">
-              Required fields are validated before saving.
+              Required: title, district, location, county, job type, posted date, and apply URL.
             </p>
 
             <button
