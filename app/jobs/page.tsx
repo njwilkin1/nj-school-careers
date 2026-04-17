@@ -35,6 +35,20 @@ function getDaysAgo(posted: string) {
   return `Posted ${diffDays} days ago`;
 }
 
+function isNewJob(posted?: string) {
+  if (!posted) return false;
+
+  const postedDate = new Date(posted);
+  const now = new Date();
+
+  if (Number.isNaN(postedDate.getTime())) return false;
+
+  const diffMs = now.getTime() - postedDate.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  return diffDays <= 3;
+}
+
 export default async function JobsPage({ searchParams }: PageProps) {
   const params = (await searchParams) || {};
 
@@ -106,6 +120,10 @@ export default async function JobsPage({ searchParams }: PageProps) {
     "Union County",
     "Middlesex County",
     "Morris County",
+    "Mercer County",
+    "Ocean County",
+    "Burlington County",
+    "Atlantic County",
     "Other NJ",
   ];
 
@@ -119,11 +137,18 @@ export default async function JobsPage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-4xl font-bold tracking-tight">Browse Jobs</h1>
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight">Browse Jobs</h1>
+            <p className="mt-4 text-slate-600">
+              Explore school career opportunities across New Jersey.
+            </p>
+          </div>
 
-        <p className="mt-4 text-slate-600">
-          Explore school career opportunities across New Jersey.
-        </p>
+          <div className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
+            Updated regularly
+          </div>
+        </div>
 
         <form
           action="/jobs"
@@ -177,6 +202,32 @@ export default async function JobsPage({ searchParams }: PageProps) {
           </button>
         </form>
 
+        {(search || location || county || type) && (
+          <div className="mt-4 flex flex-wrap gap-2 text-sm text-slate-500">
+            <span>Showing filtered results</span>
+            {rawSearch && (
+              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
+                Search: {rawSearch}
+              </span>
+            )}
+            {rawLocation && (
+              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
+                City: {rawLocation}
+              </span>
+            )}
+            {rawCounty && (
+              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
+                County: {rawCounty}
+              </span>
+            )}
+            {rawType && (
+              <span className="rounded-full bg-white px-3 py-1 shadow-sm">
+                Type: {rawType}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="mt-6 text-sm text-slate-500">
           {filteredJobs.length} job{filteredJobs.length === 1 ? "" : "s"} found
         </div>
@@ -186,14 +237,35 @@ export default async function JobsPage({ searchParams }: PageProps) {
             filteredJobs.map((job) => (
               <article
                 key={job.slug}
-                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md"
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <h2 className="text-2xl font-semibold">{job.title}</h2>
-                    <p className="mt-2 text-slate-700">{job.district}</p>
-                    <p className="text-sm text-slate-500">
-                      {job.location} · {job.type} · {job.county}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {job.type && (
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700">
+                          {job.type}
+                        </span>
+                      )}
+
+                      {isNewJob(job.posted) && (
+                        <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-700">
+                          New
+                        </span>
+                      )}
+                    </div>
+
+                    <h2 className="mt-4 text-2xl font-semibold tracking-tight">
+                      {job.title}
+                    </h2>
+
+                    <p className="mt-2 text-base font-medium text-slate-700">
+                      {job.district}
+                    </p>
+
+                    <p className="mt-1 text-sm text-slate-500">
+                      {job.location}
+                      {job.county ? ` · ${job.county}` : ""}
                     </p>
                   </div>
 
@@ -202,10 +274,10 @@ export default async function JobsPage({ searchParams }: PageProps) {
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-5 flex flex-wrap gap-3">
                   <Link
                     href={`/jobs/${job.slug}`}
-                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50"
+                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-slate-50"
                   >
                     View Details
                   </Link>
