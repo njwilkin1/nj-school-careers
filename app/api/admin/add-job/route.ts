@@ -90,33 +90,19 @@ export async function POST(req: Request) {
       return Response.json({ error: "Apply URL must be valid." }, { status: 400 });
     }
 
-    if (!overview) {
-      return Response.json({ error: "Overview is required." }, { status: 400 });
-    }
-
-    if (!responsibilitiesRaw) {
-      return Response.json(
-        { error: "Responsibilities are required." },
-        { status: 400 }
-      );
-    }
-
-    if (!requirementsRaw) {
-      return Response.json(
-        { error: "Requirements are required." },
-        { status: 400 }
-      );
-    }
-
     const responsibilities = responsibilitiesRaw
-      .split("\n")
-      .map((item) => item.trim())
-      .filter(Boolean);
+      ? responsibilitiesRaw
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      : [];
 
     const requirements = requirementsRaw
-      .split("\n")
-      .map((item) => item.trim())
-      .filter(Boolean);
+      ? requirementsRaw
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      : [];
 
     const slug = slugify(`${title}-${district}-${location}`);
 
@@ -159,7 +145,7 @@ export async function POST(req: Request) {
       type,
       posted,
       applyUrl,
-      overview,
+      overview: overview || null,
       responsibilities,
       requirements,
       slug,
