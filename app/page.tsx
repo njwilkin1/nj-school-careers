@@ -254,145 +254,143 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="categories" className="bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-14">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Explore Categories
-            </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight">
-              Browse roles by focus area
-            </h2>
-          </div>
+     <section id="categories" className="bg-white">
+  <div className="mx-auto max-w-7xl px-6 py-14">
+    <div>
+      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+        Explore Categories
+      </p>
+      <h2 className="mt-2 text-3xl font-bold tracking-tight">
+        Browse Jobs by Category
+      </h2>
+      <p className="mt-3 max-w-2xl text-slate-600">
+        Explore popular job categories and county-based searches across New Jersey.
+      </p>
+    </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <a
-              href="/jobs/teaching-jobs-new-jersey"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Teaching Jobs in New Jersey</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore teaching opportunities across New Jersey school districts.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/role/spanish-teacher"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Spanish Teacher Jobs in New Jersey</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore Spanish teaching opportunities across New Jersey.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/role/assistant-principal"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Assistant Principal Jobs in New Jersey</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore assistant principal opportunities across New Jersey.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/county/bergen"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Bergen County School Jobs</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore current school job opportunities in Bergen County.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/role/substitute-teacher"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Substitute Teacher Jobs in New Jersey</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Browse substitute teaching opportunities across New Jersey.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/role/paraprofessional"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Paraprofessional Jobs in New Jersey</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore paraprofessional opportunities across New Jersey.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/county/passaic"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Passaic County School Jobs</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore current school job opportunities in Passaic County.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/county/essex"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Essex County School Jobs</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore current school job opportunities in Essex County.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/county/hudson"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Hudson County School Jobs</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore current school job opportunities in Hudson County.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/county/union"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Union County School Jobs</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore current school job opportunities in Union County.
-              </div>
-            </a>
-
-            <a
-              href="/jobs/county/middlesex"
-              className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="text-lg font-semibold">Middlesex County School Jobs</div>
-              <div className="mt-2 text-sm text-slate-500">
-                Explore current school job opportunities in Middlesex County.
-              </div>
-            </a>
-
-            {categories.map((category) => (
-              <a
-                key={category}
-                href={`/jobs?search=${encodeURIComponent(
-                  category.replace(" Jobs", "").replace(" Roles", "")
-                )}`}
-                className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <div className="text-lg font-semibold">{category}</div>
-                <div className="mt-2 text-sm text-slate-500">
-                  Explore current openings and apply directly.
-                </div>
-              </a>
-            ))}
-          </div>
+    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <a
+        href="/jobs?search=Teacher"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Teaching Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          Browse classroom teaching roles across New Jersey.
         </div>
-      </section>
+      </a>
+
+      <a
+        href="/jobs?search=Spanish Teacher"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Spanish Teacher Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          Find Spanish teaching opportunities across New Jersey schools.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?search=Assistant Principal"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Assistant Principal Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          Explore assistant principal openings across New Jersey.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?search=Substitute Teacher"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Substitute Teacher Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          Browse substitute teaching opportunities across the state.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?search=Paraprofessional"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Paraprofessional Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          Explore paraprofessional and classroom support roles.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?search=School Nurse"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">School Nurse Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          Find school nurse openings across New Jersey districts.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?county=Bergen%20County"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Bergen County Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          View current school job openings in Bergen County.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?county=Hudson%20County"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Hudson County Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          View current school job openings in Hudson County.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?county=Essex%20County"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Essex County Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          View current school job openings in Essex County.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?county=Passaic%20County"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Passaic County Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          View current school job openings in Passaic County.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?county=Union%20County"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Union County Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          View current school job openings in Union County.
+        </div>
+      </a>
+
+      <a
+        href="/jobs?county=Middlesex%20County"
+        className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      >
+        <div className="text-lg font-semibold">Middlesex County Jobs</div>
+        <div className="mt-2 text-sm text-slate-500">
+          View current school job openings in Middlesex County.
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
 
       <section className="mx-auto max-w-7xl px-6 py-14">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
