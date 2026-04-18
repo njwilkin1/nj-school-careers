@@ -120,15 +120,12 @@ export default async function Home() {
             </div>
 
             <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-white md:text-6xl">
-              Find school jobs across New Jersey — faster.
+              Find school jobs across New Jersey.
             </h1>
 
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200">
               Explore school job openings and apply directly to districts and schools.
             </p>
-            <p className="mt-3 text-sm text-slate-300">
-  110+ New Jersey school jobs currently listed.
-</p>
 
             <p className="mt-3 text-sm text-slate-300">
               Browse 100+ New Jersey school jobs. Updated regularly.
