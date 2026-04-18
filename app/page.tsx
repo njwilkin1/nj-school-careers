@@ -69,11 +69,12 @@ export default async function Home() {
     process.env.SUPABASE_ANON_KEY!
   );
 
-  const { data, error } = await supabase
-    .from("jobs")
-    .select("slug, title, district, location, county, type, posted, applyUrl")
-    .order("posted", { ascending: false })
-    .limit(4);
+const { data, error } = await supabase
+  .from("jobs")
+  .select("slug, title, district, location, county, type, posted, applyUrl, is_featured")
+  .eq("is_featured", true)
+  .order("posted", { ascending: false })
+  .limit(4);
 
   if (error) {
     console.error("Homepage featured jobs fetch error:", error);
