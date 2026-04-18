@@ -12,6 +12,34 @@ type Job = {
   applyUrl: string;
 };
 
+function getDaysAgo(posted: string) {
+  const postedDate = new Date(posted);
+  const now = new Date();
+
+  if (Number.isNaN(postedDate.getTime())) return "";
+
+  const diffMs = now.getTime() - postedDate.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 0) return "Posted today";
+  if (diffDays === 1) return "Posted 1 day ago";
+  return `Posted ${diffDays} days ago`;
+}
+
+function isNewJob(posted?: string) {
+  if (!posted) return false;
+
+  const postedDate = new Date(posted);
+  const now = new Date();
+
+  if (Number.isNaN(postedDate.getTime())) return false;
+
+  const diffMs = now.getTime() - postedDate.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  return diffDays <= 3;
+}
+
 export default async function Home() {
   const categories = [
     "Teaching Jobs",
@@ -392,26 +420,38 @@ export default async function Home() {
                 key={job.slug}
                 className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md"
               >
-                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                  <span className="rounded-full bg-slate-100 px-3 py-1 shadow-sm">
-                    {job.type}
-                  </span>
-                  {job.posted && <span>{job.posted}</span>}
-                  <span className="rounded-full bg-green-50 px-3 py-1 text-green-700">
-                    Apply Directly
-                  </span>
-                </div>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {job.type && (
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700">
+                          {job.type}
+                        </span>
+                      )}
 
-                <h3 className="mt-4 text-2xl font-bold tracking-tight">
-                  {job.title}
-                </h3>
-                <p className="mt-2 text-base font-medium text-slate-700">
-                  {job.district}
-                </p>
-                <p className="mt-1 text-sm text-slate-500">
-                  {job.location}
-                  {job.county ? ` · ${job.county}` : ""}
-                </p>
+                      {isNewJob(job.posted) && (
+                        <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-700">
+                          New
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="mt-4 text-2xl font-bold tracking-tight">
+                      {job.title}
+                    </h3>
+                    <p className="mt-2 text-base font-medium text-slate-700">
+                      {job.district}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-500">
+                      {job.location}
+                      {job.county ? ` · ${job.county}` : ""}
+                    </p>
+                  </div>
+
+                  <div className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">
+                    {getDaysAgo(job.posted ?? "")}
+                  </div>
+                </div>
 
                 <div className="mt-5 flex flex-wrap gap-3">
                   <a
