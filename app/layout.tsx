@@ -32,68 +32,66 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
 
         <footer className="border-t border-slate-200 bg-slate-50">
-  <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-3">
-    <div>
-      <div className="text-2xl font-bold tracking-tight text-slate-300">
-        NJSchoolCareers
-      </div>
-      <p className="mt-6 max-w-md text-xl leading-10 text-slate-600">
-        Connecting educators and school professionals with opportunities across New Jersey.
-      </p>
-    </div>
+          <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-3">
+            <div>
+              <div className="text-2xl font-bold tracking-tight text-slate-300">
+                NJSchoolCareers
+              </div>
+              <p className="mt-6 max-w-md text-xl leading-10 text-slate-600">
+                Connecting educators and school professionals with opportunities
+                across New Jersey.
+              </p>
+            </div>
 
-    <div>
-      <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-        Job Seekers
-      </h3>
-      <div className="mt-6 space-y-4 text-lg text-slate-600">
-        <a href="/jobs" className="block hover:text-slate-900">
-          Browse Jobs
-        </a>
-        <a href="/jobs?search=Substitute" className="block hover:text-slate-900">
-          Substitute Roles
-        </a>
-      </div>
-    </div>
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Job Seekers
+              </h3>
+              <div className="mt-6 space-y-4 text-lg text-slate-600">
+                <a href="/jobs" className="block hover:text-slate-900">
+                  Browse Jobs
+                </a>
+                <a
+                  href="/jobs?search=Substitute"
+                  className="block hover:text-slate-900"
+                >
+                  Substitute Roles
+                </a>
+              </div>
+            </div>
 
-    <div>
-      <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-        Employers
-      </h3>
-      <div className="mt-6 space-y-4 text-lg text-slate-600">
-        <a href="/post-job" className="block hover:text-slate-900">
-          Post a Job
-        </a>
-        <a href="/#employers" className="block hover:text-slate-900">
-          Employer Info
-        </a>
-      </div>
-    </div>
-  </div>
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Employers
+              </h3>
+              <div className="mt-6 space-y-4 text-lg text-slate-600">
+                <a href="/post-job" className="block hover:text-slate-900">
+                  Post a Job
+                </a>
+                <a href="/#employers" className="block hover:text-slate-900">
+                  Employer Info
+                </a>
+              </div>
+            </div>
+          </div>
 
-  <div className="border-t border-slate-200 px-6 py-8 text-center text-lg text-slate-500">
-    © 2026 NJSchoolCareers. All rights reserved.
-  </div>
-</footer>
+          <div className="border-t border-slate-200 px-6 py-8 text-center text-lg text-slate-500">
+            © 2026 NJSchoolCareers. All rights reserved.
+          </div>
+        </footer>
 
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-6E5XTFDL3K');
-</script>
-<Script
-  src="https://www.googletagmanager.com/gtag/js?id=G-6E5XTFDL3K"
-  strategy="afterInteractive"
-/>
-<Script id="google-analytics" strategy="afterInteractive">
-  {`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-6E5XTFDL3K');
-  `}
-</Script>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-6E5XTFDL3K"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-6E5XTFDL3K');
+          `}
+        </Script>
       </body>
     </html>
   );
