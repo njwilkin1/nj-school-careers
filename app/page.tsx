@@ -126,9 +126,12 @@ export default async function Home() {
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200">
               Explore school job openings and apply directly to districts and schools.
             </p>
+            <p className="mt-3 text-sm text-slate-300">
+  110+ New Jersey school jobs currently listed.
+</p>
 
             <p className="mt-3 text-sm text-slate-300">
-              Browse 68+ New Jersey school jobs. Updated regularly.
+              Browse 100+ New Jersey school jobs. Updated regularly.
             </p>
 
             <div className="mt-8 rounded-3xl bg-white p-4 shadow-2xl">
@@ -406,7 +409,9 @@ export default async function Home() {
             Feature Your Job
           </a>
         </div>
-
+<p className="mt-3 text-sm text-green-600">
+  Posting jobs is currently free for New Jersey schools during launch.
+</p>
         <div className="mt-8 grid gap-5 lg:grid-cols-2">
           {featuredJobs.length > 0 ? (
             featuredJobs.map((job) => (

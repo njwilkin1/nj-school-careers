@@ -78,6 +78,10 @@ export default function PostJobPage() {
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
       <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-3xl font-bold">Post a Job</h1>
+
+<p className="mt-2 text-sm text-green-700 font-medium">
+  Free job posting during our launch period.
+</p>
         <p className="mt-2 text-slate-600">
           Reach candidates across New Jersey. No account required.
         </p>
