@@ -1,3 +1,4 @@
+import Script from "next/script";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -74,15 +75,25 @@ export default function RootLayout({
     © 2026 NJSchoolCareers. All rights reserved.
   </div>
 </footer>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6E5XTFDL3K"></script>
-<script>
+
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-6E5XTFDL3K');
 </script>
+<Script
+  src="https://www.googletagmanager.com/gtag/js?id=G-6E5XTFDL3K"
+  strategy="afterInteractive"
+/>
+<Script id="google-analytics" strategy="afterInteractive">
+  {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6E5XTFDL3K');
+  `}
+</Script>
       </body>
     </html>
   );
