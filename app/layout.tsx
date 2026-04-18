@@ -30,62 +30,50 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
         <main className="flex-1">{children}</main>
 
-        <footer className="border-t border-slate-200 bg-white">
-          <div className="mx-auto max-w-7xl px-6 py-10">
-            <div className="grid gap-8 md:grid-cols-3">
-              <div>
-                <div className="text-lg font-bold">NJSchoolCareers</div>
-                <p className="mt-3 text-sm text-slate-600">
-                  Connecting educators and school professionals with
-                  opportunities across New Jersey.
-                </p>
-              </div>
+        <footer className="border-t border-slate-200 bg-slate-50">
+  <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-3">
+    <div>
+      <div className="text-2xl font-bold tracking-tight text-slate-300">
+        NJSchoolCareers
+      </div>
+      <p className="mt-6 max-w-md text-xl leading-10 text-slate-600">
+        Connecting educators and school professionals with opportunities across New Jersey.
+      </p>
+    </div>
 
-              <div>
-                <div className="text-sm font-semibold uppercase tracking-[0.15em] text-slate-500">
-                  Job Seekers
-                </div>
-                <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                  <li>
-                    <a href="/jobs" className="hover:text-slate-900">
-                      Browse Jobs
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/jobs/substitute-teacher"
-                      className="hover:text-slate-900"
-                    >
-                      Substitute Roles
-                    </a>
-                  </li>
-                </ul>
-              </div>
+    <div>
+      <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+        Job Seekers
+      </h3>
+      <div className="mt-6 space-y-4 text-lg text-slate-600">
+        <a href="/jobs" className="block hover:text-slate-900">
+          Browse Jobs
+        </a>
+        <a href="/jobs?search=Substitute" className="block hover:text-slate-900">
+          Substitute Roles
+        </a>
+      </div>
+    </div>
 
-              <div>
-                <div className="text-sm font-semibold uppercase tracking-[0.15em] text-slate-500">
-                  Employers
-                </div>
-                <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                  <li>
-                    <a href="#" className="hover:text-slate-900">
-                      Post a Job
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-slate-900">
-                      Employer Info
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+    <div>
+      <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+        Employers
+      </h3>
+      <div className="mt-6 space-y-4 text-lg text-slate-600">
+        <a href="/post-job" className="block hover:text-slate-900">
+          Post a Job
+        </a>
+        <a href="/#employers" className="block hover:text-slate-900">
+          Employer Info
+        </a>
+      </div>
+    </div>
+  </div>
 
-            <div className="mt-10 border-t border-slate-200 pt-6 text-center text-sm text-slate-500">
-              © {new Date().getFullYear()} NJSchoolCareers. All rights reserved.
-            </div>
-          </div>
-        </footer>
+  <div className="border-t border-slate-200 px-6 py-8 text-center text-lg text-slate-500">
+    © 2026 NJSchoolCareers. All rights reserved.
+  </div>
+</footer>
       </body>
     </html>
   );
