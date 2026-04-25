@@ -24,6 +24,11 @@ const countyOptions = [
   "Union County",
   "Middlesex County",
   "Morris County",
+  "Monmouth County",
+  "Ocean County",
+  "Burlington County",
+  "Somerset County",
+  "Camden County",
   "Other NJ",
 ];
 
@@ -259,6 +264,7 @@ export default function AdminPage() {
                 <option>Part Time</option>
                 <option>Substitute</option>
                 <option>Administrative</option>
+                <option>Coaching</option>
               </select>
             </div>
 
