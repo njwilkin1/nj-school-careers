@@ -128,9 +128,8 @@ export default function PostJobPage() {
             <option>Full Time</option>
             <option>Part Time</option>
             <option>Substitute</option>
-            <option>Support Staff</option>
-            <option>Administrative</option>
-            <option>Coaching</option>
+            <option>Stipend</option>
+            <option>Summer</option>
           </select>
 
           <textarea
