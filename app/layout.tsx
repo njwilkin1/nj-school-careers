@@ -33,8 +33,10 @@ export default function RootLayout({
 
         <footer className="border-t border-slate-200 bg-white">
           <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-4">
+            
+            {/* Brand */}
             <div>
-              <div className="text-2xl font-bold tracking-tight text-slate-400">
+              <div className="text-2xl font-bold tracking-tight text-slate-900">
                 NJSchoolCareers
               </div>
               <p className="mt-6 max-w-md text-lg leading-8 text-slate-600">
@@ -43,6 +45,7 @@ export default function RootLayout({
               </p>
             </div>
 
+            {/* Job Seekers */}
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                 Job Seekers
@@ -60,6 +63,7 @@ export default function RootLayout({
               </div>
             </div>
 
+            {/* Employers */}
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                 Employers
@@ -74,6 +78,7 @@ export default function RootLayout({
               </div>
             </div>
 
+            {/* Company */}
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                 Company
@@ -82,8 +87,15 @@ export default function RootLayout({
                 <a href="/about" className="block hover:text-orange-600">
                   About NJSchoolCareers
                 </a>
+                <a href="/terms" className="block hover:text-orange-600">
+                  Terms of Use
+                </a>
+                <a href="/privacy" className="block hover:text-orange-600">
+                  Privacy Policy
+                </a>
               </div>
             </div>
+
           </div>
 
           <div className="border-t border-slate-200 px-6 py-8 text-center text-base text-slate-500">
