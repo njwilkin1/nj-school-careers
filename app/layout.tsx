@@ -87,6 +87,9 @@ export default function RootLayout({
                 <a href="/about" className="block hover:text-orange-600">
                   About NJSchoolCareers
                 </a>
+                <a href="/contact" className="block hover:text-orange-600">
+  Contact
+</a>
                 <a href="/terms" className="block hover:text-orange-600">
                   Terms of Use
                 </a>
