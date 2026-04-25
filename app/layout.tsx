@@ -48,14 +48,17 @@ export default function RootLayout({
                 Job Seekers
               </h3>
               <div className="mt-6 space-y-4 text-lg text-slate-600">
-                <a href="/jobs" className="block hover:text-slate-900">
+                <a href="/jobs" className="block hover:text-orange-600">
                   Browse Jobs
                 </a>
                 <a
                   href="/jobs?search=Substitute"
-                  className="block hover:text-slate-900"
+                  className="block hover:text-orange-600"
                 >
                   Substitute Roles
+                </a>
+                <a href="/about" className="block hover:text-orange-600">
+                  About NJSchoolCareers
                 </a>
               </div>
             </div>
@@ -65,11 +68,14 @@ export default function RootLayout({
                 Employers
               </h3>
               <div className="mt-6 space-y-4 text-lg text-slate-600">
-                <a href="/post-job" className="block hover:text-slate-900">
+                <a href="/post-job" className="block hover:text-orange-600">
                   Post a Job
                 </a>
-                <a href="/#employers" className="block hover:text-slate-900">
+                <a href="/#employers" className="block hover:text-orange-600">
                   Employer Info
+                </a>
+                <a href="/about" className="block hover:text-orange-600">
+                  About NJSchoolCareers
                 </a>
               </div>
             </div>
