@@ -23,10 +23,12 @@ export default function Header() {
           <Link href="/contact" className="hover:text-orange-600">Contact</Link>
         </nav>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile Hamburger (UPDATED) */}
         <button
-          className="md:hidden text-2xl"
+          type="button"
           onClick={() => setOpen(!open)}
+          className="md:hidden flex h-12 w-12 items-center justify-center rounded-xl text-3xl font-bold text-slate-900 hover:bg-slate-100"
+          aria-label="Open menu"
         >
           ☰
         </button>
@@ -35,11 +37,19 @@ export default function Header() {
       {/* Mobile Menu */}
       {open && (
         <div className="md:hidden border-t border-slate-200 px-6 pb-4">
-          <nav className="flex flex-col gap-4 pt-4 text-base text-slate-700">
-            <Link href="/jobs" onClick={() => setOpen(false)}>Browse Jobs</Link>
-            <Link href="/post-job" onClick={() => setOpen(false)}>Post a Job</Link>
-            <Link href="/about" onClick={() => setOpen(false)}>About</Link>
-            <Link href="/contact" onClick={() => setOpen(false)}>Contact</Link>
+          <nav className="flex flex-col gap-4 pt-4 text-base font-medium text-slate-800">
+            <Link href="/jobs" onClick={() => setOpen(false)} className="hover:text-orange-600">
+              Browse Jobs
+            </Link>
+            <Link href="/post-job" onClick={() => setOpen(false)} className="hover:text-orange-600">
+              Post a Job
+            </Link>
+            <Link href="/about" onClick={() => setOpen(false)} className="hover:text-orange-600">
+              About
+            </Link>
+            <Link href="/contact" onClick={() => setOpen(false)} className="hover:text-orange-600">
+              Contact
+            </Link>
           </nav>
         </div>
       )}
