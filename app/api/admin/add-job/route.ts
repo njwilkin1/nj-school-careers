@@ -8,10 +8,14 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function isValidUrl(value: string) {
+function isValidUrlOrEmail(value: string) {
+  if (value.startsWith("mailto:")) return true;
+
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return true;
+
   try {
     const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
+    return ["http:", "https:", "mailto:"].includes(url.protocol);
   } catch {
     return false;
   }
@@ -82,8 +86,11 @@ export async function POST(req: Request) {
       return Response.json({ error: "Apply URL is required." }, { status: 400 });
     }
 
-    if (!isValidUrl(applyUrl)) {
-      return Response.json({ error: "Apply URL must be valid." }, { status: 400 });
+    if (!isValidUrlOrEmail(applyUrl)) {
+      return Response.json(
+        { error: "Apply URL must be a valid link or email address." },
+        { status: 400 }
+      );
     }
 
     const responsibilities = responsibilitiesRaw
@@ -107,7 +114,6 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    // ✅ Check for duplicate job
     const { data: existingJob, error: checkError } = await supabase
       .from("jobs")
       .select("id")
@@ -125,7 +131,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Insert job (FIXED COLUMN NAME)
     const { error: insertError } = await supabase.from("jobs").insert({
       title,
       district,
