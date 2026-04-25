@@ -87,41 +87,6 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div>
-            <div className="text-xl font-bold tracking-tight">NJ School Careers</div>
-            <div className="text-xs text-slate-500">
-              A faster way to find school jobs in New Jersey
-            </div>
-          </div>
-
-          <nav className="hidden gap-6 text-sm font-medium md:flex">
-            <a href="/jobs" className="hover:text-blue-700">
-              Browse Jobs
-            </a>
-            <a href="#why-us" className="hover:text-blue-700">
-              Why Us
-            </a>
-            <a href="#employers" className="hover:text-blue-700">
-              For Employers
-            </a>
-            <a href="#how-it-works" className="hover:text-blue-700">
-              How It Works
-            </a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <a
-              href="/post-job"
-              className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-            >
-              Post a Job
-            </a>
-          </div>
-        </div>
-      </header>
-
       <section className="relative overflow-hidden bg-gradient-to-r from-sky-50 via-blue-50 to-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(37,99,235,0.12),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(249,115,22,0.08),_transparent_30%)]" />
 
@@ -132,12 +97,11 @@ export default async function Home() {
             </div>
 
             <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">
-              Find school jobs across{" "}
-              <span className="text-blue-700">New Jersey.</span>
+              NJSchoolCareers
             </h1>
 
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-700">
-              Explore school job openings and apply directly to districts and schools.
+              A faster way to get hired in New Jersey schools.
             </p>
 
             <p className="mt-3 text-sm text-slate-600">
@@ -203,10 +167,7 @@ export default async function Home() {
 
             <ul className="mt-6 space-y-3">
               {employerHighlights.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-3 text-sm text-slate-700"
-                >
+                <li key={item} className="flex items-start gap-3 text-sm text-slate-700">
                   <span className="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-orange-500" />
                   <span>{item}</span>
                 </li>
