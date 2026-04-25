@@ -1,3 +1,4 @@
+import Header from "./components/Header";
 import Script from "next/script";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -29,7 +30,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
-        <main className="flex-1">{children}</main>
+
+  <Header />
+
+  <main className="flex-1">{children}</main>
 
         <footer className="border-t border-slate-200 bg-white">
           <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-4">
