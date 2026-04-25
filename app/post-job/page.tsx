@@ -8,7 +8,10 @@ export default function PostJobPage() {
     district: "",
     location: "",
     jobType: "",
-    description: "",
+    overview: "",
+    responsibilities: "",
+    requirements: "",
+    additionalInfo: "",
     applicationLink: "",
     contactName: "",
     contactEmail: "",
@@ -16,6 +19,9 @@ export default function PostJobPage() {
 
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const inputStyle =
+    "w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none";
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -52,7 +58,10 @@ export default function PostJobPage() {
           district: "",
           location: "",
           jobType: "",
-          description: "",
+          overview: "",
+          responsibilities: "",
+          requirements: "",
+          additionalInfo: "",
           applicationLink: "",
           contactName: "",
           contactEmail: "",
@@ -70,13 +79,8 @@ export default function PostJobPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-16 text-slate-900">
       <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-10 shadow-sm">
+        <h1 className="text-3xl font-bold tracking-tight">Post a Job</h1>
 
-        {/* Title */}
-        <h1 className="text-3xl font-bold tracking-tight">
-          Post a Job
-        </h1>
-
-        {/* Accent */}
         <p className="mt-2 text-sm font-semibold text-orange-500">
           Free job posting during our launch period
         </p>
@@ -86,15 +90,13 @@ export default function PostJobPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-
-          {/* Inputs */}
           <input
             name="jobTitle"
             value={form.jobTitle}
             onChange={handleChange}
             placeholder="Job Title"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
+            className={inputStyle}
           />
 
           <input
@@ -103,7 +105,7 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="School / District Name"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
+            className={inputStyle}
           />
 
           <input
@@ -112,7 +114,7 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="Location (City, County)"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
+            className={inputStyle}
           />
 
           <select
@@ -120,7 +122,7 @@ export default function PostJobPage() {
             value={form.jobType}
             onChange={handleChange}
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
+            className={inputStyle}
           >
             <option value="">Job Type</option>
             <option>Full Time</option>
@@ -128,17 +130,46 @@ export default function PostJobPage() {
             <option>Substitute</option>
             <option>Support Staff</option>
             <option>Administrative</option>
-            <option>Coaching</option> {/* ✅ added */}
+            <option>Coaching</option>
           </select>
 
           <textarea
-            name="description"
-            value={form.description}
+            name="overview"
+            value={form.overview}
             onChange={handleChange}
-            placeholder="Job Description"
-            rows={6}
+            placeholder="Overview: Brief summary of the role (1–2 sentences)"
+            rows={3}
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
+            className={inputStyle}
+          />
+
+          <textarea
+            name="responsibilities"
+            value={form.responsibilities}
+            onChange={handleChange}
+            placeholder="Responsibilities: Enter each responsibility on a new line"
+            rows={5}
+            required
+            className={inputStyle}
+          />
+
+          <textarea
+            name="requirements"
+            value={form.requirements}
+            onChange={handleChange}
+            placeholder="Requirements: Enter each requirement on a new line"
+            rows={5}
+            required
+            className={inputStyle}
+          />
+
+          <textarea
+            name="additionalInfo"
+            value={form.additionalInfo}
+            onChange={handleChange}
+            placeholder="Additional Info (optional): schedule, pay, benefits, transportation, etc."
+            rows={4}
+            className={inputStyle}
           />
 
           <input
@@ -147,7 +178,7 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="Application URL or email"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
+            className={inputStyle}
           />
 
           <input
@@ -156,7 +187,7 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="Contact Name"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
+            className={inputStyle}
           />
 
           <input
@@ -166,10 +197,9 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="Contact Email"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
+            className={inputStyle}
           />
 
-          {/* Button */}
           <button
             type="submit"
             disabled={loading}
@@ -179,12 +209,7 @@ export default function PostJobPage() {
           </button>
         </form>
 
-        {/* Status */}
-        {status && (
-          <p className="mt-4 text-sm text-slate-600">
-            {status}
-          </p>
-        )}
+        {status && <p className="mt-4 text-sm text-slate-600">{status}</p>}
       </div>
     </main>
   );
