@@ -107,19 +107,25 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
+    // ✅ Check for duplicate job
     const { data: existingJob, error: checkError } = await supabase
-  .from("jobs")
-  .select("id")
-  .eq("slug", slug)
-  .maybeSingle();
+      .from("jobs")
+      .select("id")
+      .eq("slug", slug)
+      .maybeSingle();
 
-if (checkError) {
-  throw checkError;
-}
+    if (checkError) {
+      return Response.json({ error: checkError.message }, { status: 500 });
+    }
 
-if (existingJob) {
-  throw new Error("This job already exists in the database.");
-}
+    if (existingJob) {
+      return Response.json(
+        { error: "This job already exists in the database." },
+        { status: 409 }
+      );
+    }
+
+    // ✅ Insert job (FIXED COLUMN NAME)
     const { error: insertError } = await supabase.from("jobs").insert({
       title,
       district,
@@ -127,7 +133,7 @@ if (existingJob) {
       county,
       type,
       posted,
-      applyUrl,
+      apply_url: applyUrl, // 🔥 FIX HERE
       overview: overview || null,
       responsibilities,
       requirements,
@@ -149,3 +155,4 @@ if (existingJob) {
 
     return Response.json({ error: message }, { status: 500 });
   }
+}
