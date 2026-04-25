@@ -11,6 +11,9 @@ export default function EmailSignup() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error" | "">("");
 
+  const inputStyle =
+    "rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -61,7 +64,10 @@ export default function EmailSignup() {
 
   return (
     <div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-<h2 className="text-2xl font-semibold text-red-500">Get New NJ School Jobs by Email</h2>
+      <h2 className="text-2xl font-semibold text-slate-950">
+        Get New NJ School Jobs by Email
+      </h2>
+
       <p className="mt-2 text-slate-600">
         Subscribe for alerts based on county, keyword, and job type.
       </p>
@@ -82,7 +88,7 @@ export default function EmailSignup() {
         <input
           type="email"
           placeholder="Your email"
-          className="rounded-xl border border-slate-300 px-4 py-3"
+          className={inputStyle}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -91,7 +97,7 @@ export default function EmailSignup() {
         <input
           type="text"
           placeholder="County"
-          className="rounded-xl border border-slate-300 px-4 py-3"
+          className={inputStyle}
           value={county}
           onChange={(e) => setCounty(e.target.value)}
         />
@@ -99,13 +105,13 @@ export default function EmailSignup() {
         <input
           type="text"
           placeholder="Keyword (e.g. Assistant Principal)"
-          className="rounded-xl border border-slate-300 px-4 py-3"
+          className={inputStyle}
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
 
         <select
-          className="rounded-xl border border-slate-300 px-4 py-3"
+          className={inputStyle}
           value={jobType}
           onChange={(e) => setJobType(e.target.value)}
         >
@@ -114,13 +120,15 @@ export default function EmailSignup() {
           <option value="Part Time">Part Time</option>
           <option value="Substitute">Substitute</option>
           <option value="Administrative">Administrative</option>
+          <option value="Support Staff">Support Staff</option>
+          <option value="Coaching">Coaching</option>
         </select>
 
         <div className="md:col-span-2">
           <button
             type="submit"
             disabled={loading}
-            className="rounded-xl bg-slate-900 px-6 py-3 font-semibold text-white hover:bg-slate-800 disabled:opacity-60"
+            className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60"
           >
             {loading ? "Submitting..." : "Subscribe"}
           </button>
