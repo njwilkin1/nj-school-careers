@@ -38,14 +38,7 @@ export default function PostJobPage() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          jobTitle: form.jobTitle,
-          district: form.district,
-          location: form.location,
-          jobType: form.jobType,
-          description: form.description,
-          applicationLink: form.applicationLink,
-          contactName: form.contactName,
-          contactEmail: form.contactEmail,
+          ...form,
           source: "NJ School Careers - Post a Job Page",
         }),
       });
@@ -75,25 +68,33 @@ export default function PostJobPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
-      <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-3xl font-bold">Post a Job</h1>
+    <main className="min-h-screen bg-slate-50 px-6 py-16 text-slate-900">
+      <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-10 shadow-sm">
 
-<p className="mt-2 text-sm text-green-700 font-medium">
-  Free job posting during our launch period.
-</p>
+        {/* Title */}
+        <h1 className="text-3xl font-bold tracking-tight">
+          Post a Job
+        </h1>
+
+        {/* Accent */}
+        <p className="mt-2 text-sm font-semibold text-orange-500">
+          Free job posting during our launch period
+        </p>
+
         <p className="mt-2 text-slate-600">
           Reach candidates across New Jersey. No account required.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+
+          {/* Inputs */}
           <input
             name="jobTitle"
             value={form.jobTitle}
             onChange={handleChange}
             placeholder="Job Title"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
           />
 
           <input
@@ -102,7 +103,7 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="School / District Name"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
           />
 
           <input
@@ -111,7 +112,7 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="Location (City, County)"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
           />
 
           <select
@@ -119,7 +120,7 @@ export default function PostJobPage() {
             value={form.jobType}
             onChange={handleChange}
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
           >
             <option value="">Job Type</option>
             <option>Full Time</option>
@@ -127,6 +128,7 @@ export default function PostJobPage() {
             <option>Substitute</option>
             <option>Support Staff</option>
             <option>Administrative</option>
+            <option>Coaching</option> {/* ✅ added */}
           </select>
 
           <textarea
@@ -136,7 +138,7 @@ export default function PostJobPage() {
             placeholder="Job Description"
             rows={6}
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
           />
 
           <input
@@ -145,7 +147,7 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="Application URL or email"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
           />
 
           <input
@@ -154,7 +156,7 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="Contact Name"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
           />
 
           <input
@@ -164,19 +166,25 @@ export default function PostJobPage() {
             onChange={handleChange}
             placeholder="Contact Email"
             required
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
           />
 
+          {/* Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-slate-900 px-6 py-3 font-semibold text-white hover:bg-slate-800 disabled:opacity-60"
+            className="w-full rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60"
           >
             {loading ? "Submitting..." : "Submit Job"}
           </button>
         </form>
 
-        {status && <p className="mt-4 text-sm text-slate-600">{status}</p>}
+        {/* Status */}
+        {status && (
+          <p className="mt-4 text-sm text-slate-600">
+            {status}
+          </p>
+        )}
       </div>
     </main>
   );
