@@ -3,7 +3,7 @@ export default function AboutPage() {
     <main className="min-h-screen bg-slate-50 px-6 py-16 text-slate-900">
       <div className="mx-auto max-w-4xl">
         <h1 className="text-4xl font-bold tracking-tight">
-          About NJSchoolCareers
+          About NJSchoolCareers.com
         </h1>
 
         <p className="mt-6 text-lg text-slate-600 leading-8">
