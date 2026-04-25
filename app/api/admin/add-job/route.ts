@@ -1,9 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 
-function normalize(value: string) {
-  return String(value || "").trim().toLowerCase();
-}
-
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -124,22 +120,6 @@ if (checkError) {
 if (existingJob) {
   throw new Error("This job already exists in the database.");
 }
-
-    const duplicate = (existing || []).find((row: any) => {
-      return (
-        normalize(row.title) === normalize(title) &&
-        normalize(row.district) === normalize(district) &&
-        normalize(row.applyUrl) === normalize(applyUrl)
-      );
-    });
-
-    if (duplicate) {
-      return Response.json(
-        { error: "Duplicate job detected. This job already exists." },
-        { status: 409 }
-      );
-    }
-
     const { error: insertError } = await supabase.from("jobs").insert({
       title,
       district,
