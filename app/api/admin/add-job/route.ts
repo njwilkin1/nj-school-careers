@@ -133,7 +133,7 @@ export async function POST(req: Request) {
       county,
       type,
       posted,
-      apply_url: applyUrl, // 🔥 FIX HERE
+      applyUrl,
       overview: overview || null,
       responsibilities,
       requirements,
