@@ -111,16 +111,19 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    const { data: existing, error: checkError } = await supabase
-      .from("jobs")
-      .select("id, title, district, applyUrl")
-      .or(
-        `slug.eq.${slug},and(title.ilike.${title},district.ilike.${district},applyUrl.ilike.${applyUrl})`
-      );
+    const { data: existingJob, error: checkError } = await supabase
+  .from("jobs")
+  .select("id")
+  .eq("slug", slug)
+  .maybeSingle();
 
-    if (checkError) {
-      return Response.json({ error: checkError.message }, { status: 500 });
-    }
+if (checkError) {
+  throw checkError;
+}
+
+if (existingJob) {
+  throw new Error("This job already exists in the database.");
+}
 
     const duplicate = (existing || []).find((row: any) => {
       return (
@@ -166,4 +169,3 @@ export async function POST(req: Request) {
 
     return Response.json({ error: message }, { status: 500 });
   }
-}
