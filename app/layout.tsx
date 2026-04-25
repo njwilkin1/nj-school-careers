@@ -31,13 +31,13 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
         <main className="flex-1">{children}</main>
 
-        <footer className="border-t border-slate-200 bg-slate-50">
-          <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-3">
+        <footer className="border-t border-slate-200 bg-white">
+          <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-4">
             <div>
-              <div className="text-2xl font-bold tracking-tight text-slate-300">
+              <div className="text-2xl font-bold tracking-tight text-slate-400">
                 NJSchoolCareers
               </div>
-              <p className="mt-6 max-w-md text-xl leading-10 text-slate-600">
+              <p className="mt-6 max-w-md text-lg leading-8 text-slate-600">
                 Connecting educators and school professionals with opportunities
                 across New Jersey.
               </p>
@@ -47,7 +47,7 @@ export default function RootLayout({
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                 Job Seekers
               </h3>
-              <div className="mt-6 space-y-4 text-lg text-slate-600">
+              <div className="mt-6 space-y-4 text-base text-slate-600">
                 <a href="/jobs" className="block hover:text-orange-600">
                   Browse Jobs
                 </a>
@@ -57,9 +57,6 @@ export default function RootLayout({
                 >
                   Substitute Roles
                 </a>
-                <a href="/about" className="block hover:text-orange-600">
-                  About NJSchoolCareers
-                </a>
               </div>
             </div>
 
@@ -67,13 +64,21 @@ export default function RootLayout({
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                 Employers
               </h3>
-              <div className="mt-6 space-y-4 text-lg text-slate-600">
+              <div className="mt-6 space-y-4 text-base text-slate-600">
                 <a href="/post-job" className="block hover:text-orange-600">
                   Post a Job
                 </a>
                 <a href="/#employers" className="block hover:text-orange-600">
                   Employer Info
                 </a>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Company
+              </h3>
+              <div className="mt-6 space-y-4 text-base text-slate-600">
                 <a href="/about" className="block hover:text-orange-600">
                   About NJSchoolCareers
                 </a>
@@ -81,7 +86,7 @@ export default function RootLayout({
             </div>
           </div>
 
-          <div className="border-t border-slate-200 px-6 py-8 text-center text-lg text-slate-500">
+          <div className="border-t border-slate-200 px-6 py-8 text-center text-base text-slate-500">
             © 2026 NJSchoolCareers. All rights reserved.
           </div>
         </footer>
