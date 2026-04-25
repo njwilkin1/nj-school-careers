@@ -38,14 +38,6 @@ export default function AboutPage() {
           effective platform that actually helps both job seekers and school
           districts.
         </p>
-
-        <div className="mt-12 rounded-2xl bg-orange-50 border border-orange-200 p-6">
-          <p className="text-orange-800 font-medium">
-            Our mission is simple: make it easier for New Jersey educators to
-            find the right opportunities — and for schools to find the right
-            candidates.
-          </p>
-        </div>
       </div>
     </main>
   );
