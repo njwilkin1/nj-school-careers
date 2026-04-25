@@ -56,10 +56,16 @@ export default function AdminPage() {
     }));
   }
 
-  function isValidUrl(value: string) {
+  function isValidUrlOrEmail(value: string) {
+    const trimmed = value.trim();
+
+    if (trimmed.startsWith("mailto:")) return true;
+
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return true;
+
     try {
-      const url = new URL(value);
-      return url.protocol === "http:" || url.protocol === "https:";
+      const url = new URL(trimmed);
+      return ["http:", "https:", "mailto:"].includes(url.protocol);
     } catch {
       return false;
     }
@@ -74,7 +80,9 @@ export default function AdminPage() {
     if (!form.type.trim()) return "Job type is required.";
     if (!form.posted.trim()) return "Posted date is required.";
     if (!form.applyUrl.trim()) return "Apply URL is required.";
-    if (!isValidUrl(form.applyUrl.trim())) return "Apply URL must be a valid link.";
+    if (!isValidUrlOrEmail(form.applyUrl.trim())) {
+      return "Apply URL must be a valid link or email address.";
+    }
 
     return null;
   }
@@ -269,11 +277,11 @@ export default function AdminPage() {
 
             <div className="md:col-span-2">
               <label className="mb-2 block text-sm font-medium text-slate-700">
-                Apply URL
+                Apply URL or Email
               </label>
               <input
                 name="applyUrl"
-                placeholder="https://..."
+                placeholder="https://... or email@example.com"
                 value={form.applyUrl}
                 onChange={handleChange}
                 className="w-full rounded-xl border border-slate-300 px-4 py-3"
@@ -325,7 +333,7 @@ export default function AdminPage() {
 
           <div className="flex items-center justify-between gap-4 pt-2">
             <p className="text-sm text-slate-500">
-              Required: title, district, location, county, job type, posted date, and apply URL.
+              Required: title, district, location, county, job type, posted date, and apply URL or email.
             </p>
 
             <button
