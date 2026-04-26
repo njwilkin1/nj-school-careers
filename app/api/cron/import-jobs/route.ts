@@ -37,6 +37,14 @@ function makeAbsoluteUrl(href: string, baseUrl: string): string {
   }
 }
 
+function buildApplitrackJobUrl(sourceUrl: string, jobId: string): string {
+  const url = new URL(sourceUrl);
+  const parts = url.pathname.split("/JobPostings/");
+  url.pathname = `${parts[0]}/JobPostings/view.asp`;
+  url.search = `?jobid=${jobId}&embed=1`;
+  return url.toString();
+}
+
 function createHash(title: string, district: string, applyUrl: string): string {
   return crypto
     .createHash("sha256")
@@ -91,20 +99,24 @@ function isJunkTitle(text: string): boolean {
     "email to a friend",
     "print version",
     "show/hide",
+    "apply",
+    "jobid",
   ];
 
   return badPhrases.some((phrase) => value.includes(phrase));
 }
 
 function getFieldFromText(text: string, label: string): string | null {
-  const regex = new RegExp(`${label}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*[A-Z][A-Za-z ]+\\s*:|$)`, "i");
+  const regex = new RegExp(
+    `${label}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*[A-Z][A-Za-z ]+\\s*:|$)`,
+    "i"
+  );
   const match = text.match(regex);
   return match ? normalizeText(match[1]) : null;
 }
 
 /**
  * APPLITRACK / FRONTLINE
- * Parses real job tables that contain JobID.
  */
 function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[] {
   const $ = cheerio.load(html);
@@ -124,9 +136,24 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
     const jobIdMatch = fullText.match(/JobID:\s*(\d+)/i);
     const jobId = jobIdMatch ? jobIdMatch[1] : "";
 
-    const title =
-      normalizeText(container.find("span").first().text()) ||
-      normalizeText(container.find("b, strong").first().text());
+    const headerText = normalizeText(container.find("tr").first().text());
+
+    let title = normalizeText(
+      headerText.replace(/JobID:\s*\d+.*/i, "").replace(/Apply/i, "")
+    );
+
+    if (!title) {
+      title = normalizeText(
+        container
+          .find("b, strong, i")
+          .filter((_, item) => {
+            const text = normalizeText($(item).text());
+            return text && !text.toLowerCase().includes("jobid");
+          })
+          .first()
+          .text()
+      );
+    }
 
     if (!title || title.length < 5) return;
     if (isJunkTitle(title)) return;
@@ -144,13 +171,28 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
     }
 
     const positionType = getFieldFromText(fullText, "Position Type");
-    const location = getFieldFromText(fullText, "Location");
+
+    const location =
+      getFieldFromText(fullText, "Location") ||
+      source.district_name ||
+      null;
+
     const posted = parseDateString(getFieldFromText(fullText, "Date Posted"));
     const type = inferJobType(title, positionType);
 
-    const applyUrl = jobId
-      ? makeAbsoluteUrl(`JobPostings/view.asp?jobid=${jobId}&embed=1`, source.source_url)
-      : source.source_url;
+    const applyHref = normalizeText(
+      container
+        .find("a")
+        .filter((_, link) => normalizeText($(link).text()).toLowerCase() === "apply")
+        .first()
+        .attr("href")
+    );
+
+    const applyUrl = applyHref
+      ? makeAbsoluteUrl(applyHref, source.source_url)
+      : jobId
+        ? buildApplitrackJobUrl(source.source_url, jobId)
+        : source.source_url;
 
     const key = `${title}|${source.district_name}|${jobId || applyUrl}`;
     if (seen.has(key)) return;
@@ -207,7 +249,7 @@ function parseGenericDistrictPage(html: string, source: JobSource): ParsedJob[] 
     jobs.push({
       title: rawText,
       district: source.district_name,
-      location: null,
+      location: source.district_name || null,
       county: source.county ?? null,
       type: inferJobType(rawText),
       posted: null,
