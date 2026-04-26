@@ -7,25 +7,27 @@ type PageProps = {
 };
 
 type Job = {
-  slug: string;
+  id: number;
   title: string;
   district: string;
-  location: string;
+  location?: string | null;
   county?: string | null;
   type?: string | null;
   posted?: string | null;
   applyUrl: string;
   overview?: string | null;
-  responsibilities?: string[] | null;
-  requirements?: string[] | null;
+  position_type?: string | null;
+  date_posted?: string | null;
+  closing_date?: string | null;
+  additional_information?: string | null;
 };
 
-function formatPostedDate(posted?: string | null) {
-  if (!posted) return "";
+function formatDate(value?: string | null) {
+  if (!value) return "";
 
-  const date = new Date(posted);
+  const date = new Date(value);
 
-  if (Number.isNaN(date.getTime())) return posted;
+  if (Number.isNaN(date.getTime())) return value;
 
   return date.toLocaleDateString("en-US", {
     year: "numeric",
@@ -37,7 +39,9 @@ function formatPostedDate(posted?: string | null) {
 export default async function JobDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
-  if (!slug) {
+  const jobId = Number(slug);
+
+  if (!slug || Number.isNaN(jobId)) {
     notFound();
   }
 
@@ -47,19 +51,14 @@ export default async function JobDetailPage({ params }: PageProps) {
   );
 
   const { data, error } = await supabase
-    .from("jobs")
+    .from("job_imports")
     .select("*")
-    .eq("slug", slug)
+    .eq("id", jobId)
     .limit(1)
     .maybeSingle();
 
-  if (error) {
-    console.error("Job detail fetch error:", error, "slug:", slug);
-    notFound();
-  }
-
-  if (!data) {
-    console.error("No job found for slug:", slug);
+  if (error || !data) {
+    console.error("Job detail fetch error:", error, "id:", jobId);
     notFound();
   }
 
@@ -82,11 +81,12 @@ export default async function JobDetailPage({ params }: PageProps) {
                 {job.title}
               </h1>
 
-              <p className="mt-3 text-lg text-slate-700">{job.district}</p>
+              <p className="mt-3 text-lg font-medium text-slate-700">
+                {job.district}
+              </p>
 
               <p className="mt-2 text-sm text-slate-500">
-                {job.location}
-                {job.type ? ` · ${job.type}` : ""}
+                {job.location || job.district}
                 {job.county ? ` · ${job.county}` : ""}
               </p>
             </div>
@@ -101,11 +101,41 @@ export default async function JobDetailPage({ params }: PageProps) {
             </a>
           </div>
 
-          {job.posted && (
-            <div className="mt-6 rounded-2xl bg-orange-50 px-4 py-3 text-sm text-orange-700">
-              Posted: {formatPostedDate(job.posted)}
-            </div>
-          )}
+          <div className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700 md:grid-cols-2">
+            {job.position_type && (
+              <p>
+                <span className="font-semibold text-slate-950">
+                  Position Type:
+                </span>{" "}
+                {job.position_type}
+              </p>
+            )}
+
+            {job.date_posted && (
+              <p>
+                <span className="font-semibold text-slate-950">
+                  Date Posted:
+                </span>{" "}
+                {formatDate(job.date_posted)}
+              </p>
+            )}
+
+            {job.location && (
+              <p>
+                <span className="font-semibold text-slate-950">Location:</span>{" "}
+                {job.location}
+              </p>
+            )}
+
+            {job.closing_date && (
+              <p>
+                <span className="font-semibold text-slate-950">
+                  Closing Date:
+                </span>{" "}
+                {job.closing_date}
+              </p>
+            )}
+          </div>
 
           {job.overview && (
             <section className="mt-8">
@@ -116,30 +146,15 @@ export default async function JobDetailPage({ params }: PageProps) {
             </section>
           )}
 
-          {Array.isArray(job.responsibilities) &&
-            job.responsibilities.length > 0 && (
-              <section className="mt-8">
-                <h2 className="text-2xl font-semibold text-slate-950">
-                  Responsibilities
-                </h2>
-                <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
-                  {job.responsibilities.map((item, index) => (
-                    <li key={`resp-${index}`}>{item}</li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-          {Array.isArray(job.requirements) && job.requirements.length > 0 && (
+          {job.additional_information && (
             <section className="mt-8">
               <h2 className="text-2xl font-semibold text-slate-950">
-                Requirements
+                Job Details
               </h2>
-              <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
-                {job.requirements.map((item, index) => (
-                  <li key={`req-${index}`}>{item}</li>
-                ))}
-              </ul>
+
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-700 whitespace-pre-line">
+                {job.additional_information}
+              </div>
             </section>
           )}
 
