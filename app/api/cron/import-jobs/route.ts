@@ -37,11 +37,11 @@ function makeAbsoluteUrl(href: string, baseUrl: string): string {
   }
 }
 
-function buildApplitrackJobUrl(sourceUrl: string, jobId: string): string {
+function buildApplitrackApplicationUrl(sourceUrl: string, jobId: string): string {
   const url = new URL(sourceUrl);
   const parts = url.pathname.split("/JobPostings/");
-  url.pathname = `${parts[0]}/JobPostings/view.asp`;
-  url.search = `?jobid=${jobId}&embed=1`;
+  url.pathname = `${parts[0]}/_application.aspx`;
+  url.search = `?posJobCodes=${jobId}`;
   return url.toString();
 }
 
@@ -111,13 +111,11 @@ function getFieldFromText(text: string, label: string): string | null {
     `${label}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*[A-Z][A-Za-z ]+\\s*:|$)`,
     "i"
   );
+
   const match = text.match(regex);
   return match ? normalizeText(match[1]) : null;
 }
 
-/**
- * APPLITRACK / FRONTLINE
- */
 function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[] {
   const $ = cheerio.load(html);
   const jobs: ParsedJob[] = [];
@@ -180,19 +178,14 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
     const posted = parseDateString(getFieldFromText(fullText, "Date Posted"));
     const type = inferJobType(title, positionType);
 
-    const applyHref = normalizeText(
-      container
-        .find("a")
-        .filter((_, link) => normalizeText($(link).text()).toLowerCase() === "apply")
-        .first()
-        .attr("href")
-    );
-
-    const applyUrl = applyHref
-      ? makeAbsoluteUrl(applyHref, source.source_url)
-      : jobId
-        ? buildApplitrackJobUrl(source.source_url, jobId)
-        : source.source_url;
+    /*
+      IMPORTANT:
+      We force the applyUrl to the real Applitrack application page.
+      Do NOT use JobPostings/view.asp?jobid=... because that opens the category/listing page.
+    */
+    const applyUrl = jobId
+      ? buildApplitrackApplicationUrl(source.source_url, jobId)
+      : source.source_url;
 
     const key = `${title}|${source.district_name}|${jobId || applyUrl}`;
     if (seen.has(key)) return;
@@ -216,9 +209,6 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
   return jobs;
 }
 
-/**
- * GENERIC FALLBACK
- */
 function parseGenericDistrictPage(html: string, source: JobSource): ParsedJob[] {
   const $ = cheerio.load(html);
   const jobs: ParsedJob[] = [];
@@ -402,4 +392,4 @@ export async function GET(req: Request) {
       error instanceof Error ? error.message : "Unknown server error";
     return Response.json({ error: message }, { status: 500 });
   }
-}
+} 
