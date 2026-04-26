@@ -305,7 +305,7 @@ export default async function Home() {
         </div>
 
         <p className="mt-3 text-sm text-green-600">
-          Posting jobs is currently free for New Jersey schools during launch.
+        Free job posting during our launch period. Paid plans coming soon.
         </p>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-2">
@@ -497,4 +497,4 @@ export default async function Home() {
       </section>
     </div>
   );
-}
+} 

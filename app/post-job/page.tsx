@@ -119,7 +119,7 @@ Email: ${form.contactEmail}
         <h1 className="text-3xl font-bold tracking-tight">Post a Job</h1>
 
         <p className="mt-2 text-sm font-semibold text-orange-500">
-          Free job posting during our launch period
+          Free job posting during our launch period. Paid plans coming soon.
         </p>
 
         <p className="mt-2 text-slate-600">
