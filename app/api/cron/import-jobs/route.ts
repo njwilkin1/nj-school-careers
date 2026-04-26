@@ -23,26 +23,32 @@ type ParsedJob = {
   applyUrl: string;
   overview: string | null;
   raw_source_text: string | null;
+  position_type: string | null;
+  date_posted: string | null;
+  closing_date: string | null;
+  additional_information: string | null;
 };
 
 function normalizeText(value: string | null | undefined): string {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
 
-function makeAbsoluteUrl(href: string, baseUrl: string): string {
-  try {
-    return new URL(href, baseUrl).toString();
-  } catch {
-    return href;
-  }
-}
+function cleanAdditionalInfo(text: string): string {
+  if (!text) return "";
 
-function buildApplitrackApplicationUrl(sourceUrl: string, jobId: string): string {
-  const url = new URL(sourceUrl);
-  const parts = url.pathname.split("/JobPostings/");
-  url.pathname = `${parts[0]}/_application.aspx`;
-  url.search = `?posJobCodes=${jobId}`;
-  return url.toString();
+  return text
+    .replace(/\r/g, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/(Qualifications:)/gi, "\n\n$1\n")
+    .replace(/(QUALIFICATIONS:)/g, "\n\n$1\n")
+    .replace(/(Salary:)/gi, "\n\n$1\n")
+    .replace(/(Salary Range:)/gi, "\n\n$1\n")
+    .replace(/(Benefits:)/gi, "\n\n$1\n")
+    .replace(/(Responsibilities:)/gi, "\n\n$1\n")
+    .replace(/(Requirements:)/gi, "\n\n$1\n")
+    .replace(/(Position Type:)/gi, "\n\n$1\n")
+    .replace(/•/g, "\n• ")
+    .trim();
 }
 
 function createHash(title: string, district: string, applyUrl: string): string {
@@ -50,6 +56,14 @@ function createHash(title: string, district: string, applyUrl: string): string {
     .createHash("sha256")
     .update(`${title}|${district}|${applyUrl}`)
     .digest("hex");
+}
+
+function buildApplitrackApplicationUrl(sourceUrl: string, jobId: string): string {
+  const url = new URL(sourceUrl);
+  const beforeJobPostings = url.pathname.split("/JobPostings/")[0];
+  url.pathname = `${beforeJobPostings}/_application.aspx`;
+  url.search = `?posJobCodes=${jobId}`;
+  return url.toString();
 }
 
 function inferJobType(title: string, fallback?: string | null): string {
@@ -116,6 +130,16 @@ function getFieldFromText(text: string, label: string): string | null {
   return match ? normalizeText(match[1]) : null;
 }
 
+function getAdditionalInformation(fullText: string): string | null {
+  const split = fullText.split(/Additional Information\s*:/i);
+
+  if (split.length > 1) {
+    return cleanAdditionalInfo(split[1]);
+  }
+
+  return null;
+}
+
 function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[] {
   const $ = cheerio.load(html);
   const jobs: ParsedJob[] = [];
@@ -133,6 +157,8 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
 
     const jobIdMatch = fullText.match(/JobID:\s*(\d+)/i);
     const jobId = jobIdMatch ? jobIdMatch[1] : "";
+
+    if (!jobId) return;
 
     const headerText = normalizeText(container.find("tr").first().text());
 
@@ -175,19 +201,14 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
       source.district_name ||
       null;
 
-    const posted = parseDateString(getFieldFromText(fullText, "Date Posted"));
+    const datePosted = parseDateString(getFieldFromText(fullText, "Date Posted"));
+    const closingDate = getFieldFromText(fullText, "Closing Date");
+    const additionalInformation = getAdditionalInformation(fullText);
+
     const type = inferJobType(title, positionType);
+    const applyUrl = buildApplitrackApplicationUrl(source.source_url, jobId);
 
-    /*
-      IMPORTANT:
-      We force the applyUrl to the real Applitrack application page.
-      Do NOT use JobPostings/view.asp?jobid=... because that opens the category/listing page.
-    */
-    const applyUrl = jobId
-      ? buildApplitrackApplicationUrl(source.source_url, jobId)
-      : source.source_url;
-
-    const key = `${title}|${source.district_name}|${jobId || applyUrl}`;
+    const key = `${title}|${source.district_name}|${jobId}`;
     if (seen.has(key)) return;
     seen.add(key);
 
@@ -197,13 +218,18 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
       location,
       county: source.county ?? null,
       type,
-      posted,
+      posted: datePosted,
       applyUrl,
       overview: buildOverview(title, source.district_name, location),
-      raw_source_text: normalizeText(fullText.slice(0, 1500)),
+      raw_source_text: normalizeText(fullText.slice(0, 2000)),
+      position_type: positionType,
+      date_posted: datePosted,
+      closing_date: closingDate,
+      additional_information: additionalInformation,
     });
 
     console.log("FOUND JOB:", title);
+    console.log("APPLY URL:", applyUrl);
   });
 
   return jobs;
@@ -230,7 +256,7 @@ function parseGenericDistrictPage(html: string, source: JobSource): ParsedJob[] 
 
     if (!looksLikeJobLink) return;
 
-    const applyUrl = makeAbsoluteUrl(href, source.source_url);
+    const applyUrl = new URL(href, source.source_url).toString();
     const key = `${rawText}|${applyUrl}`;
 
     if (seen.has(key)) return;
@@ -246,6 +272,10 @@ function parseGenericDistrictPage(html: string, source: JobSource): ParsedJob[] 
       applyUrl,
       overview: buildOverview(rawText, source.district_name),
       raw_source_text: rawText,
+      position_type: null,
+      date_posted: null,
+      closing_date: null,
+      additional_information: null,
     });
   });
 
@@ -347,6 +377,10 @@ export async function GET(req: Request) {
             applyUrl: job.applyUrl,
             overview: job.overview,
             raw_source_text: job.raw_source_text,
+            position_type: job.position_type,
+            date_posted: job.date_posted,
+            closing_date: job.closing_date,
+            additional_information: job.additional_information,
             source_url: source.source_url,
             status: "new",
             hash,
@@ -392,4 +426,4 @@ export async function GET(req: Request) {
       error instanceof Error ? error.message : "Unknown server error";
     return Response.json({ error: message }, { status: 500 });
   }
-} 
+}
