@@ -11,7 +11,7 @@ export default function PrivacyPage() {
         </h1>
 
         <p className="mt-4 text-sm text-slate-500">
-          Last updated: April 25, 2026
+          Last updated: April 26, 2026
         </p>
 
         <p className="mt-6 leading-8 text-slate-700">
@@ -31,25 +31,25 @@ export default function PrivacyPage() {
 
         <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
           <li>Email addresses submitted for job alerts or email subscriptions.</li>
-          <li>
-            Job alert preferences, such as county, keyword, and job type.
-          </li>
+          <li>Job alert preferences, such as county, keyword, and job type.</li>
           <li>
             Employer or school contact information submitted through job posting
             forms, such as contact name, contact email, job title, district or
             organization name, location, job type, application link, and job
             description details.
           </li>
+          <li>Messages or other information you send to us by email or forms.</li>
           <li>
-            Messages or other information you send to us by email or through
-            forms.
+            Information you choose to submit when applying to jobs or interacting
+            with job listings.
           </li>
         </ul>
 
         <p className="mt-4 leading-8 text-slate-700">
-          We may also collect limited technical information automatically, such as
-          browser type, device information, pages visited, referral source, and
-          general usage data through analytics tools.
+          We may also collect limited technical and usage information
+          automatically, such as browser type, device information, pages visited,
+          referral source, search activity, and general usage data through
+          analytics tools.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
@@ -63,15 +63,37 @@ export default function PrivacyPage() {
         <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
           <li>Send job alerts and subscription emails.</li>
           <li>Process and review job posting submissions.</li>
-          <li>Display and organize job listings on NJSchoolCareers.com.</li>
+          <li>Display and organize job listings.</li>
           <li>Communicate with job seekers, employers, and school representatives.</li>
-          <li>Improve website performance, usability, content, and search experience.</li>
-          <li>Research how users interact with the website and improve our services.</li>
-          <li>Protect the website from misuse, spam, fraud, or unauthorized activity.</li>
+          <li>Improve website performance, usability, and content.</li>
+          <li>Understand how users interact with the website.</li>
+          <li>Protect against misuse, spam, fraud, or unauthorized activity.</li>
         </ul>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          3. Email Subscriptions and Job Alerts
+          3. Job Applications and Data Sharing
+        </h2>
+
+        <p className="mt-3 leading-8 text-slate-700">
+          When you apply to a job through NJSchoolCareers.com or follow an
+          external application link, the information you provide may be shared
+          directly with the employer or organization offering the position.
+        </p>
+
+        <p className="mt-3 leading-8 text-slate-700">
+          Once your information is shared with an employer, it may become subject
+          to that employer’s privacy practices, and NJSchoolCareers.com is not
+          responsible for how third parties use or store your information.
+        </p>
+
+        <p className="mt-3 leading-8 text-slate-700">
+          By applying to jobs or submitting information through the website, you
+          consent to the sharing of your information for employment-related
+          purposes.
+        </p>
+
+        <h2 className="mt-8 text-2xl font-semibold">
+          4. Email Subscriptions and Job Alerts
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
@@ -93,166 +115,121 @@ export default function PrivacyPage() {
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          4. Job Posting Submissions
+          5. Job Posting Submissions
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          When an employer, school, district, or representative submits a job
-          through our website, the submitted information may be sent through
-          Formspree and delivered to us by email. We may use that information to
-          review, edit, publish, or follow up about the job posting.
+          When an employer or school submits a job, the information may be
+          processed through Formspree and delivered to us by email. We may review,
+          edit, publish, or follow up regarding the submission.
         </p>
 
         <p className="mt-3 leading-8 text-slate-700">
-          Job posting information that is intended for publication, such as job
-          title, employer name, location, job type, overview, responsibilities,
-          requirements, and application link, may be displayed publicly on the
+          Information intended for job listings may be displayed publicly on the
           website.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          5. Third-Party Services We Use
+          6. Third-Party Services We Use
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          We use third-party services to operate and improve NJSchoolCareers.com.
-          These may include:
-        </p>
-
-        <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
-          <li>
-            <strong>Supabase</strong> for database storage and website backend
-            functionality.
-          </li>
-          <li>
-            <strong>Resend</strong> for sending subscription and job alert emails.
-          </li>
-          <li>
-            <strong>Formspree</strong> for receiving and processing website form
-            submissions.
-          </li>
-          <li>
-            <strong>Google Analytics</strong> for analytics, research, and
-            website improvement.
-          </li>
-          <li>
-            <strong>Vercel</strong> for website hosting and deployment.
-          </li>
-        </ul>
-
-        <p className="mt-4 leading-8 text-slate-700">
-          These providers may process information according to their own privacy
-          policies and security practices. Supabase, Resend, Formspree, and
-          Google each publish information about their privacy and data handling
-          practices. Google requires websites using Google Analytics to disclose
-          the use of Google Analytics and how it collects and processes data.
+          We use third-party services to operate the website, including Supabase,
+          Resend, Formspree, Google Analytics, and Vercel. These providers may
+          process data according to their own privacy policies.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          6. Cookies and Analytics
+          7. Cookies and Analytics
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          We use Google Analytics to understand how visitors use the website and
-          to improve the experience for job seekers and employers. Google
-          Analytics may use cookies or similar technologies to collect usage
-          information, such as pages visited, browser type, device type, and
-          general location information.
+          We use Google Analytics to understand website usage. Analytics tools
+          may use cookies or similar technologies to collect usage data.
         </p>
 
         <p className="mt-3 leading-8 text-slate-700">
-          You can control cookies through your browser settings. You can also
-          learn more about how Google uses information from sites and apps that
-          use its services by visiting Google’s privacy resources.
+          You can control cookies through your browser settings.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          7. Payments and Future Employer Accounts
+          8. Payments and Future Services
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          NJSchoolCareers.com is currently offering free job posting during the
-          launch period. In the future, we may offer paid job postings, featured
-          listings, invoicing for school districts, or employer accounts.
-        </p>
-
-        <p className="mt-3 leading-8 text-slate-700">
-          If we begin collecting payments, payment information may be processed
-          by a third-party payment provider, such as Stripe, and/or through
-          invoicing systems. We do not intend to store full payment card details
-          directly on NJSchoolCareers.com.
+          If we introduce paid services, payments may be processed through
+          third-party providers such as Stripe. We do not intend to store full
+          payment card details directly.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          8. How We Share Information
+          9. How We Share Information
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          We do not sell personal information. We may share information when
-          necessary to operate the website, provide services, communicate with
-          users, comply with legal obligations, protect our rights, or work with
-          service providers that help us run NJSchoolCareers.com.
+          We do not sell personal information. We may share information with
+          service providers, comply with legal obligations, or protect our rights.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          9. Data Security
+          10. Data Security
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          We take reasonable steps to protect the information we collect.
-          However, no website, database, email system, or internet transmission
-          is completely secure, and we cannot guarantee absolute security.
+          We take reasonable steps to protect your information. However, no system
+          is completely secure.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          10. Data Retention
+          11. Data Retention
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          We keep information for as long as needed to provide our services,
-          maintain records, improve the website, comply with legal obligations,
-          resolve disputes, or enforce our agreements. You may contact us to
-          request deletion of your email subscription information.
+          We retain information as needed to operate the website and comply with
+          legal obligations.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          11. Children’s Privacy
+          12. Children’s Privacy
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          NJSchoolCareers.com is intended for job seekers, employers, schools,
-          districts, and adult users. We do not knowingly collect personal
-          information from children under 13. If you believe a child has provided
-          personal information to us, please contact us so we can take appropriate
-          action.
+          We do not knowingly collect information from children under 13.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          12. Your Choices
+          13. Your Choices
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          You may contact us to request access, correction, or deletion of
-          personal information you have provided to us. You may also request to
-          be removed from job alerts or email communications.
+          You may request access, correction, or deletion of your information by
+          contacting us.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          13. Changes to This Policy
+          14. Additional Rights
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          We may update this Privacy Policy from time to time. The updated
-          version will be posted on this page with a revised “Last updated” date.
+          Depending on your location, you may have additional rights under
+          applicable privacy laws regarding access, deletion, or control of your
+          personal information.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          14. Contact Us
+          15. Changes to This Policy
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          If you have questions about this Privacy Policy or how your information
-          is handled, contact us at{" "}
+          We may update this Privacy Policy at any time.
+        </p>
+
+        <h2 className="mt-8 text-2xl font-semibold">
+          16. Contact Us
+        </h2>
+
+        <p className="mt-3 leading-8 text-slate-700">
+          If you have questions, contact us at{" "}
           <a
             href="mailto:info@njschoolcareers.com"
             className="font-medium text-orange-600 hover:text-orange-700"
@@ -260,6 +237,12 @@ export default function PrivacyPage() {
             info@njschoolcareers.com
           </a>
           .
+        </p>
+
+        <p className="mt-6 text-sm text-slate-500">
+          You should use discretion when submitting personal or sensitive
+          information. Once shared with third parties, such as employers, we
+          cannot control how that information is used.
         </p>
       </div>
     </main>
