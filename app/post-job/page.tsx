@@ -24,7 +24,9 @@ export default function PostJobPage() {
     "w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none";
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -44,8 +46,40 @@ export default function PostJobPage() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          ...form,
-          source: "NJ School Careers - Post a Job Page",
+          _subject: `New Job Submission - ${form.jobTitle}`,
+          _replyto: form.contactEmail,
+
+          "Job Information": `
+Title: ${form.jobTitle}
+School/District: ${form.district}
+Location: ${form.location}
+Type: ${form.jobType}
+          `,
+
+          "Job Details": `
+Overview:
+${form.overview}
+
+Responsibilities:
+${form.responsibilities}
+
+Requirements:
+${form.requirements}
+
+Additional Info:
+${form.additionalInfo || "N/A"}
+          `,
+
+          Application: `
+Apply Here: ${form.applicationLink}
+          `,
+
+          Contact: `
+Name: ${form.contactName}
+Email: ${form.contactEmail}
+          `,
+
+          Source: "Submitted via NJSchoolCareers.com",
         }),
       });
 
@@ -67,7 +101,10 @@ export default function PostJobPage() {
           contactEmail: "",
         });
       } else {
-        setStatus(data?.errors?.[0]?.message || "Something went wrong. Please try again.");
+        setStatus(
+          data?.errors?.[0]?.message ||
+            "Something went wrong. Please try again."
+        );
       }
     } catch {
       setStatus("Something went wrong. Please try again.");
@@ -136,7 +173,7 @@ export default function PostJobPage() {
             name="overview"
             value={form.overview}
             onChange={handleChange}
-            placeholder="Overview: Brief summary of the role (1–2 sentences)"
+            placeholder="Overview: Brief summary of the role (1-2 sentences)"
             rows={3}
             required
             className={inputStyle}
@@ -175,7 +212,7 @@ export default function PostJobPage() {
             name="applicationLink"
             value={form.applicationLink}
             onChange={handleChange}
-            placeholder="Application URL or email"
+            placeholder="Application link (URL) or hiring email"
             required
             className={inputStyle}
           />
