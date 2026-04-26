@@ -38,7 +38,10 @@ function makeAbsoluteUrl(href: string, baseUrl: string): string {
 }
 
 function createHash(title: string, district: string, applyUrl: string): string {
-  return crypto.createHash("sha256").update(`${title}|${district}|${applyUrl}`).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(`${title}|${district}|${applyUrl}`)
+    .digest("hex");
 }
 
 function inferJobType(title: string, fallback?: string | null): string {
@@ -46,23 +49,17 @@ function inferJobType(title: string, fallback?: string | null): string {
 
   if (base.includes("substitute")) return "Substitute";
   if (base.includes("part time") || base.includes("part-time")) return "Part Time";
-
-  if (
-    base.includes("principal") ||
-    base.includes("vice principal") ||
-    base.includes("assistant principal") ||
-    base.includes("supervisor") ||
-    base.includes("director") ||
-    base.includes("administrator") ||
-    base.includes("superintendent")
-  ) {
-    return "Administrative";
-  }
+  if (base.includes("summer") || base.includes("extended school year")) return "Summer";
+  if (base.includes("coach") || base.includes("athletic")) return "Stipend";
 
   return fallback || "Full Time";
 }
 
-function buildOverview(title: string, district: string, location?: string | null): string {
+function buildOverview(
+  title: string,
+  district: string,
+  location?: string | null
+): string {
   const locationPart = location ? ` in ${location}` : "";
   return `The ${title} position at ${district}${locationPart} is now available. Review the full posting for qualifications, responsibilities, and application details.`;
 }
@@ -77,59 +74,6 @@ function parseDateString(value: string | null | undefined): string | null {
   return date.toISOString().split("T")[0];
 }
 
-function looksLikeJobTitle(text: string): boolean {
-  const value = text.toLowerCase();
-
-  const keywords = [
-    "teacher",
-    "principal",
-    "assistant principal",
-    "vice principal",
-    "supervisor",
-    "director",
-    "counselor",
-    "social worker",
-    "nurse",
-    "secretary",
-    "paraprofessional",
-    "aide",
-    "substitute",
-    "behaviorist",
-    "coordinator",
-    "special education",
-    "math",
-    "science",
-    "english",
-    "ela",
-    "esl",
-    "spanish",
-    "music",
-    "technology",
-    "physical education",
-    "guidance",
-    "child study",
-    "administrator",
-    "athletics",
-    "custodian",
-    "maintenance",
-    "band",
-    "choir",
-    "intern",
-    "translator",
-    "human resources",
-    "superintendent",
-    "coach",
-    "bcba",
-    "autism",
-    "preschool",
-    "chemistry",
-    "biology",
-    "engineering",
-  ];
-
-  return keywords.some((keyword) => value.includes(keyword));
-}
-
 function isJunkTitle(text: string): boolean {
   const value = text.toLowerCase();
 
@@ -139,61 +83,92 @@ function isJunkTitle(text: string): boolean {
     "request technical help",
     "technical help",
     "fmla notice",
-    "new jersey teaching jobs",
-    "our homepage",
-    "benefits",
-    "certification information",
-    "employment opportunities",
-    "district compliance officers",
-    "employment contracts",
-    "human resources menu",
-    "job descriptions",
-    "start an application",
-    "use passcodes sent to me",
     "all jobs",
+    "view internal positions",
+    "internal positions",
+    "internal applicants",
+    "internal only",
+    "email to a friend",
+    "print version",
+    "show/hide",
   ];
 
-  if (badPhrases.some((phrase) => value.includes(phrase))) return true;
-  if (value === "district") return true;
-  if (/\(\d+\)$/.test(text) && !looksLikeJobTitle(text)) return true;
+  return badPhrases.some((phrase) => value.includes(phrase));
+}
 
-  return false;
+function getFieldFromText(text: string, label: string): string | null {
+  const regex = new RegExp(`${label}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*[A-Z][A-Za-z ]+\\s*:|$)`, "i");
+  const match = text.match(regex);
+  return match ? normalizeText(match[1]) : null;
 }
 
 /**
  * APPLITRACK / FRONTLINE
- * Basic temporary parser. This is not the full category-crawler yet.
+ * Parses real job tables that contain JobID.
  */
 function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[] {
   const $ = cheerio.load(html);
   const jobs: ParsedJob[] = [];
   const seen = new Set<string>();
 
-  $('a[href*="default.aspx"], a[href*="onlineapp"], a[href*="applitrack"]').each((_, el) => {
-    const rawText = normalizeText($(el).text());
-    const href = normalizeText($(el).attr("href"));
+  const jobTables = $("table").filter((_, el) => {
+    return $(el).text().includes("JobID:");
+  });
 
-    if (!href || !rawText) return;
-    if (isJunkTitle(rawText)) return;
-    if (!looksLikeJobTitle(rawText)) return;
+  console.log("APPLITRACK TABLES FOUND:", jobTables.length);
 
-    const applyUrl = makeAbsoluteUrl(href, source.source_url);
-    const key = `${rawText}|${applyUrl}`;
+  jobTables.each((_, el) => {
+    const container = $(el);
+    const fullText = container.text();
 
+    const jobIdMatch = fullText.match(/JobID:\s*(\d+)/i);
+    const jobId = jobIdMatch ? jobIdMatch[1] : "";
+
+    const title =
+      normalizeText(container.find("span").first().text()) ||
+      normalizeText(container.find("b, strong").first().text());
+
+    if (!title || title.length < 5) return;
+    if (isJunkTitle(title)) return;
+
+    const lowerTitle = title.toLowerCase();
+    const lowerText = fullText.toLowerCase();
+
+    if (
+      lowerTitle.includes("internal") ||
+      lowerText.includes("internal applicants only") ||
+      lowerText.includes("internal only") ||
+      lowerText.includes("view internal positions")
+    ) {
+      return;
+    }
+
+    const positionType = getFieldFromText(fullText, "Position Type");
+    const location = getFieldFromText(fullText, "Location");
+    const posted = parseDateString(getFieldFromText(fullText, "Date Posted"));
+    const type = inferJobType(title, positionType);
+
+    const applyUrl = jobId
+      ? makeAbsoluteUrl(`JobPostings/view.asp?jobid=${jobId}&embed=1`, source.source_url)
+      : source.source_url;
+
+    const key = `${title}|${source.district_name}|${jobId || applyUrl}`;
     if (seen.has(key)) return;
     seen.add(key);
 
     jobs.push({
-      title: rawText,
+      title,
       district: source.district_name,
-      location: null,
+      location,
       county: source.county ?? null,
-      type: inferJobType(rawText),
-      posted: null,
+      type,
+      posted,
       applyUrl,
-      overview: buildOverview(rawText, source.district_name),
-      raw_source_text: rawText,
+      overview: buildOverview(title, source.district_name, location),
+      raw_source_text: normalizeText(fullText.slice(0, 1500)),
     });
+
+    console.log("FOUND JOB:", title);
   });
 
   return jobs;
@@ -216,7 +191,6 @@ function parseGenericDistrictPage(html: string, source: JobSource): ParsedJob[] 
 
     const hrefLower = href.toLowerCase();
     const looksLikeJobLink =
-      looksLikeJobTitle(rawText) ||
       hrefLower.includes("job") ||
       hrefLower.includes("position") ||
       hrefLower.includes("career") ||
@@ -246,7 +220,10 @@ function parseGenericDistrictPage(html: string, source: JobSource): ParsedJob[] 
   return jobs;
 }
 
-async function parseJobsFromSource(html: string, source: JobSource): Promise<ParsedJob[]> {
+async function parseJobsFromSource(
+  html: string,
+  source: JobSource
+): Promise<ParsedJob[]> {
   const sourceType = normalizeText(source.source_type).toLowerCase();
 
   if (sourceType === "applitrack" || sourceType === "frontline") {
@@ -306,20 +283,21 @@ export async function GET(req: Request) {
       };
 
       try {
-  const response = await fetch(source.source_url, {
-  headers: {
-    "User-Agent": "NJSchoolCareersBot/1.0 (+https://www.njschoolcareers.com)",
-  },
-  cache: "no-store",
-});
+        const response = await fetch(source.source_url, {
+          headers: {
+            "User-Agent":
+              "NJSchoolCareersBot/1.0 (+https://www.njschoolcareers.com)",
+          },
+          cache: "no-store",
+        });
 
-if (!response.ok) {
-  sourceResult.errors.push(`Fetch failed: ${response.status}`);
-  results.push(sourceResult);
-  continue;
-}
+        if (!response.ok) {
+          sourceResult.errors.push(`Fetch failed: ${response.status}`);
+          results.push(sourceResult);
+          continue;
+        }
 
-const html = await response.text();
+        const html = await response.text();
         const parsedJobs = await parseJobsFromSource(html, source);
         sourceResult.found = parsedJobs.length;
 
@@ -364,7 +342,8 @@ const html = await response.text();
           .update({ last_checked_at: new Date().toISOString() })
           .eq("id", source.id);
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unknown server error";
+        const message =
+          error instanceof Error ? error.message : "Unknown server error";
         sourceResult.errors.push(message);
       }
 
@@ -377,7 +356,8 @@ const html = await response.text();
       results,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown server error";
+    const message =
+      error instanceof Error ? error.message : "Unknown server error";
     return Response.json({ error: message }, { status: 500 });
   }
 }
