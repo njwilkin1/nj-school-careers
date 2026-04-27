@@ -19,6 +19,40 @@ function formatDate(value?: string | null) {
   });
 }
 
+function formatAdditionalInfo(text: string) {
+  if (!text) return [];
+
+  const sections = text.split(
+    /(QUALIFICATIONS:|Qualifications:|SALARY:|Salary:|SALARY RANGE:|Salary Range:|BENEFITS:|Benefits:|RESPONSIBILITIES:|Responsibilities:|REQUIREMENTS:|Requirements:|DESCRIPTION:|Description:)/g
+  );
+
+  const formatted: { title: string | null; content: string }[] = [];
+
+  for (let i = 0; i < sections.length; i++) {
+    const part = sections[i]?.trim();
+
+    if (!part) continue;
+
+    if (part.endsWith(":")) {
+      const content = sections[i + 1]?.trim() || "";
+
+      formatted.push({
+        title: part.replace(":", ""),
+        content,
+      });
+
+      i++;
+    } else {
+      formatted.push({
+        title: null,
+        content: part,
+      });
+    }
+  }
+
+  return formatted;
+}
+
 export default async function JobDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
@@ -48,6 +82,9 @@ export default async function JobDetailPage({ params }: PageProps) {
 
   const job = data;
   const postedDate = job.date_posted || job.posted;
+  const jobDetails = job.additional_information
+    ? formatAdditionalInfo(job.additional_information)
+    : [];
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
@@ -133,14 +170,26 @@ export default async function JobDetailPage({ params }: PageProps) {
             </section>
           )}
 
-          {job.additional_information && (
+          {jobDetails.length > 0 && (
             <section className="mt-8">
               <h2 className="text-2xl font-semibold text-slate-950">
                 Job Details
               </h2>
 
-              <div className="mt-4 whitespace-pre-line rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-700">
-                {job.additional_information}
+              <div className="mt-4 space-y-6 rounded-2xl border border-slate-200 bg-white p-5">
+                {jobDetails.map((section, index) => (
+                  <div key={`detail-${index}`}>
+                    {section.title && (
+                      <h3 className="mb-2 text-lg font-semibold text-slate-950">
+                        {section.title}
+                      </h3>
+                    )}
+
+                    <p className="whitespace-pre-line text-sm leading-7 text-slate-700">
+                      {section.content}
+                    </p>
+                  </div>
+                ))}
               </div>
             </section>
           )}
