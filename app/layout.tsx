@@ -67,20 +67,20 @@ export default function RootLayout({
               </div>
             </div>
 
-            {/* Employers */}
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Employers
-              </h3>
-              <div className="mt-6 space-y-4 text-base text-slate-600">
-                <a href="/post-job" className="block hover:text-orange-600">
-                  Post a Job
-                </a>
-                <a href="/#employers" className="block hover:text-orange-600">
-                  Employer Info
-                </a>
-              </div>
-            </div>
+           {/* Employers */}
+<div>
+  <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+    Employers
+  </h3>
+  <div className="mt-6 space-y-4 text-base text-slate-600">
+    <a href="/post-job" className="block hover:text-orange-600">
+      Post a Job
+    </a>
+    <a href="/employers" className="block hover:text-orange-600">
+      Employer Info
+    </a>
+  </div>
+</div>
 
             {/* Company */}
             <div>
