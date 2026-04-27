@@ -168,12 +168,12 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
 
     if (!title) {
       title = normalizeText(
-        container
-          .find("b, strong, i")
-          .filter((_, item) => {
-            const text = normalizeText($(item).text());
-            return text && !text.toLowerCase().includes("jobid");
-          })
+      container
+  .find("b, strong, i")
+  .filter((_, item) => {
+    const text = normalizeText($(item).text());
+    return Boolean(text) && !text.toLowerCase().includes("jobid");
+  })
           .first()
           .text()
       );
