@@ -176,7 +176,7 @@ function getAdditionalInformation(fullText: string): string | null {
   return cleaned.length > 0 ? cleaned : null;
 }
 
-function getJobBlockText($: cheerio.CheerioAPI, table: cheerio.Element): string {
+function getJobBlockText($: cheerio.CheerioAPI, table: any): string {
   let container = $(table);
   let parent = container.parent();
 
