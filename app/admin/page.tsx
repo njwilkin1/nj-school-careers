@@ -29,7 +29,15 @@ const countyOptions = [
   "Burlington County",
   "Somerset County",
   "Camden County",
-  "Other NJ",
+  "Cape May",
+  "Gloucester County",
+  "Warren County",
+  "Sussex County",
+  "Salem County",
+  "Mercer County",
+  "Hunterdon County",
+  "Cumberland County",
+  "Atlantic County",
 ];
 
 const initialForm: FormState = {
