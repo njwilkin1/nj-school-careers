@@ -6,6 +6,26 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
+function getDisplayType(title: string, positionType?: string | null) {
+  const t = title.toLowerCase();
+
+  if (t.includes("bus driver")) return "Transportation";
+  if (t.includes("custodian")) return "Facilities";
+  if (t.includes("secretary") || t.includes("administrative")) {
+    return "Administrative";
+  }
+
+  if (
+    !positionType ||
+    positionType.toLowerCase().includes("athletics") ||
+    positionType.toLowerCase().includes("other")
+  ) {
+    return null;
+  }
+
+  return positionType;
+}
+
 function formatDate(value?: string | null) {
   if (!value) return "";
 
@@ -30,23 +50,16 @@ function formatAdditionalInfo(text: string) {
 
   for (let i = 0; i < sections.length; i++) {
     const part = sections[i]?.trim();
-
     if (!part) continue;
 
     if (part.endsWith(":")) {
-      const content = sections[i + 1]?.trim() || "";
-
       formatted.push({
         title: part.replace(":", ""),
-        content,
+        content: sections[i + 1]?.trim() || "",
       });
-
       i++;
     } else {
-      formatted.push({
-        title: null,
-        content: part,
-      });
+      formatted.push({ title: null, content: part });
     }
   }
 
@@ -64,16 +77,8 @@ export default async function JobDetailPage({ params }: PageProps) {
   const isImportedJob = /^\d+$/.test(slug);
 
   const { data, error } = isImportedJob
-    ? await supabase
-        .from("job_imports")
-        .select("*")
-        .eq("id", Number(slug))
-        .maybeSingle()
-    : await supabase
-        .from("jobs")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
+    ? await supabase.from("job_imports").select("*").eq("id", Number(slug)).maybeSingle()
+    : await supabase.from("jobs").select("*").eq("slug", slug).maybeSingle();
 
   if (error || !data) {
     console.error("Job detail fetch error:", error, "slug/id:", slug);
@@ -82,6 +87,7 @@ export default async function JobDetailPage({ params }: PageProps) {
 
   const job = data;
   const postedDate = job.date_posted || job.posted;
+  const displayType = getDisplayType(job.title, job.position_type || job.type);
   const jobDetails = job.additional_information
     ? formatAdditionalInfo(job.additional_information)
     : [];
@@ -126,12 +132,12 @@ export default async function JobDetailPage({ params }: PageProps) {
           </div>
 
           <div className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700 md:grid-cols-2">
-            {(job.position_type || job.type) && (
+            {displayType && (
               <p>
                 <span className="font-semibold text-slate-950">
                   Position Type:
                 </span>{" "}
-                {job.position_type || job.type}
+                {displayType}
               </p>
             )}
 
@@ -191,35 +197,6 @@ export default async function JobDetailPage({ params }: PageProps) {
                   </div>
                 ))}
               </div>
-            </section>
-          )}
-
-          {Array.isArray(job.responsibilities) &&
-            job.responsibilities.length > 0 && (
-              <section className="mt-8">
-                <h2 className="text-2xl font-semibold text-slate-950">
-                  Responsibilities
-                </h2>
-
-                <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
-                  {job.responsibilities.map((item: string, index: number) => (
-                    <li key={`resp-${index}`}>{item}</li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-          {Array.isArray(job.requirements) && job.requirements.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-2xl font-semibold text-slate-950">
-                Requirements
-              </h2>
-
-              <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
-                {job.requirements.map((item: string, index: number) => (
-                  <li key={`req-${index}`}>{item}</li>
-                ))}
-              </ul>
             </section>
           )}
 

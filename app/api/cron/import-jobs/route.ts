@@ -38,15 +38,18 @@ function cleanAdditionalInfo(text: string): string {
 
   return text
     .replace(/\r/g, "")
+    .replace(/Show\/Hide/gi, "")
+    .replace(/Email To A Friend/gi, "")
+    .replace(/Print Version/gi, "")
+    .replace(/Attachment\(s\):[\s\S]*$/gi, "")
+    .replace(/JobID:\s*\d+/gi, "")
     .replace(/\s{2,}/g, " ")
     .replace(/(Qualifications:)/gi, "\n\n$1\n")
-    .replace(/(QUALIFICATIONS:)/g, "\n\n$1\n")
     .replace(/(Salary:)/gi, "\n\n$1\n")
     .replace(/(Salary Range:)/gi, "\n\n$1\n")
     .replace(/(Benefits:)/gi, "\n\n$1\n")
     .replace(/(Responsibilities:)/gi, "\n\n$1\n")
     .replace(/(Requirements:)/gi, "\n\n$1\n")
-    .replace(/(Position Type:)/gi, "\n\n$1\n")
     .replace(/•/g, "\n• ")
     .trim();
 }
@@ -69,6 +72,12 @@ function buildApplitrackApplicationUrl(sourceUrl: string, jobId: string): string
 function inferJobType(title: string, fallback?: string | null): string {
   const base = `${title} ${fallback || ""}`.toLowerCase();
 
+  // 🔥 OVERRIDES (fix bad Applitrack data)
+  if (base.includes("bus driver")) return "Transportation";
+  if (base.includes("custodian")) return "Facilities";
+  if (base.includes("secretary") || base.includes("administrative")) return "Administrative";
+
+  // Existing logic
   if (base.includes("substitute")) return "Substitute";
   if (base.includes("part time") || base.includes("part-time")) return "Part Time";
   if (base.includes("summer") || base.includes("extended school year")) return "Summer";
@@ -120,24 +129,73 @@ function isJunkTitle(text: string): boolean {
   return badPhrases.some((phrase) => value.includes(phrase));
 }
 
-function getFieldFromText(text: string, label: string): string | null {
+function getCleanField(fullText: string, label: string): string | null {
+  const labels = [
+    "Position Type",
+    "Date Posted",
+    "Location",
+    "Closing Date",
+    "Date Available",
+    "Additional Information",
+    "Attachment\\(s\\)",
+  ];
+
+  const otherLabels = labels.filter(
+    (item) => item.toLowerCase() !== label.toLowerCase()
+  );
+
   const regex = new RegExp(
-    `${label}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*[A-Z][A-Za-z ]+\\s*:|$)`,
+    `${label}\\s*:\\s*([\\s\\S]*?)(?=\\s*(?:${otherLabels.join(
+      "|"
+    )})\\s*:|\\s*Email To A Friend|\\s*Print Version|\\s*JobID:|$)`,
     "i"
   );
 
-  const match = text.match(regex);
-  return match ? normalizeText(match[1]) : null;
+  const match = fullText.match(regex);
+  if (!match || !match[1]) return null;
+
+  const cleaned = normalizeText(match[1])
+    .replace(/Show\/Hide/gi, "")
+    .replace(/Email To A Friend/gi, "")
+    .replace(/Print Version/gi, "")
+    .replace(/Attachment\(s\):.*$/gi, "")
+    .replace(/job descriptions?/gi, "")
+    .trim();
+
+  return cleaned.length > 0 ? cleaned : null;
 }
 
 function getAdditionalInformation(fullText: string): string | null {
-  const split = fullText.split(/Additional Information\s*:/i);
+  const match = fullText.match(
+    /Additional Information\s*:?\s*Show\/Hide\s*([\s\S]*?)(?=\s*Attachment\(s\):|\s*Email To A Friend|\s*Print Version|\s*JobID:|$)/i
+  );
 
-  if (split.length > 1) {
-    return cleanAdditionalInfo(split[1]);
+  if (!match || !match[1]) return null;
+
+  const cleaned = cleanAdditionalInfo(match[1]);
+  return cleaned.length > 0 ? cleaned : null;
+}
+
+function getJobBlockText($: cheerio.CheerioAPI, table: cheerio.Element): string {
+  let container = $(table);
+  let parent = container.parent();
+
+  for (let i = 0; i < 8; i++) {
+    const parentText = parent.text();
+
+    if (
+      parentText.includes("Position Type:") &&
+      parentText.includes("Date Posted:") &&
+      parentText.includes("Additional Information")
+    ) {
+      container = parent;
+      break;
+    }
+
+    parent = parent.parent();
   }
 
-  return null;
+  return container.text();
 }
 
 function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[] {
@@ -153,7 +211,7 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
 
   jobTables.each((_, el) => {
     const container = $(el);
-    const fullText = container.text();
+    const fullText = getJobBlockText($, el);
 
     const jobIdMatch = fullText.match(/JobID:\s*(\d+)/i);
     const jobId = jobIdMatch ? jobIdMatch[1] : "";
@@ -168,12 +226,12 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
 
     if (!title) {
       title = normalizeText(
-      container
-  .find("b, strong, i")
-  .filter((_, item) => {
-    const text = normalizeText($(item).text());
-    return Boolean(text) && !text.toLowerCase().includes("jobid");
-  })
+        container
+          .find("b, strong, i")
+          .filter((_, item) => {
+            const text = normalizeText($(item).text());
+            return Boolean(text) && !text.toLowerCase().includes("jobid");
+          })
           .first()
           .text()
       );
@@ -194,15 +252,10 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
       return;
     }
 
-    const positionType = getFieldFromText(fullText, "Position Type");
-
-    const location =
-      getFieldFromText(fullText, "Location") ||
-      source.district_name ||
-      null;
-
-    const datePosted = parseDateString(getFieldFromText(fullText, "Date Posted"));
-    const closingDate = getFieldFromText(fullText, "Closing Date");
+    const positionType = getCleanField(fullText, "Position Type");
+    const location = getCleanField(fullText, "Location") || source.district_name || null;
+    const datePosted = parseDateString(getCleanField(fullText, "Date Posted"));
+    const closingDate = getCleanField(fullText, "Closing Date");
     const additionalInformation = getAdditionalInformation(fullText);
 
     const type = inferJobType(title, positionType);
@@ -221,7 +274,7 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
       posted: datePosted,
       applyUrl,
       overview: buildOverview(title, source.district_name, location),
-      raw_source_text: normalizeText(fullText.slice(0, 2000)),
+      raw_source_text: normalizeText(fullText.slice(0, 3000)),
       position_type: positionType,
       date_posted: datePosted,
       closing_date: closingDate,
@@ -229,6 +282,10 @@ function parseApplitrackLandingPage(html: string, source: JobSource): ParsedJob[
     });
 
     console.log("FOUND JOB:", title);
+    console.log("POSITION TYPE:", positionType);
+    console.log("LOCATION:", location);
+    console.log("CLOSING DATE:", closingDate);
+    console.log("ADDITIONAL INFO:", additionalInformation);
     console.log("APPLY URL:", applyUrl);
   });
 
