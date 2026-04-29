@@ -29,7 +29,7 @@ const countyOptions = [
   "Burlington County",
   "Somerset County",
   "Camden County",
-  "Cape May",
+  "Cape May County",
   "Gloucester County",
   "Warren County",
   "Sussex County",
