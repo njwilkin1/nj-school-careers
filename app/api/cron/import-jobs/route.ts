@@ -428,6 +428,7 @@ export async function GET(req: Request) {
             title: job.title,
             district: job.district,
             location: job.location,
+            city: source.city,
             county: job.county,
             type: job.type,
             posted: job.posted,

@@ -39,31 +39,93 @@ function formatDate(value?: string | null) {
   });
 }
 
+function cleanJobDetailText(text: string) {
+  return text
+    .replace(/�/g, "-")
+    .replace(/\s+/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1. $2")
+    .replace(/(Position Description)/gi, "\n\n$1\n")
+    .replace(/(Qualifications)/gi, "\n\n$1\n")
+    .replace(/(Skills, Knowledge, and Personal Qualities)/gi, "\n\n$1\n")
+    .replace(/(Responsibilities)/gi, "\n\n$1\n")
+    .replace(/(Requirements)/gi, "\n\n$1\n")
+    .replace(/(Salary Range)/gi, "\n\n$1\n")
+    .replace(/(Salary)/gi, "\n\n$1\n")
+    .replace(/(Benefits)/gi, "\n\n$1\n")
+    .replace(/(Hours)/gi, "\n\n$1\n")
+    .replace(/(Reports directly to)/gi, "\n\n$1")
+    .replace(/(Holds a New Jersey)/gi, "\n• $1")
+    .replace(/(Demonstrated ability)/gi, "\n• $1")
+    .replace(/(Ability to communicate)/gi, "\n• $1")
+    .trim();
+}
+
+function normalizeHeading(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/^\w/, (c) => c.toUpperCase());
+}
+
 function formatAdditionalInfo(text: string) {
   if (!text) return [];
 
-  const sections = text.split(
-    /(QUALIFICATIONS:|Qualifications:|SALARY:|Salary:|SALARY RANGE:|Salary Range:|BENEFITS:|Benefits:|RESPONSIBILITIES:|Responsibilities:|REQUIREMENTS:|Requirements:|DESCRIPTION:|Description:)/g
-  );
+  const cleaned = cleanJobDetailText(text);
 
-  const formatted: { title: string | null; content: string }[] = [];
+  const headings = [
+    "Position Description",
+    "Qualifications",
+    "Skills, Knowledge, and Personal Qualities",
+    "Responsibilities",
+    "Requirements",
+    "Salary Range",
+    "Salary",
+    "Benefits",
+    "Hours",
+  ];
 
-  for (let i = 0; i < sections.length; i++) {
-    const part = sections[i]?.trim();
-    if (!part) continue;
+  const pattern = new RegExp(`(${headings.join("|")})`, "gi");
+  const parts = cleaned
+    .split(pattern)
+    .map((p) => p.trim())
+    .filter(Boolean);
 
-    if (part.endsWith(":")) {
-      formatted.push({
-        title: part.replace(":", ""),
-        content: sections[i + 1]?.trim() || "",
-      });
-      i++;
-    } else {
-      formatted.push({ title: null, content: part });
-    }
+  const formatted: { title: string | null; content: string[] }[] = [];
+
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+
+    const isHeading = headings.some(
+      (h) => h.toLowerCase() === part.toLowerCase()
+    );
+
+    const rawContent = isHeading ? parts[i + 1] || "" : part;
+
+    const lines = rawContent
+      .split(/•|\n|\.(?=\s+[A-Z])/)
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+
+    if (lines.length === 0) continue;
+
+    formatted.push({
+      title: isHeading ? normalizeHeading(part) : null,
+      content: lines,
+    });
+
+    if (isHeading) i++;
   }
 
-  return formatted;
+  const seen = new Set<string>();
+
+  return formatted.filter((section) => {
+    if (!section.title) return true;
+
+    const key = section.title.toLowerCase();
+    if (seen.has(key)) return false;
+
+    seen.add(key);
+    return true;
+  });
 }
 
 export default async function JobDetailPage({ params }: PageProps) {
@@ -77,7 +139,11 @@ export default async function JobDetailPage({ params }: PageProps) {
   const isImportedJob = /^\d+$/.test(slug);
 
   const { data, error } = isImportedJob
-    ? await supabase.from("job_imports").select("*").eq("id", Number(slug)).maybeSingle()
+    ? await supabase
+        .from("job_imports")
+        .select("*")
+        .eq("id", Number(slug))
+        .maybeSingle()
     : await supabase.from("jobs").select("*").eq("slug", slug).maybeSingle();
 
   if (error || !data) {
@@ -114,7 +180,7 @@ export default async function JobDetailPage({ params }: PageProps) {
               </p>
 
               <p className="mt-2 text-sm text-slate-500">
-                {job.location || job.district}
+                {job.city || job.location || job.district}
                 {job.county ? ` · ${job.county}` : ""}
               </p>
             </div>
@@ -150,10 +216,12 @@ export default async function JobDetailPage({ params }: PageProps) {
               </p>
             )}
 
-            {job.location && (
+            {(job.city || job.location) && (
               <p>
                 <span className="font-semibold text-slate-950">Location:</span>{" "}
-                {job.location}
+                {job.location && job.location !== "District"
+                  ? job.location
+                  : job.city}
               </p>
             )}
 
@@ -162,19 +230,10 @@ export default async function JobDetailPage({ params }: PageProps) {
                 <span className="font-semibold text-slate-950">
                   Closing Date:
                 </span>{" "}
-                {job.closing_date}
+                {formatDate(job.closing_date)}
               </p>
             )}
           </div>
-
-          {job.overview && (
-            <section className="mt-8">
-              <h2 className="text-2xl font-semibold text-slate-950">
-                Overview
-              </h2>
-              <p className="mt-3 leading-7 text-slate-700">{job.overview}</p>
-            </section>
-          )}
 
           {jobDetails.length > 0 && (
             <section className="mt-8">
@@ -191,9 +250,13 @@ export default async function JobDetailPage({ params }: PageProps) {
                       </h3>
                     )}
 
-                    <p className="whitespace-pre-line text-sm leading-7 text-slate-700">
-                      {section.content}
-                    </p>
+                    <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                      {section.content.map((line, i) => (
+                        <li key={i} className="ml-5 list-disc">
+                          {line}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 ))}
               </div>
