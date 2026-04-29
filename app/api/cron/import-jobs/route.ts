@@ -8,6 +8,7 @@ type JobSource = {
   source_type: string;
   source_url: string;
   county?: string | null;
+  city?: string | null;   // 👈 ADD THIS LINE
   is_active?: boolean;
   last_checked_at?: string | null;
   notes?: string | null;
