@@ -6,6 +6,11 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
+type DetailSection = {
+  title: string | null;
+  content: string[];
+};
+
 function getDisplayType(title: string, positionType?: string | null) {
   const t = title.toLowerCase();
 
@@ -39,24 +44,24 @@ function formatDate(value?: string | null) {
   });
 }
 
-function cleanJobDetailText(text: string) {
-  return text
+function applyHref(value?: string | null) {
+  if (!value) return "";
+
+  const trimmed = value.trim();
+
+  if (trimmed.startsWith("mailto:")) return trimmed;
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    return `mailto:${trimmed}`;
+  }
+
+  return trimmed;
+}
+
+function cleanLine(line: string) {
+  return line
     .replace(/�/g, "-")
+    .replace(/^[-•]\s*/, "")
     .replace(/\s+/g, " ")
-    .replace(/([a-z])([A-Z])/g, "$1. $2")
-    .replace(/(Position Description)/gi, "\n\n$1\n")
-    .replace(/(Qualifications)/gi, "\n\n$1\n")
-    .replace(/(Skills, Knowledge, and Personal Qualities)/gi, "\n\n$1\n")
-    .replace(/(Responsibilities)/gi, "\n\n$1\n")
-    .replace(/(Requirements)/gi, "\n\n$1\n")
-    .replace(/(Salary Range)/gi, "\n\n$1\n")
-    .replace(/(Salary)/gi, "\n\n$1\n")
-    .replace(/(Benefits)/gi, "\n\n$1\n")
-    .replace(/(Hours)/gi, "\n\n$1\n")
-    .replace(/(Reports directly to)/gi, "\n\n$1")
-    .replace(/(Holds a New Jersey)/gi, "\n• $1")
-    .replace(/(Demonstrated ability)/gi, "\n• $1")
-    .replace(/(Ability to communicate)/gi, "\n• $1")
     .trim();
 }
 
@@ -66,66 +71,89 @@ function normalizeHeading(title: string) {
     .replace(/^\w/, (c) => c.toUpperCase());
 }
 
-function formatAdditionalInfo(text: string) {
+function parseStructuredText(text?: string | null): DetailSection[] {
   if (!text) return [];
 
-  const cleaned = cleanJobDetailText(text);
+  const cleaned = text
+    .replace(/�/g, "-")
+    .replace(/\r/g, "")
+    .replace(/([a-z])([A-Z])/g, "$1. $2")
+    .replace(/(Position Description)/gi, "\n$1\n")
+    .replace(/(Job Description)/gi, "\n$1\n")
+    .replace(/(Responsibilities)/gi, "\n$1\n")
+    .replace(/(Qualifications)/gi, "\n$1\n")
+    .replace(/(Requirements)/gi, "\n$1\n")
+    .replace(/(Skills, Knowledge, and Personal Qualities)/gi, "\n$1\n")
+    .replace(/(Benefits)/gi, "\n$1\n")
+    .replace(/(Hours)/gi, "\n$1\n")
+    .replace(/(Salary Range)/gi, "\n$1\n")
+    .replace(/(Salary)/gi, "\n$1\n")
+    .trim();
 
   const headings = [
+    "Job Description",
     "Position Description",
-    "Qualifications",
-    "Skills, Knowledge, and Personal Qualities",
     "Responsibilities",
+    "Qualifications",
     "Requirements",
+    "Skills, Knowledge, and Personal Qualities",
+    "Benefits",
     "Salary Range",
     "Salary",
-    "Benefits",
     "Hours",
   ];
 
-  const pattern = new RegExp(`(${headings.join("|")})`, "gi");
-  const parts = cleaned
-    .split(pattern)
-    .map((p) => p.trim())
-    .filter(Boolean);
+  const headingRegex = new RegExp(`^(${headings.join("|")}):?$`, "i");
+  const sections: DetailSection[] = [];
+  let current: DetailSection = { title: null, content: [] };
 
-  const formatted: { title: string | null; content: string[] }[] = [];
-
-  for (let i = 0; i < parts.length; i++) {
-    const part = parts[i];
-
-    const isHeading = headings.some(
-      (h) => h.toLowerCase() === part.toLowerCase()
-    );
-
-    const rawContent = isHeading ? parts[i + 1] || "" : part;
-
-    const lines = rawContent
-      .split(/•|\n|\.(?=\s+[A-Z])/)
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0);
-
-    if (lines.length === 0) continue;
-
-    formatted.push({
-      title: isHeading ? normalizeHeading(part) : null,
-      content: lines,
+  const rawLines = cleaned
+    .split(/\n|•|\.(?=\s+[A-Z])/)
+    .map(cleanLine)
+    .filter((line) => {
+      if (!line) return false;
+      if (line === "." || line === ":" || line === "-") return false;
+      if (/^(n\/a|none|null|undefined)$/i.test(line)) return false;
+      return true;
     });
 
-    if (isHeading) i++;
+  for (const line of rawLines) {
+    const headingMatch = line.match(headingRegex);
+
+    if (headingMatch) {
+      if (current.content.length > 0 || current.title) {
+        sections.push(current);
+      }
+
+      current = {
+        title: normalizeHeading(headingMatch[1]),
+        content: [],
+      };
+    } else {
+      current.content.push(line);
+    }
   }
 
-  const seen = new Set<string>();
+  if (current.content.length > 0 || current.title) {
+    sections.push(current);
+  }
 
-  return formatted.filter((section) => {
-    if (!section.title) return true;
+  return sections.filter((section) => section.content.length > 0);
+}
 
-    const key = section.title.toLowerCase();
-    if (seen.has(key)) return false;
+function toArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item).trim()).filter(Boolean);
+  }
 
-    seen.add(key);
-    return true;
-  });
+  if (typeof value === "string") {
+    return value
+      .split("\n")
+      .map(cleanLine)
+      .filter(Boolean);
+  }
+
+  return [];
 }
 
 export default async function JobDetailPage({ params }: PageProps) {
@@ -154,9 +182,24 @@ export default async function JobDetailPage({ params }: PageProps) {
   const job = data;
   const postedDate = job.date_posted || job.posted;
   const displayType = getDisplayType(job.title, job.position_type || job.type);
-  const jobDetails = job.additional_information
-    ? formatAdditionalInfo(job.additional_information)
+  const locationLabel = job.city || job.location || job.district;
+  const href = applyHref(job.applyUrl);
+
+  const importedDetails = isImportedJob
+    ? parseStructuredText(job.additional_information)
     : [];
+
+  const manualDescriptionSections = !isImportedJob
+    ? parseStructuredText(job.job_description || job.overview)
+    : [];
+
+  const benefits = !isImportedJob ? toArray(job.benefits) : [];
+
+  const legacyResponsibilities = !isImportedJob
+    ? toArray(job.responsibilities)
+    : [];
+
+  const legacyRequirements = !isImportedJob ? toArray(job.requirements) : [];
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
@@ -180,14 +223,21 @@ export default async function JobDetailPage({ params }: PageProps) {
               </p>
 
               <p className="mt-2 text-sm text-slate-500">
-                {job.city || job.location || job.district}
+                {locationLabel}
                 {job.county ? ` · ${job.county}` : ""}
               </p>
+
+              {!isImportedJob && job.salary_range && (
+                <p className="mt-4 text-xl font-semibold text-slate-950">
+                  {job.salary_range}
+                  {displayType ? ` · ${displayType}` : ""}
+                </p>
+              )}
             </div>
 
-            {job.applyUrl && (
+            {href && (
               <a
-                href={job.applyUrl}
+                href={href}
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-2xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
@@ -216,34 +266,61 @@ export default async function JobDetailPage({ params }: PageProps) {
               </p>
             )}
 
-            {(job.city || job.location) && (
+            {locationLabel && (
               <p>
                 <span className="font-semibold text-slate-950">Location:</span>{" "}
                 {job.location && job.location !== "District"
                   ? job.location
-                  : job.city}
+                  : locationLabel}
               </p>
             )}
 
-            {job.closing_date && (
+            {(job.closing_date || job.closingDate) && (
               <p>
                 <span className="font-semibold text-slate-950">
                   Closing Date:
                 </span>{" "}
-                {formatDate(job.closing_date)}
+                {formatDate(job.closing_date || job.closingDate)}
+              </p>
+            )}
+
+            {!isImportedJob && job.salary_range && (
+              <p>
+                <span className="font-semibold text-slate-950">
+                  Salary Range:
+                </span>{" "}
+                {job.salary_range}
               </p>
             )}
           </div>
 
-          {jobDetails.length > 0 && (
+          {!isImportedJob && benefits.length > 0 && (
             <section className="mt-8">
               <h2 className="text-2xl font-semibold text-slate-950">
-                Job Details
+                Benefits
+              </h2>
+
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+                <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                  {benefits.map((item, index) => (
+                    <li key={`benefit-${index}`} className="ml-5 list-disc">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          )}
+
+          {!isImportedJob && manualDescriptionSections.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-2xl font-semibold text-slate-950">
+                Job Description
               </h2>
 
               <div className="mt-4 space-y-6 rounded-2xl border border-slate-200 bg-white p-5">
-                {jobDetails.map((section, index) => (
-                  <div key={`detail-${index}`}>
+                {manualDescriptionSections.map((section, index) => (
+                  <div key={`manual-detail-${index}`}>
                     {section.title && (
                       <h3 className="mb-2 text-lg font-semibold text-slate-950">
                         {section.title}
@@ -263,10 +340,74 @@ export default async function JobDetailPage({ params }: PageProps) {
             </section>
           )}
 
-          {job.applyUrl && (
+          {!isImportedJob && legacyResponsibilities.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-2xl font-semibold text-slate-950">
+                Responsibilities
+              </h2>
+
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+                <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                  {legacyResponsibilities.map((item, index) => (
+                    <li key={`resp-${index}`} className="ml-5 list-disc">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          )}
+
+          {!isImportedJob && legacyRequirements.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-2xl font-semibold text-slate-950">
+                Requirements
+              </h2>
+
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+                <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                  {legacyRequirements.map((item, index) => (
+                    <li key={`req-${index}`} className="ml-5 list-disc">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          )}
+
+          {isImportedJob && importedDetails.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-2xl font-semibold text-slate-950">
+                Job Details
+              </h2>
+
+              <div className="mt-4 space-y-6 rounded-2xl border border-slate-200 bg-white p-5">
+                {importedDetails.map((section, index) => (
+                  <div key={`imported-detail-${index}`}>
+                    {section.title && (
+                      <h3 className="mb-2 text-lg font-semibold text-slate-950">
+                        {section.title}
+                      </h3>
+                    )}
+
+                    <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                      {section.content.map((line, i) => (
+                        <li key={i} className="ml-5 list-disc">
+                          {line}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {href && (
             <div className="mt-10 border-t border-slate-200 pt-6">
               <a
-                href={job.applyUrl}
+                href={href}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-block rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
