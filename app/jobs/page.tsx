@@ -115,19 +115,19 @@ export default async function JobsPage({ searchParams }: PageProps) {
 
   const supabase = createClient(
     process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const { data: manualData } = await supabase
-    .from("jobs")
-    .select("*")
-    .eq("status", "published")
-    .order("posted", { ascending: false });
+const { data: manualData, error: manualError } = await supabase
+  .from("jobs")
+  .select("*")
+  .eq("status", "published")
+  .order("posted", { ascending: false });
 
-  const { data: importData } = await supabase
-    .from("job_imports")
-    .select("*")
-    .order("date_posted", { ascending: false });
+const { data: importData, error: importError } = await supabase
+  .from("job_imports")
+  .select("*")
+  .order("date_posted", { ascending: false });
 
   const manualJobs: Job[] = (manualData ?? []).map((job) => ({
     slug: job.slug,
@@ -250,11 +250,6 @@ export default async function JobsPage({ searchParams }: PageProps) {
                         {categoryLabel}
                       </span>
 
-                      {job.source === "applitrack" && (
-                        <span className="rounded-full bg-blue-50 px-3 py-1 text-xs text-blue-600">
-                          Applitrack
-                        </span>
-                      )}
 
                       {isNewJob(job.posted) && (
                         <span className="rounded-full bg-green-50 px-3 py-1 text-xs text-green-600">
