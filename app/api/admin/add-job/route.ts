@@ -177,6 +177,7 @@ export async function POST(req: Request) {
       contact_title: contactTitle,
       contact_email: contactEmail,
       slug,
+      status: "published",
     });
 
     if (insertError) {
