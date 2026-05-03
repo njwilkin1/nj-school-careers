@@ -40,9 +40,14 @@ function toLineArray(value: string) {
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+ const body = await req.json();
 
-    const adminSecret = String(body.adminSecret || "").trim();
+const adminSecret = String(body.adminSecret || "").trim();
+
+if (adminSecret !== process.env.ADMIN_SECRET) {
+  return Response.json({ error: "Unauthorized" }, { status: 401 });
+}
+
     const title = String(body.title || "").trim();
     const district = String(body.district || "").trim();
     const city = String(body.city || "").trim();

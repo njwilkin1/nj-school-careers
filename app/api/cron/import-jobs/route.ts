@@ -421,30 +421,41 @@ export async function GET(req: Request) {
         const parsedJobs = await parseJobsFromSource(html, source);
         sourceResult.found = parsedJobs.length;
 
-        for (const job of parsedJobs) {
-          const hash = createHash(job.title, job.district, job.applyUrl);
+ for (const job of parsedJobs) {
+  const hash = createHash(job.title, job.district, job.applyUrl);
 
-          const payload = {
-            source_id: source.id,
-            title: job.title,
-            district: job.district,
-            location: job.location,
-            city: source.city,
-            county: job.county,
-            type: job.type,
-            posted: job.posted,
-            applyUrl: job.applyUrl,
-            overview: job.overview,
-            raw_source_text: job.raw_source_text,
-            position_type: job.position_type,
-            date_posted: job.date_posted,
-            closing_date: job.closing_date,
-            additional_information: job.additional_information,
-            source_url: source.source_url,
-            status: "new",
-            hash,
-            created_at: new Date().toISOString(),
-          };
+  const blockedDistricts = [
+    "Woodbridge Township School District",
+    "Paterson Public School District",
+  ];
+
+  if (blockedDistricts.includes(job.district)) {
+    console.log("Skipping blocked district:", job.district);
+    continue;
+  }
+
+  const payload = {
+    source_id: source.id,
+    title: job.title,
+    district: job.district,
+    location: job.location,
+    city: source.city,
+    county: job.county,
+    type: job.type,
+    posted: job.posted,
+    applyUrl: job.applyUrl,
+    overview: job.overview,
+    raw_source_text: job.raw_source_text,
+    position_type: job.position_type,
+    date_posted: job.date_posted,
+    closing_date: job.closing_date,
+    additional_information: job.additional_information,
+    source_url: source.source_url,
+    source: "applitrack",
+    status: "new",
+    hash,
+    created_at: new Date().toISOString(),
+  };
 
           const { error: upsertError } = await supabase
             .from("job_imports")

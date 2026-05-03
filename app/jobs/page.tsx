@@ -229,12 +229,12 @@ const { data: importData, error: importError } = await supabase
         </p>
 
         <div className="mt-8 space-y-4">
-          {filteredJobs.map((job) => {
+          {filteredJobs.map((job, index) => {
             const categoryLabel = getCategoryFromTitle(job.title);
 
             return (
               <div
-                key={`${job.source}-${job.slug}`}
+                key={`${job.source}-${job.slug || index}`}
                 className="rounded-2xl bg-white p-6 shadow transition hover:shadow-md"
               >
                 <div className="flex justify-between gap-4">
