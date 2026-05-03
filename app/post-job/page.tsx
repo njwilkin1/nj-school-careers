@@ -3,26 +3,11 @@
 import { useState } from "react";
 
 const countyOptions = [
-  "Atlantic County",
-  "Bergen County",
-  "Burlington County",
-  "Camden County",
-  "Cape May County",
-  "Cumberland County",
-  "Essex County",
-  "Gloucester County",
-  "Hudson County",
-  "Hunterdon County",
-  "Mercer County",
-  "Middlesex County",
-  "Monmouth County",
-  "Morris County",
-  "Ocean County",
-  "Passaic County",
-  "Salem County",
-  "Somerset County",
-  "Sussex County",
-  "Union County",
+  "Atlantic County", "Bergen County", "Burlington County", "Camden County",
+  "Cape May County", "Cumberland County", "Essex County", "Gloucester County",
+  "Hudson County", "Hunterdon County", "Mercer County", "Middlesex County",
+  "Monmouth County", "Morris County", "Ocean County", "Passaic County",
+  "Salem County", "Somerset County", "Sussex County", "Union County",
   "Warren County",
 ];
 
@@ -60,13 +45,11 @@ export default function PostJobPage() {
     const hasNumber = /\d/.test(v);
     const hasRange = /\s(-|–|—|to)\s/i.test(v);
     const badOpenEnded = /\+|and up|starting at|competitive|commensurate/.test(v);
-
     return hasNumber && hasRange && !badOpenEnded;
   }
 
   function isValidUrlOrEmail(value: string) {
     const trimmed = value.trim();
-
     if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return true;
 
     try {
@@ -113,85 +96,30 @@ export default function PostJobPage() {
     setLoading(true);
     setStatus("");
 
-    console.log("POST JOB FORM SUBMITTED");
-    console.log("FORM DATA:", form);
-    console.log("SALARY RANGE:", form.salaryRange);
-
     const validationError = validateForm();
 
     if (validationError) {
-      console.log("VALIDATION STOPPED SUBMISSION:", validationError);
       setStatus(validationError);
       setLoading(false);
       return;
     }
 
     try {
-      const formspreeEndpoint = "https://formspree.io/f/xlgozdbp";
-
-      console.log("SENDING TO FORMSPREE:", formspreeEndpoint);
-
-      const response = await fetch(formspreeEndpoint, {
+      const response = await fetch("/api/add-job", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
         },
-        body: JSON.stringify({
-          _subject: `New Job Submission - ${form.jobTitle}`,
-          _replyto: form.contactEmail,
-          email: form.contactEmail,
-
-          jobTitle: form.jobTitle,
-          district: form.district,
-          city: form.city,
-          county: form.county,
-          location: form.location || "N/A",
-          jobType: form.jobType,
-          salaryRange: form.salaryRange,
-          benefits: form.benefits,
-          jobDescription: form.jobDescription,
-          applicationLink: form.applicationLink,
-          contactName: form.contactName,
-          contactTitle: form.contactTitle,
-          contactEmail: form.contactEmail,
-
-          "Job Information": `
-Title: ${form.jobTitle}
-School/District: ${form.district}
-City: ${form.city}
-County: ${form.county}
-Location/Building: ${form.location || "N/A"}
-Type: ${form.jobType}
-Salary Range: ${form.salaryRange}
-          `,
-
-          Benefits: form.benefits,
-
-          "Job Description": form.jobDescription,
-
-          Application: `
-Apply Here: ${form.applicationLink}
-          `,
-
-          Contact: `
-Name: ${form.contactName}
-Title: ${form.contactTitle}
-Email: ${form.contactEmail}
-          `,
-
-          Source: "Submitted via NJSchoolCareers.com",
-        }),
+        body: JSON.stringify(form),
       });
 
-      console.log("FORMSPREE STATUS:", response.status);
-
-      const data = await response.json().catch(() => null);
-
-      console.log("FORMSPREE RESPONSE:", data);
+      const data = await response.json();
 
       if (response.ok) {
-        setStatus("Thank you. Your job was submitted successfully.");
+        setStatus(
+          "Thank you. Your job was submitted successfully and is pending review."
+        );
+
         setForm({
           jobTitle: "",
           district: "",
@@ -208,14 +136,9 @@ Email: ${form.contactEmail}
           contactEmail: "",
         });
       } else {
-        setStatus(
-          data?.errors?.[0]?.message ||
-            data?.error ||
-            `Form submission failed with status ${response.status}.`
-        );
+        setStatus(data.error || "Something went wrong. Please try again.");
       }
-    } catch (error) {
-      console.error("FORMSPREE SUBMISSION ERROR:", error);
+    } catch {
       setStatus("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -232,22 +155,18 @@ Email: ${form.contactEmail}
         </p>
 
         <p className="mt-2 text-slate-600">
-          Reach candidates across New Jersey. No account required.
+          Submit your job for review. Approved postings will appear on NJSchoolCareers.com.
         </p>
 
         <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
           <input name="jobTitle" value={form.jobTitle} onChange={handleChange} placeholder="Job Title" className={inputStyle} />
-
           <input name="district" value={form.district} onChange={handleChange} placeholder="School / District Name" className={inputStyle} />
-
           <input name="city" value={form.city} onChange={handleChange} placeholder="City" className={inputStyle} />
 
           <select name="county" value={form.county} onChange={handleChange} className={inputStyle}>
             <option value="">Select County</option>
             {countyOptions.map((county) => (
-              <option key={county} value={county}>
-                {county}
-              </option>
+              <option key={county} value={county}>{county}</option>
             ))}
           </select>
 
@@ -266,19 +185,19 @@ Email: ${form.contactEmail}
           </select>
 
           <div>
-            <input name="salaryRange" value={form.salaryRange} onChange={handleChange} placeholder="Salary Range (required): Example $60,000 - $75,000" className={inputStyle} />
+            <input name="salaryRange" value={form.salaryRange} onChange={handleChange} placeholder="Salary Range: Example $60,000 - $75,000" className={inputStyle} />
             <p className="mt-1 text-xs text-slate-500">
               New Jersey law requires a good-faith salary range in job postings.
             </p>
           </div>
 
-          <textarea name="benefits" value={form.benefits} onChange={handleChange} placeholder="Benefits (required): Enter each benefit on a new line" rows={4} className={inputStyle} />
+          <textarea name="benefits" value={form.benefits} onChange={handleChange} placeholder="Benefits: Enter each benefit on a new line" rows={4} className={inputStyle} />
 
           <textarea
             name="jobDescription"
             value={form.jobDescription}
             onChange={handleChange}
-            placeholder={`Job Description (required)
+            placeholder={`Job Description
 
 Use headings if helpful:
 Responsibilities:
@@ -293,11 +212,8 @@ Qualifications:
           />
 
           <input name="applicationLink" value={form.applicationLink} onChange={handleChange} placeholder="Application link or hiring email" className={inputStyle} />
-
           <input name="contactName" value={form.contactName} onChange={handleChange} placeholder="Contact Name" className={inputStyle} />
-
           <input name="contactTitle" value={form.contactTitle} onChange={handleChange} placeholder="Contact Title, e.g. HR Director, Principal" className={inputStyle} />
-
           <input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} placeholder="Contact Email" className={inputStyle} />
 
           <button
@@ -305,7 +221,7 @@ Qualifications:
             disabled={loading}
             className="w-full rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60"
           >
-            {loading ? "Submitting..." : "Submit Job"}
+            {loading ? "Submitting..." : "Submit Job for Review"}
           </button>
         </form>
 
