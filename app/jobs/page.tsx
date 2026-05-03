@@ -22,9 +22,12 @@ type Job = {
   posted?: string;
   applyUrl: string;
   overview?: string | null;
+  source?: "manual" | "applitrack";
 };
 
-function getDaysAgo(posted: string) {
+function getDaysAgo(posted?: string) {
+  if (!posted) return "";
+
   const postedDate = new Date(posted);
   const now = new Date();
 
@@ -40,6 +43,7 @@ function getDaysAgo(posted: string) {
 
 function getDaysOld(posted?: string) {
   if (!posted) return Number.MAX_SAFE_INTEGER;
+
   const postedDate = new Date(posted);
   const now = new Date();
 
@@ -53,14 +57,10 @@ function isNewJob(posted?: string) {
   return getDaysOld(posted) <= 3;
 }
 
-// 🔥 UPDATED: better category detection (includes coaching)
 function getCategoryFromTitle(title: string) {
   const value = title.toLowerCase();
 
-  if (value.includes("coach") || value.includes("coaching")) {
-    return "Coaching";
-  }
-
+  if (value.includes("coach") || value.includes("coaching")) return "Coaching";
   if (value.includes("substitute")) return "Substitute";
 
   if (
@@ -99,19 +99,12 @@ function getCategoryFromTitle(title: string) {
 export default async function JobsPage({ searchParams }: PageProps) {
   const params = (await searchParams) || {};
 
-  const rawSearch = params.search || "";
-  const rawLocation = params.location || "";
-  const rawCounty = params.county || "";
-  const rawType = params.type || "";
-  const rawPostedWithin = params.postedWithin || "";
-  const rawCategory = params.category || "";
-
-  const search = rawSearch.toLowerCase().trim();
-  const location = rawLocation.toLowerCase().trim();
-  const county = rawCounty.toLowerCase().trim();
-  const type = rawType.toLowerCase().trim();
-  const postedWithin = rawPostedWithin.trim();
-  const category = rawCategory.trim();
+  const search = (params.search || "").toLowerCase().trim();
+  const location = (params.location || "").toLowerCase().trim();
+  const county = (params.county || "").toLowerCase().trim();
+  const type = (params.type || "").toLowerCase().trim();
+  const postedWithin = (params.postedWithin || "").trim();
+  const category = (params.category || "").trim();
 
   const normalizedSearch = search
     .replace(/\bap\b/g, "assistant principal")
@@ -125,12 +118,48 @@ export default async function JobsPage({ searchParams }: PageProps) {
     process.env.SUPABASE_ANON_KEY!
   );
 
-  const { data } = await supabase
+  const { data: manualData } = await supabase
     .from("jobs")
     .select("*")
+    .eq("status", "published")
     .order("posted", { ascending: false });
 
-  const jobs: Job[] = data ?? [];
+  const { data: importData } = await supabase
+    .from("job_imports")
+    .select("*")
+    .order("date_posted", { ascending: false });
+
+  const manualJobs: Job[] = (manualData ?? []).map((job) => ({
+    slug: job.slug,
+    title: job.title,
+    district: job.district,
+    location: job.city || job.location || "",
+    county: job.county || "",
+    type: job.type || "",
+    posted: job.posted || "",
+    applyUrl: job.applyUrl || "",
+    overview: job.overview || job.job_description || "",
+    source: "manual",
+  }));
+
+  const importedJobs: Job[] = (importData ?? []).map((job) => ({
+    slug: String(job.id),
+    title: job.title,
+    district: job.district,
+    location: job.city || job.location || "",
+    county: job.county || "",
+    type: job.position_type || job.type || "",
+    posted: job.date_posted || "",
+    applyUrl: job.apply_url || job.applyUrl || "",
+    overview: job.additional_information || "",
+    source: "applitrack",
+  }));
+
+  const jobs = [...manualJobs, ...importedJobs].sort((a, b) => {
+    const dateA = new Date(a.posted || "").getTime() || 0;
+    const dateB = new Date(b.posted || "").getTime() || 0;
+    return dateB - dateA;
+  });
 
   const filteredJobs = jobs.filter((job) => {
     const haystack = [
@@ -149,7 +178,9 @@ export default async function JobsPage({ searchParams }: PageProps) {
       searchWords.every((word) => haystack.includes(word));
 
     const matchesLocation =
-      location === "" || (job.location ?? "").toLowerCase().includes(location);
+      location === "" ||
+      (job.location ?? "").toLowerCase().includes(location) ||
+      (job.county ?? "").toLowerCase().includes(location);
 
     const matchesCounty =
       county === "" || (job.county ?? "").toLowerCase() === county;
@@ -181,18 +212,21 @@ export default async function JobsPage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen bg-gray-50 px-6 py-12 text-slate-900">
       <div className="mx-auto max-w-6xl">
-
         <h1 className="text-4xl font-bold">Browse Jobs</h1>
 
-        <form action="/jobs" className="mt-6 bg-white p-4 rounded-2xl shadow">
+        <form action="/jobs" className="mt-6 rounded-2xl bg-white p-4 shadow">
           <div className="grid gap-3 md:grid-cols-3">
             <input name="search" placeholder="Keyword" className="input" />
-            <input name="location" placeholder="City" className="input" />
-            <button className="bg-orange-500 text-white rounded-xl px-4 py-3 hover:bg-orange-600 transition">
+            <input name="location" placeholder="City or county" className="input" />
+            <button className="rounded-xl bg-orange-500 px-4 py-3 text-white transition hover:bg-orange-600">
               Search
             </button>
           </div>
         </form>
+
+        <p className="mt-4 text-sm text-gray-500">
+          Showing {filteredJobs.length} jobs
+        </p>
 
         <div className="mt-8 space-y-4">
           {filteredJobs.map((job) => {
@@ -200,25 +234,30 @@ export default async function JobsPage({ searchParams }: PageProps) {
 
             return (
               <div
-                key={job.slug}
-                className="bg-white p-6 rounded-2xl shadow hover:shadow-md transition"
+                key={`${job.source}-${job.slug}`}
+                className="rounded-2xl bg-white p-6 shadow transition hover:shadow-md"
               >
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-4">
                   <div>
-                    <div className="flex gap-2 mb-2">
-
+                    <div className="mb-2 flex flex-wrap gap-2">
                       {job.type && (
-                        <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full">
+                        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
                           {job.type}
                         </span>
                       )}
 
-                      <span className="bg-orange-50 text-orange-600 text-xs px-3 py-1 rounded-full">
+                      <span className="rounded-full bg-orange-50 px-3 py-1 text-xs text-orange-600">
                         {categoryLabel}
                       </span>
 
+                      {job.source === "applitrack" && (
+                        <span className="rounded-full bg-blue-50 px-3 py-1 text-xs text-blue-600">
+                          Applitrack
+                        </span>
+                      )}
+
                       {isNewJob(job.posted) && (
-                        <span className="bg-green-50 text-green-600 text-xs px-3 py-1 rounded-full">
+                        <span className="rounded-full bg-green-50 px-3 py-1 text-xs text-green-600">
                           New
                         </span>
                       )}
@@ -226,34 +265,40 @@ export default async function JobsPage({ searchParams }: PageProps) {
 
                     <h2 className="text-xl font-semibold">{job.title}</h2>
                     <p className="text-gray-600">{job.district}</p>
-                    <p className="text-sm text-gray-500">{job.location}</p>
+                    <p className="text-sm text-gray-500">
+                      {job.location}
+                      {job.county ? ` · ${job.county}` : ""}
+                    </p>
                   </div>
 
                   <div className="text-sm text-gray-500">
-                    {getDaysAgo(job.posted ?? "")}
+                    {getDaysAgo(job.posted)}
                   </div>
                 </div>
 
                 <div className="mt-4 flex gap-3">
                   <Link
                     href={`/jobs/${job.slug}`}
-                    className="border px-4 py-2 rounded-lg hover:bg-gray-100"
+                    className="rounded-lg border px-4 py-2 hover:bg-gray-100"
                   >
                     View Details
                   </Link>
 
-                  <a
-                    href={job.applyUrl}
-                    className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"
-                  >
-                    Apply Now
-                  </a>
+                  {job.applyUrl && (
+                    <a
+                      href={job.applyUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-lg bg-orange-500 px-4 py-2 text-white transition hover:bg-orange-600"
+                    >
+                      Apply Now
+                    </a>
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
-
       </div>
     </main>
   );
