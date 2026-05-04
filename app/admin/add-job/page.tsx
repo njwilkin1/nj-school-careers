@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const counties = [
@@ -37,6 +37,7 @@ const jobTypes = [
 ];
 
 export default function AdminAddJobPage() {
+    const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
 
   const [form, setForm] = useState({
@@ -83,7 +84,8 @@ export default function AdminAddJobPage() {
       return;
     }
 
-    setStatus("✅ Job posted successfully.");
+    setStatus("✅ Job posted successfully. Redirecting...");
+router.push("/jobs");
   }
 
   return (
