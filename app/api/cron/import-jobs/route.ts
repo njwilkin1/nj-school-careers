@@ -359,12 +359,21 @@ async function parseJobsFromSource(
 
 export async function GET(req: Request) {
   try {
+ 
     const cronSecret = process.env.CRON_SECRET;
-    const authHeader = req.headers.get("authorization");
+const authHeader = req.headers.get("authorization");
 
-    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+if (!authHeader) {
+  return Response.json({ error: "Missing auth header" }, { status: 401 });
+}
+
+const token = authHeader.replace("Bearer ", "");
+
+console.log("ENV:", process.env.CRON_SECRET);
+console.log("HEADER:", authHeader);
+if (!cronSecret || token !== cronSecret) {
+  return Response.json({ error: "Unauthorized" }, { status: 401 });
+}
 
     const supabaseUrl = process.env.SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
