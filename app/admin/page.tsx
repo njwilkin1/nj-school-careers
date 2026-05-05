@@ -1,3 +1,5 @@
+import ToggleFeaturedButton from "../components/ToggleFeaturedButton";
+import DeleteJobButton from "../components/DeleteJobButton";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 
@@ -9,7 +11,7 @@ export default async function AdminPage() {
 
   const { data: jobs } = await supabase
     .from("jobs")
-    .select("id, title, district, status, created_at")
+    .select("id, title, district, status, created_at, is_featured")
     .order("created_at", { ascending: false })
     .limit(25);
 
@@ -39,24 +41,62 @@ export default async function AdminPage() {
                 <th className="p-4">District</th>
                 <th className="p-4">Status</th>
                 <th className="p-4">Created</th>
+                <th className="p-4">Actions</th>
               </tr>
             </thead>
 
             <tbody>
               {(jobs ?? []).map((job) => (
                 <tr key={job.id} className="border-t">
-                  <td className="p-4 font-medium text-slate-900">{job.title}</td>
-                  <td className="p-4 text-slate-600">{job.district}</td>
+                  <td className="p-4 font-medium text-slate-900">
+                    {job.title}
+                  </td>
+
+                  <td className="p-4 text-slate-600">
+                    {job.district}
+                  </td>
+
                   <td className="p-4">
                     <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
                       {job.status || "published"}
                     </span>
                   </td>
+
                   <td className="p-4 text-slate-500">
                     {job.created_at
                       ? new Date(job.created_at).toLocaleDateString()
                       : ""}
                   </td>
+
+                  <td className="p-4">
+                    <div className="flex gap-2">
+                      <a
+                        href={`/admin/edit-job/${job.id}`}
+                        className="rounded-lg bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200"
+                      >
+                        Edit
+                      </a>
+
+                      <DeleteJobButton id={job.id} />
+                    </div>
+                  </td>
+                  <td className="p-4">
+  <div className="flex gap-2">
+    <a
+      href={`/admin/edit-job/${job.id}`}
+      className="rounded-lg bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200"
+    >
+      Edit
+    </a>
+
+    <DeleteJobButton id={job.id} />
+
+    <ToggleFeaturedButton
+      id={job.id}
+      isFeatured={job.is_featured}
+    />
+  </div>
+</td>
                 </tr>
               ))}
             </tbody>
