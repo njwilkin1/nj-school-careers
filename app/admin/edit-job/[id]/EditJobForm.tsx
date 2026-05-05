@@ -57,12 +57,12 @@ export default function EditJobForm({ job }: { job: any }) {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none";
+    "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:outline-none";
 
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-12">
+    <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
       <div className="mx-auto max-w-2xl rounded-2xl bg-white p-8 shadow">
-        <h1 className="text-3xl font-bold">Edit Job</h1>
+        <h1 className="text-3xl font-bold text-slate-900">Edit Job</h1>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <input
