@@ -31,6 +31,17 @@ export default function ContactPage() {
           >
             Email info@njschoolcareers.com
           </a>
+          <p className="mt-4 text-sm leading-6 text-slate-600">
+  Email is the best way to reach us. School districts and employers may also
+  leave a voicemail or text message at{" "}
+  <a
+    href="tel:+12017465250"
+    className="font-semibold text-slate-800 hover:text-orange-600"
+  >
+    (201) 746-5250
+  </a>
+  .
+</p>
         </div>
 
         <div className="mt-8 grid gap-5 md:grid-cols-3">
