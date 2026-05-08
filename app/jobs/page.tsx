@@ -1,6 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import JobFilters from "@/app/components/JobFilters";
 
+export const dynamic = "force-dynamic";
+
 export default async function JobsPage() {
   const supabase = createClient(
     process.env.SUPABASE_URL!,
