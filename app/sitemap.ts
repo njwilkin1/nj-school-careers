@@ -7,16 +7,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // Manual jobs
-  const { data: jobs } = await supabase
-    .from("jobs")
-    .select("slug, updated_at");
-
-  // Imported jobs
-  const { data: importedJobs } = await supabase
-    .from("job_imports")
-    .select("slug, created_at");
-
   const baseUrl = "https://www.njschoolcareers.com";
 
   const staticPages = [
@@ -34,25 +24,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === "" ? 1 : 0.8,
   }));
 
+  const { data: jobs } = await supabase
+    .from("jobs")
+    .select("slug, created_at")
+    .eq("status", "published");
+
   const jobPages =
-    jobs?.map((job) => ({
-      url: `${baseUrl}/jobs/${job.slug}`,
-      lastModified: job.updated_at || new Date(),
-      changeFrequency: "daily" as const,
-      priority: 0.7,
-    })) || [];
+    (jobs ?? [])
+      .filter((job) => job.slug)
+      .map((job) => ({
+        url: `${baseUrl}/jobs/${job.slug}`,
+        lastModified: job.created_at ? new Date(job.created_at) : new Date(),
+        changeFrequency: "daily" as const,
+        priority: 0.7,
+      }));
 
-  const importedJobPages =
-    importedJobs?.map((job) => ({
-      url: `${baseUrl}/jobs/${job.slug}`,
-      lastModified: job.created_at || new Date(),
-      changeFrequency: "daily" as const,
-      priority: 0.7,
-    })) || [];
-
-  return [
-    ...staticPages,
-    ...jobPages,
-    ...importedJobPages,
-  ];
+  return [...staticPages, ...jobPages];
 }
