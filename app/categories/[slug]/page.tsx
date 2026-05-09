@@ -14,8 +14,10 @@ function formatTitle(slug: string) {
     .join(" ");
 }
 
-export async function generateMetadata({ params }: any) {
-  const name = params.slug
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params;
+
+  const name = slug
     .replace(/-/g, " ")
     .replace(/\b\w/g, (c: string) => c.toUpperCase());
 

@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -13,8 +12,10 @@ function slugify(value: string) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }
-export async function generateMetadata({ params }: any) {
-  const name = params.slug
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params;
+
+  const name = slug
     .replace(/-/g, " ")
     .replace(/\b\w/g, (c: string) => c.toUpperCase());
 
