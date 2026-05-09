@@ -56,7 +56,7 @@ function buildJobCards(unsentJobs: Job[]): string {
             href="${job.applyUrl}"
             style="
               display:inline-block;
-              background:#0f172a;
+              background:#f97316;
               color:#ffffff;
               text-decoration:none;
               padding:10px 16px;
@@ -76,8 +76,8 @@ function buildJobCards(unsentJobs: Job[]): string {
 function buildEmailHtml(unsentJobs: Job[], email: string): string {
   const headingText =
     unsentJobs.length === 1
-      ? "We found 1 new job matching your preferences."
-      : `We found ${unsentJobs.length} new jobs matching your preferences.`;
+      ? "We found 1 new New Jersey education job that matches your alert preferences."
+      : `We found ${unsentJobs.length} new New Jersey education jobs that match your alert preferences.`;
 
   const unsubscribeUrl = `https://njschoolcareers.com/api/unsubscribe?email=${encodeURIComponent(
     email
@@ -89,7 +89,7 @@ function buildEmailHtml(unsentJobs: Job[], email: string): string {
 
         <div style="background:#0f172a;padding:24px 28px;">
           <div style="color:#ffffff;font-size:24px;font-weight:700;">
-            NJ School Careers
+            NJSchoolCareers
           </div>
           <div style="color:#cbd5e1;font-size:14px;margin-top:4px;">
             New Jersey education job alerts
@@ -98,22 +98,42 @@ function buildEmailHtml(unsentJobs: Job[], email: string): string {
 
         <div style="padding:30px 28px;">
           <div style="font-size:28px;font-weight:800;color:#0f172a;margin-bottom:10px;">
-            New NJ School Jobs for You
+            New Jersey School Jobs Matching Your Interests
           </div>
 
-          <div style="font-size:16px;line-height:1.7;color:#475569;margin-bottom:22px;">
+          <div style="font-size:16px;line-height:1.7;color:#475569;margin-bottom:18px;">
             ${headingText}
           </div>
 
-          <div style="background:#f1f5f9;border-radius:12px;padding:14px 16px;margin-bottom:24px;font-size:14px;color:#475569;line-height:1.8;">
-            These matches are based on your saved alert preferences.
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;margin-bottom:24px;font-size:14px;color:#9a3412;line-height:1.8;">
+            Apply early. Many New Jersey school positions receive applications quickly.
           </div>
 
           ${buildJobCards(unsentJobs)}
+
+          <div style="text-align:center;margin-top:28px;">
+            <a
+              href="https://njschoolcareers.com/jobs"
+              style="
+                display:inline-block;
+                background:#0f172a;
+                color:#ffffff;
+                text-decoration:none;
+                padding:12px 20px;
+                border-radius:8px;
+                font-size:14px;
+                font-weight:600;
+              "
+            >
+              Browse More NJ Jobs
+            </a>
+          </div>
         </div>
 
-        <div style="padding:18px 28px;border-top:1px solid #e2e8f0;font-size:13px;color:#94a3b8;line-height:1.7;">
-          You’re receiving this email because you subscribed at NJ School Careers.
+        <div style="padding:18px 28px;border-top:1px solid #e2e8f0;font-size:13px;color:#64748b;line-height:1.7;">
+          NJSchoolCareers focuses exclusively on New Jersey education jobs.
+          <br /><br />
+          You are receiving this email because you subscribed at NJSchoolCareers.com.
           <br /><br />
           <a href="${unsubscribeUrl}" style="color:#ef4444;text-decoration:none;font-weight:600;">
             Unsubscribe
@@ -222,7 +242,9 @@ export async function GET() {
       const emailResult = await resend.emails.send({
         from: fromEmail,
         to: sub.email,
-        subject: `New NJ School Jobs for You (${unsentJobs.length})`,
+        subject: `${unsentJobs.length} New NJ Education Job${
+          unsentJobs.length === 1 ? "" : "s"
+        } Matching Your Alert`,
         html: emailHtml,
       });
 
