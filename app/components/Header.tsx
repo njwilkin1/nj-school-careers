@@ -21,7 +21,7 @@ export default function Header() {
           <Link href="/employers" className="hover:text-orange-600">Employers</Link>
           <Link href="/post-job" className="hover:text-orange-600">Post a Job</Link>
           <Link href="/about" className="hover:text-orange-600">About</Link>
-          <Link href="/contact" className="hover:text-orange-600">Contact</Link>
+          <Link href="/contact" className="hover:text-orange-600">Contact Us</Link>
         </nav>
 
         {/* Mobile Hamburger */}
@@ -41,7 +41,7 @@ export default function Header() {
             <Link href="/employers" onClick={() => setOpen(false)}>Employers</Link>
             <Link href="/post-job" onClick={() => setOpen(false)}>Post a Job</Link>
             <Link href="/about" onClick={() => setOpen(false)}>About</Link>
-            <Link href="/contact" onClick={() => setOpen(false)}>Contact</Link>
+            <Link href="/contact" onClick={() => setOpen(false)}>Contact Us</Link>
           </nav>
         </div>
       )}
