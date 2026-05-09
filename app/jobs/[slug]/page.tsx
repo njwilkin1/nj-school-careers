@@ -1,5 +1,8 @@
 import Link from "next/link";
+
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
+
 import { createClient } from "@supabase/supabase-js";
 
 type PageProps = {
@@ -155,7 +158,56 @@ function toArray(value: unknown): string[] {
 
   return [];
 }
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
 
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const isImportedJob = /^\d+$/.test(slug);
+
+  const { data } = isImportedJob
+    ? await supabase
+        .from("job_imports")
+        .select("*")
+        .eq("id", Number(slug))
+        .maybeSingle()
+    : await supabase
+        .from("jobs")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
+
+  if (!data) {
+    return {
+      title: "Job Not Found | NJSchoolCareers",
+    };
+  }
+
+  const title = `${data.title} Jobs in New Jersey | NJSchoolCareers`;
+
+  const description = `${data.title} position available at ${
+    data.district
+  } in ${
+    data.city || data.location || "New Jersey"
+  }. View qualifications, responsibilities, and apply online through NJSchoolCareers.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://www.njschoolcareers.com/jobs/${slug}`,
+      siteName: "NJSchoolCareers",
+      type: "article",
+    },
+  };
+}
 export default async function JobDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
