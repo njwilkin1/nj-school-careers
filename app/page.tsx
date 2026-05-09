@@ -101,12 +101,16 @@ export default async function Home() {
             </h1>
 
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-700">
-              A faster way to get hired in New Jersey schools.
-            </p>
+  A faster way to get hired in New Jersey schools.
+</p>
 
-            <p className="mt-3 text-sm text-slate-600">
-              Browse 100+ New Jersey school jobs. Updated regularly.
-            </p>
+<p className="mt-3 text-base font-medium text-blue-700">
+  Focused exclusively on New Jersey education jobs.
+</p>
+
+<p className="mt-3 text-sm text-slate-600">
+  Browse 500+ New Jersey school jobs. Updated regularly.
+</p>
 
             <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-xl">
               <form action="/jobs" className="grid gap-3 md:grid-cols-[1.2fr_1fr_auto]">
@@ -300,7 +304,7 @@ export default async function Home() {
             href="/post-job"
             className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-orange-500 hover:text-orange-600"
           >
-            Feature Your Job
+            Learn About Featured Jobs
           </a>
         </div>
 
@@ -442,7 +446,7 @@ export default async function Home() {
             <div className="rounded-3xl bg-white/10 p-5">
               <div className="text-3xl font-bold text-orange-300">Fast</div>
               <p className="mt-2 text-sm text-blue-50">
-                Post a job in under 60 seconds.
+                Post jobs quickly and connect directly with candidates.
               </p>
             </div>
 
@@ -474,9 +478,6 @@ export default async function Home() {
           <p className="mt-4 max-w-2xl text-slate-600">
             Created to simplify the hiring process for both schools and job seekers
             across New Jersey.
-          </p>
-          <p className="mt-4 max-w-2xl text-slate-600">
-            Coming soon: district salary guides and pay scale tools for New Jersey educators.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
