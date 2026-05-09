@@ -248,11 +248,11 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-12">
+      <section className="mx-auto max-w-7xl px-6 py-8">
         <EmailSignup />
       </section>
 
-      <section id="why-us" className="mx-auto max-w-7xl px-6 py-14">
+      <section id="why-us" className="mx-auto max-w-7xl px-6 py-10">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
             Why Job Seekers Choose Us
@@ -304,7 +304,7 @@ export default async function Home() {
             href="/post-job"
             className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-orange-500 hover:text-orange-600"
           >
-            Learn About Featured Jobs
+            Post a Featured Jobs
           </a>
         </div>
 
