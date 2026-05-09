@@ -31,8 +31,8 @@ function buildJobCards(unsentJobs: Job[]): string {
   return unsentJobs
     .map(
       (job) => `
-        <div style="margin-bottom:18px;padding:20px;border:1px solid #e2e8f0;border-radius:12px;background:#ffffff;">
-          <div style="font-size:20px;font-weight:700;color:#0f172a;margin-bottom:8px;">
+        <div style="margin-bottom:18px;padding:22px;border:1px solid #e2e8f0;border-radius:18px;background:#ffffff;">
+          <div style="font-size:21px;font-weight:800;color:#020617;margin-bottom:8px;line-height:1.3;">
             ${job.title}
           </div>
 
@@ -46,7 +46,7 @@ function buildJobCards(unsentJobs: Job[]): string {
 
           ${
             job.overview
-              ? `<div style="font-size:14px;line-height:1.7;color:#475569;margin-bottom:14px;">
+              ? `<div style="font-size:14px;line-height:1.7;color:#475569;margin-bottom:16px;">
                    ${job.overview}
                  </div>`
               : ""
@@ -59,10 +59,10 @@ function buildJobCards(unsentJobs: Job[]): string {
               background:#f97316;
               color:#ffffff;
               text-decoration:none;
-              padding:10px 16px;
-              border-radius:8px;
+              padding:11px 18px;
+              border-radius:10px;
               font-size:14px;
-              font-weight:600;
+              font-weight:700;
             "
           >
             Apply Now
@@ -84,45 +84,50 @@ function buildEmailHtml(unsentJobs: Job[], email: string): string {
   )}`;
 
   return `
-    <div style="background:#f8fafc;padding:40px 0;font-family:Arial,Helvetica,sans-serif;">
-      <div style="max-width:680px;margin:auto;background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;overflow:hidden;">
+    <div style="background:#f8fafc;padding:40px 20px;font-family:Arial,Helvetica,sans-serif;">
+      <div style="max-width:680px;margin:auto;background:#ffffff;border-radius:24px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 4px 14px rgba(15,23,42,0.06);">
 
-        <div style="background:#0f172a;padding:24px 28px;">
-          <div style="color:#ffffff;font-size:24px;font-weight:700;">
+        <div style="background:#eff6ff;padding:40px 40px 28px;border-bottom:1px solid #dbeafe;">
+          <div style="font-size:15px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2563eb;margin-bottom:18px;">
+            New Jersey Education Job Alerts
+          </div>
+
+          <div style="color:#020617;font-size:40px;line-height:1.05;font-weight:800;margin-bottom:18px;">
             NJSchoolCareers
           </div>
-          <div style="color:#cbd5e1;font-size:14px;margin-top:4px;">
-            New Jersey education job alerts
+
+          <div style="font-size:20px;line-height:1.7;color:#475569;max-width:540px;">
+            New school jobs matching your interests.
           </div>
         </div>
 
-        <div style="padding:30px 28px;">
-          <div style="font-size:28px;font-weight:800;color:#0f172a;margin-bottom:10px;">
-            New Jersey School Jobs Matching Your Interests
-          </div>
+        <div style="padding:40px;">
+          <h1 style="margin-top:0;margin-bottom:16px;font-size:32px;line-height:1.2;color:#020617;">
+            New Jersey school jobs for you
+          </h1>
 
-          <div style="font-size:16px;line-height:1.7;color:#475569;margin-bottom:18px;">
+          <p style="font-size:17px;line-height:1.8;color:#475569;margin-bottom:22px;">
             ${headingText}
-          </div>
+          </p>
 
-          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;margin-bottom:24px;font-size:14px;color:#9a3412;line-height:1.8;">
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;padding:18px 20px;margin-bottom:28px;color:#92400e;line-height:1.7;font-size:15px;">
             Apply early. Many New Jersey school positions receive applications quickly.
           </div>
 
           ${buildJobCards(unsentJobs)}
 
-          <div style="text-align:center;margin-top:28px;">
+          <div style="text-align:center;margin-top:30px;">
             <a
               href="https://njschoolcareers.com/jobs"
               style="
                 display:inline-block;
-                background:#0f172a;
+                background:#f97316;
                 color:#ffffff;
                 text-decoration:none;
-                padding:12px 20px;
-                border-radius:8px;
-                font-size:14px;
-                font-weight:600;
+                padding:14px 24px;
+                border-radius:12px;
+                font-size:15px;
+                font-weight:700;
               "
             >
               Browse More NJ Jobs
@@ -130,15 +135,22 @@ function buildEmailHtml(unsentJobs: Job[], email: string): string {
           </div>
         </div>
 
-        <div style="padding:18px 28px;border-top:1px solid #e2e8f0;font-size:13px;color:#64748b;line-height:1.7;">
-          NJSchoolCareers focuses exclusively on New Jersey education jobs.
-          <br /><br />
-          You are receiving this email because you subscribed at NJSchoolCareers.com.
-          <br /><br />
-          <a href="${unsubscribeUrl}" style="color:#ef4444;text-decoration:none;font-weight:600;">
-            Unsubscribe
-          </a>
+        <div style="padding:28px 40px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+          <div style="font-size:14px;line-height:1.8;color:#64748b;">
+            NJSchoolCareers focuses exclusively on New Jersey education jobs.
+          </div>
+
+          <div style="margin-top:10px;font-size:14px;line-height:1.8;color:#64748b;">
+            You are receiving this email because you subscribed to job alerts at NJSchoolCareers.com.
+          </div>
+
+          <div style="margin-top:12px;">
+            <a href="${unsubscribeUrl}" style="color:#ef4444;text-decoration:none;font-size:14px;font-weight:600;">
+              Unsubscribe
+            </a>
+          </div>
         </div>
+
       </div>
     </div>
   `;
