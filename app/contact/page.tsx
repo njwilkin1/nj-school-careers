@@ -15,41 +15,65 @@ export default function ContactPage() {
           promoting your school district’s openings? We’d be happy to help.
         </p>
 
+        <p className="mt-4 text-lg leading-8 text-slate-700">
+          NJSchoolCareers helps connect New Jersey schools with educators
+          through a growing platform featuring 500+ active education job
+          listings statewide.
+        </p>
+
+        <p className="mt-4 text-lg leading-8 text-slate-700">
+          Built by a New Jersey educator with firsthand experience in school
+          hiring and recruitment, NJSchoolCareers is designed to be simple,
+          direct, and focused exclusively on New Jersey education jobs.
+        </p>
+
         <div className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 p-6">
           <h2 className="text-2xl font-semibold text-slate-950">
             For schools, districts, and employers
           </h2>
 
           <p className="mt-3 leading-8 text-slate-700">
-            Contact us to learn more about job postings, featured listings,
-            district visibility, and future employer options.
+            Contact us to learn more about job postings, featured listings, and
+            employer visibility options. No long-term contracts or complicated
+            setup required.
+          </p>
+
+          <p className="mt-3 leading-8 text-slate-700">
+            Early partner districts and education employers may receive
+            complimentary launch visibility while the platform continues
+            expanding statewide.
           </p>
 
           <a
             href="mailto:info@njschoolcareers.com"
             className="mt-5 inline-block rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-orange-600"
           >
-            Email info@njschoolcareers.com
+            Contact NJSchoolCareers
           </a>
+
+          <p className="mt-3 text-sm font-medium text-slate-700">
+            info@njschoolcareers.com
+          </p>
+
           <p className="mt-4 text-sm leading-6 text-slate-600">
-  Email is the best way to reach us. School districts and employers may also
-  leave a voicemail or text message at{" "}
-  <a
-    href="tel:+12017465250"
-    className="font-semibold text-slate-800 hover:text-orange-600"
-  >
-    (201) 746-5250
-  </a>
-  .
-</p>
+            Email is the best way to reach us. School districts and employers
+            may also leave a voicemail or text message at{" "}
+            <a
+              href="tel:+12017465250"
+              className="font-semibold text-slate-800 hover:text-orange-600"
+            >
+              (201) 746-5250
+            </a>
+            . We typically respond within 1 business day.
+          </p>
         </div>
 
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           <div className="rounded-2xl border border-slate-200 p-5">
             <h3 className="font-semibold text-slate-950">Post a Job</h3>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Share openings with candidates actively searching for NJ education
-              jobs.
+              Share openings with candidates actively searching for New Jersey
+              education jobs.
             </p>
           </div>
 
@@ -68,6 +92,21 @@ export default function ContactPage() {
               out anytime.
             </p>
           </div>
+        </div>
+
+        <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <h2 className="text-xl font-semibold text-slate-950">
+            Common employer uses
+          </h2>
+
+          <ul className="mt-4 grid gap-3 text-sm leading-6 text-slate-700 md:grid-cols-2">
+            <li>• Teaching positions</li>
+            <li>• Administrative openings</li>
+            <li>• Coaching opportunities</li>
+            <li>• Support staff hiring</li>
+            <li>• Long-term substitute roles</li>
+            <li>• Hard-to-fill education positions</li>
+          </ul>
         </div>
 
         <div className="mt-10 border-t border-slate-200 pt-6">
