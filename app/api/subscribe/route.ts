@@ -69,55 +69,67 @@ export async function POST(req: Request) {
     }
 
     const html = `
-      <div style="background:#f8fafc;padding:40px 0;font-family:Arial,Helvetica,sans-serif;">
-        <div style="max-width:620px;margin:auto;background:#ffffff;border-radius:14px;border:1px solid #e2e8f0;overflow:hidden;">
+      <div style="background:#f8fafc;padding:40px 20px;font-family:Arial,Helvetica,sans-serif;">
+        <div style="max-width:640px;margin:auto;background:#ffffff;border-radius:24px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 4px 14px rgba(15,23,42,0.06);">
 
-          <div style="background:#0f172a;padding:22px 28px;">
-            <div style="color:white;font-size:22px;font-weight:700;">
-              NJ School Careers
+          <div style="background:#eff6ff;padding:40px 40px 28px;border-bottom:1px solid #dbeafe;">
+            <div style="font-size:15px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2563eb;margin-bottom:18px;">
+              New Jersey School Hiring
             </div>
-            <div style="color:#cbd5e1;font-size:14px;margin-top:4px;">
-              Job alerts for New Jersey educators
+
+            <div style="color:#020617;font-size:42px;line-height:1.05;font-weight:800;margin-bottom:18px;">
+              NJSchoolCareers
+            </div>
+
+            <div style="font-size:20px;line-height:1.7;color:#475569;max-width:520px;">
+              A faster way to get hired in New Jersey schools.
             </div>
           </div>
 
-          <div style="padding:30px 28px;color:#0f172a;">
-            <h2 style="margin-top:0;font-size:24px;">You’re subscribed 🎉</h2>
+          <div style="padding:40px;">
+            <h2 style="margin-top:0;margin-bottom:18px;font-size:34px;line-height:1.2;color:#020617;">
+              You're subscribed 🎉
+            </h2>
 
-            <p style="font-size:16px;color:#475569;line-height:1.6;">
-              You’re now signed up to receive job alerts that match your preferences.
+            <p style="font-size:18px;color:#475569;line-height:1.8;margin-bottom:28px;">
+              You'll now receive new NJ education job openings directly in your inbox.
             </p>
 
-            <div style="background:#f1f5f9;padding:16px;border-radius:10px;margin:20px 0;line-height:1.8;">
-              <div><strong>County:</strong> ${county || "Any"}</div>
-              <div><strong>Keyword:</strong> ${keyword || "Any"}</div>
-              <div><strong>Job Type:</strong> ${jobType || "Any"}</div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:24px;margin-bottom:30px;">
+              <div style="margin-bottom:12px;font-size:16px;color:#0f172a;">
+                <strong>County:</strong> ${county || "All New Jersey counties"}
+              </div>
+
+              <div style="margin-bottom:12px;font-size:16px;color:#0f172a;">
+                <strong>Keyword:</strong> ${keyword || "All education jobs"}
+              </div>
+
+              <div style="font-size:16px;color:#0f172a;">
+                <strong>Job Type:</strong> ${jobType || "All job types"}
+              </div>
             </div>
 
-            <p style="font-size:15px;color:#475569;">
-              We’ll email you as soon as new jobs match your criteria.
-            </p>
+            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;padding:18px 20px;margin-bottom:32px;color:#92400e;line-height:1.7;font-size:15px;">
+              New jobs are added regularly from school districts, charter schools,
+              private schools, and education employers across New Jersey.
+            </div>
 
             <a
-              href="https://njschoolcareers.com"
-              style="
-                display:inline-block;
-                margin-top:20px;
-                background:#0f172a;
-                color:white;
-                padding:12px 20px;
-                border-radius:8px;
-                text-decoration:none;
-                font-weight:600;
-              "
+              href="https://njschoolcareers.com/jobs"
+              style="display:inline-block;background:#f97316;color:#ffffff;text-decoration:none;padding:16px 30px;border-radius:14px;font-size:17px;font-weight:700;"
             >
-              Browse Jobs Now
+              Browse NJ Jobs
             </a>
           </div>
 
-          <div style="padding:18px 28px;font-size:13px;color:#94a3b8;border-top:1px solid #e2e8f0;line-height:1.6;">
-            You’re receiving this email because you signed up at NJ School Careers.<br/>
-            You can unsubscribe anytime from job alert emails.
+          <div style="padding:28px 40px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+            <div style="font-size:14px;line-height:1.8;color:#64748b;">
+              You're receiving this email because you subscribed to job alerts at NJSchoolCareers.com.
+            </div>
+
+            <div style="margin-top:10px;font-size:14px;color:#64748b;">
+              No spam. Unsubscribe anytime.
+            </div>
           </div>
 
         </div>
@@ -127,7 +139,7 @@ export async function POST(req: Request) {
     await resend.emails.send({
       from: fromEmail,
       to: email,
-      subject: "You're subscribed to NJ School Careers",
+      subject: "You're subscribed to NJSchoolCareers job alerts",
       html,
     });
 
