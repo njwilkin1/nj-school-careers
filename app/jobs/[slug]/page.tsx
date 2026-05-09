@@ -254,6 +254,35 @@ export default async function JobDetailPage({ params }: PageProps) {
   const legacyRequirements = !isImportedJob ? toArray(job.requirements) : [];
 
   return (
+    <>  
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        title: job.title,
+        description: job.description || job.title,
+        datePosted: job.created_at,
+        hiringOrganization: {
+          "@type": "Organization",
+          name: job.district || "NJSchoolCareers",
+          sameAs: "https://www.njschoolcareers.com",
+        },
+        jobLocation: {
+          "@type": "Place",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: job.city || "New Jersey",
+            addressRegion: "NJ",
+            addressCountry: "US",
+          },
+        },
+        employmentType: "FULL_TIME",
+        url: `https://www.njschoolcareers.com/jobs/${job.slug || job.id}`,
+      }),
+    }}
+  />
     <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
       <div className="mx-auto max-w-4xl">
         <Link
@@ -470,6 +499,7 @@ export default async function JobDetailPage({ params }: PageProps) {
           )}
         </article>
       </div>
-    </main>
+  </main>
+</>
   );
 }
