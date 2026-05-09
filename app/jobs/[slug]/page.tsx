@@ -158,6 +158,77 @@ function toArray(value: unknown): string[] {
 
   return [];
 }
+
+function slugify(value: string) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function getCategoryLinks(title: string) {
+  const value = title.toLowerCase();
+
+  const links = [];
+
+  if (value.includes("special education")) {
+    links.push({
+      href: "/categories/special-education",
+      label: "Special Education",
+    });
+  }
+
+  if (value.includes("spanish")) {
+    links.push({
+      href: "/categories/spanish-teacher",
+      label: "Spanish Teacher",
+    });
+  }
+
+  if (value.includes("substitute")) {
+    links.push({
+      href: "/categories/substitute-teacher",
+      label: "Substitute Teacher",
+    });
+  }
+
+  if (value.includes("paraprofessional")) {
+    links.push({
+      href: "/categories/paraprofessional",
+      label: "Paraprofessional",
+    });
+  }
+
+  if (value.includes("counselor")) {
+    links.push({
+      href: "/categories/school-counselor",
+      label: "School Counselor",
+    });
+  }
+
+  if (value.includes("math")) {
+    links.push({
+      href: "/categories/math-teacher",
+      label: "Math Teacher",
+    });
+  }
+
+  if (value.includes("science")) {
+    links.push({
+      href: "/categories/science-teacher",
+      label: "Science Teacher",
+    });
+  }
+
+  if (value.includes("elementary")) {
+    links.push({
+      href: "/categories/elementary-teacher",
+      label: "Elementary Teacher",
+    });
+  }
+
+  return links;
+}
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -236,6 +307,7 @@ export default async function JobDetailPage({ params }: PageProps) {
   const displayType = getDisplayType(job.title, job.position_type || job.type);
   const locationLabel = job.city || job.location || job.district;
   const href = applyHref(job.applyUrl);
+  const categoryLinks = getCategoryLinks(job.title || "");
 
   const importedDetails = isImportedJob
     ? parseStructuredText(job.additional_information)
@@ -300,13 +372,34 @@ export default async function JobDetailPage({ params }: PageProps) {
               </h1>
 
               <p className="mt-3 text-lg font-medium text-slate-700">
-                {job.district}
-              </p>
+  <Link
+    href={`/districts/${slugify(job.district || "")}`}
+    className="hover:text-orange-600 hover:underline"
+  >
+    {job.district}
+  </Link>
+</p>
 
-              <p className="mt-2 text-sm text-slate-500">
-                {locationLabel}
-                {job.county ? ` · ${job.county}` : ""}
-              </p>
+{categoryLinks.length > 0 && (
+  <div className="mt-3 flex flex-wrap gap-2">
+    {categoryLinks.map((item) => (
+      <Link
+        key={item.href}
+        href={item.href}
+        className="rounded-full bg-orange-50 px-3 py-1 text-sm font-medium text-orange-700 hover:bg-orange-100"
+      >
+        {item.label}
+      </Link>
+    ))}
+  </div>
+)}
+
+              {locationLabel && locationLabel !== job.district && (
+  <p className="mt-2 text-sm text-slate-500">
+    {locationLabel}
+    {job.county ? ` · ${job.county}` : ""}
+  </p>
+)}
 
               {!isImportedJob && job.salary_range && (
                 <p className="mt-4 text-xl font-semibold text-slate-950">

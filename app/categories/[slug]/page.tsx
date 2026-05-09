@@ -1,18 +1,19 @@
 import { createClient } from "@supabase/supabase-js";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import Link from "next/link";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+function formatTitle(slug: string) {
+  return slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
+
 export async function generateMetadata({ params }: any) {
   const name = params.slug
     .replace(/-/g, " ")
@@ -23,45 +24,45 @@ export async function generateMetadata({ params }: any) {
     description: `Browse ${name} jobs in New Jersey on NJSchoolCareers.`,
   };
 }
-
-export default async function DistrictPage({
+export default async function CategoryPage({
   params,
 }: PageProps) {
   const { slug } = await params;
+
+  const category = formatTitle(slug).toLowerCase();
 
   const supabase = createClient(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const { data: importedJobs } = await supabase
+  const { data: jobs } = await supabase
     .from("job_imports")
     .select("*");
 
-  const jobs =
-    importedJobs?.filter(
-      (job) => slugify(job.district || "") === slug
-    ) || [];
+  const filteredJobs =
+    jobs?.filter((job) => {
+      const title = (job.title || "").toLowerCase();
+      return title.includes(category);
+    }) || [];
 
-  if (jobs.length === 0) {
+  if (filteredJobs.length === 0) {
     notFound();
   }
-
-  const districtName = jobs[0].district;
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12">
       <div className="mx-auto max-w-5xl">
         <h1 className="text-4xl font-bold text-slate-950">
-          {districtName} Jobs
+          {formatTitle(slug)} Jobs in New Jersey
         </h1>
 
         <p className="mt-4 text-lg text-slate-700">
-          Browse current job openings with {districtName} through NJSchoolCareers.
+          Browse current {category} openings across New Jersey school districts.
         </p>
 
         <div className="mt-10 space-y-4">
-          {jobs.map((job) => (
+          {filteredJobs.map((job) => (
             <Link
               key={job.id}
               href={`/jobs/${job.id}`}
@@ -72,7 +73,7 @@ export default async function DistrictPage({
               </h2>
 
               <p className="mt-2 text-sm text-slate-600">
-                {job.location || districtName}
+                {job.district}
               </p>
             </Link>
           ))}
