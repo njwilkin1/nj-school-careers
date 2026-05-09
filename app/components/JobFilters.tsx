@@ -106,7 +106,24 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
     setCategory("");
     setType("");
   }
+async function handleShare(job: any) {
+  const jobUrl = `https://www.njschoolcareers.com/jobs/${job.slug || job.id}`;
 
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: job.title,
+        text: `${job.title} at ${job.district}`,
+        url: jobUrl,
+      });
+    } catch {
+      // user cancelled share
+    }
+  } else {
+    await navigator.clipboard.writeText(jobUrl);
+    alert("Job link copied!");
+  }
+}
   return (
     <div className="mt-8">
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -242,6 +259,13 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
   >
     Apply Now
   </a>
+  <button
+  type="button"
+  onClick={() => handleShare(job)}
+  className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-500 hover:text-blue-600"
+>
+  Share
+</button>
 </div>
             </article>
           );
