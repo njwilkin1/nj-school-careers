@@ -141,7 +141,7 @@ export default function EmployersPage() {
           </div>
 
           <p className="mx-auto mt-8 max-w-3xl text-sm leading-7 text-slate-600">
-            Schools will always be able to post jobs. Paid options will focus on
+            Schools will continue to have access to posting options as NJSchoolCareers grows. Paid options will focus on
             visibility, placement, and employer reach.
           </p>
         </div>
@@ -155,7 +155,7 @@ export default function EmployersPage() {
             </p>
 
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
-              Early partner is limited.
+              Early partner is access limited.
             </h2>
 
             <p className="mt-4 leading-8 text-slate-700">
