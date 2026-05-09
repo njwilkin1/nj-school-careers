@@ -394,10 +394,22 @@ export default async function JobDetailPage({ params }: PageProps) {
   </div>
 )}
 
-              {locationLabel && locationLabel !== job.district && (
+{locationLabel && locationLabel !== job.district && (
   <p className="mt-2 text-sm text-slate-500">
     {locationLabel}
-    {job.county ? ` · ${job.county}` : ""}
+
+    {job.county && (
+      <>
+        {" · "}
+
+        <Link
+          href={`/counties/${slugify(job.county)}`}
+          className="hover:text-orange-600 hover:underline"
+        >
+          {job.county}
+        </Link>
+      </>
+    )}
   </p>
 )}
 
