@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-
+import { useSearchParams } from "next/navigation";
 function getCategory(title: string) {
   const value = title.toLowerCase();
 
@@ -66,7 +66,8 @@ function isNew(posted?: string) {
 }
 
 export default function JobFilters({ jobs }: { jobs: any[] }) {
-  const [search, setSearch] = useState("");
+    const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [county, setCounty] = useState("");
   const [category, setCategory] = useState("");
   const [type, setType] = useState("");
