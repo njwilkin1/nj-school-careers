@@ -248,11 +248,11 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-8">
+      <section className="mx-auto max-w-7xl px-6 py-4">
         <EmailSignup />
       </section>
 
-      <section id="why-us" className="mx-auto max-w-7xl px-6 py-10">
+      <section id="why-us" className="mx-auto max-w-7xl px-6 py-10">  
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
             Why Job Seekers Choose Us
