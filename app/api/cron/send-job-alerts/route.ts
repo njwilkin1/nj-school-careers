@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
-import { jobs } from "@/data/jobs";
 
 type Subscriber = {
   email: string;
@@ -18,6 +17,7 @@ type Job = {
   county?: string;
   type?: string;
   applyUrl: string;
+  posted?: string;
   overview?: string;
   responsibilities?: string[];
   requirements?: string[];
@@ -29,8 +29,11 @@ function normalize(value: string | null | undefined): string {
 
 function buildJobCards(unsentJobs: Job[]): string {
   return unsentJobs
-    .map(
-      (job) => `
+    .map((job) => {
+      const jobUrl =
+        job.applyUrl || `https://njschoolcareers.com/jobs/${job.slug}`;
+
+      return `
         <div style="margin-bottom:18px;padding:22px;border:1px solid #e2e8f0;border-radius:18px;background:#ffffff;">
           <div style="font-size:21px;font-weight:800;color:#020617;margin-bottom:8px;line-height:1.3;">
             ${job.title}
@@ -40,36 +43,45 @@ function buildJobCards(unsentJobs: Job[]): string {
             <strong>${job.district}</strong>
           </div>
 
-          <div style="font-size:14px;color:#64748b;margin-bottom:14px;line-height:1.6;">
+          ${
+  job.posted
+    ? `<div style="font-size:13px;color:#64748b;margin-bottom:8px;">
+         Posted ${new Date(job.posted).toLocaleDateString("en-US", {
+           month: "short",
+           day: "numeric",
+           year: "numeric",
+         })}
+       </div>`
+    : ""
+}
+
+          <div style="font-size:14px;color:#64748b;margin-bottom:16px;line-height:1.6;">
             ${job.location}${job.county ? ` • ${job.county}` : ""}${job.type ? ` • ${job.type}` : ""}
           </div>
 
           ${
             job.overview
-              ? `<div style="font-size:14px;line-height:1.7;color:#475569;margin-bottom:16px;">
+              ? `<div style="font-size:14px;line-height:1.7;color:#475569;margin-bottom:18px;">
                    ${job.overview}
                  </div>`
               : ""
           }
 
-          <a
-            href="${job.applyUrl}"
-            style="
-              display:inline-block;
-              background:#f97316;
-              color:#ffffff;
-              text-decoration:none;
-              padding:11px 18px;
-              border-radius:10px;
-              font-size:14px;
-              font-weight:700;
-            "
-          >
-            Apply Now
-          </a>
+          <table role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              <td style="border-radius:10px;background:#f97316;">
+                <a
+                  href="${jobUrl}"
+                  style="display:inline-block;padding:12px 18px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;"
+                >
+                  Apply Now
+                </a>
+              </td>
+            </tr>
+          </table>
         </div>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
@@ -171,6 +183,38 @@ export async function GET() {
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const { data: manualJobs } = await supabase
+  .from("jobs")
+  .select("*")
+  .eq("status", "published");
+
+const { data: importedJobs } = await supabase
+  .from("job_imports")
+  .select("*");
+
+const allJobs = [
+  ...(manualJobs || []).map((job) => ({
+    slug: job.slug || String(job.id || ""),
+    title: job.title || "",
+    district: job.district || "",
+    location: job.city || job.location || "",
+    county: job.county || "",
+    type: job.type || "",
+    posted: job.posted || job.created_at || "",
+    applyUrl: job.applyUrl || job.apply_url || "",
+  })),
+
+  ...(importedJobs || []).map((job) => ({
+    slug: job.slug || String(job.id || ""),
+    title: job.title || "",
+    district: job.district || "",
+    location: job.city || job.location || "",
+    county: job.county || "",
+    type: job.position_type || job.type || "",
+    posted: job.date_posted || job.created_at || "",
+    applyUrl: job.apply_url || "",
+  })),
+];
     const resend = new Resend(resendApiKey);
 
     const { data: subscribers, error: subscriberError } = await supabase
@@ -193,7 +237,7 @@ export async function GET() {
     }> = [];
 
     for (const sub of (subscribers || []) as Subscriber[]) {
-      const matches = (jobs as Job[]).filter((job) => {
+      const matches = (allJobs as Job[]).filter((job) => {
         const matchCounty =
           !sub.county || normalize(job.county).includes(normalize(sub.county));
 
@@ -249,13 +293,14 @@ export async function GET() {
         continue;
       }
 
-      const emailHtml = buildEmailHtml(unsentJobs, sub.email);
+const jobsToSend = unsentJobs.slice(0, 20);
+      const emailHtml = buildEmailHtml(jobsToSend, sub.email);
 
       const emailResult = await resend.emails.send({
         from: fromEmail,
         to: sub.email,
-        subject: `${unsentJobs.length} New NJ Education Job${
-          unsentJobs.length === 1 ? "" : "s"
+        subject: `${jobsToSend.length} New NJ Education Job${
+          jobsToSend.length === 1 ? "" : "s"
         } Matching Your Alert`,
         html: emailHtml,
       });
@@ -271,7 +316,7 @@ export async function GET() {
         continue;
       }
 
-      const inserts = unsentJobs.map((job) => ({
+      const inserts = jobsToSend.map((job) => ({
         subscriber_email: sub.email,
         job_slug: job.slug,
       }));
@@ -298,7 +343,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       totalSubscribers: subscribers?.length || 0,
-      totalJobsInSystem: jobs.length,
+      totalJobsInSystem: allJobs.length,
       results: debugResults,
     });
   } catch (err) {
