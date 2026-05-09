@@ -6,22 +6,37 @@ export default function AboutPage() {
           About NJSchoolCareers.com
         </h1>
 
-        <p className="mt-6 text-lg text-slate-600 leading-8">
+        <p className="mt-6 text-lg leading-8 text-slate-600">
           NJSchoolCareers was built to make it easier for educators and school
-          districts in New Jersey to connect — without unnecessary barriers,
+          districts in New Jersey to connect without unnecessary barriers,
           logins, or complicated systems.
         </p>
 
-        <p className="mt-6 text-lg text-slate-600 leading-8">
-          We focus exclusively on New Jersey school jobs — including teaching,
-          administration, coaching, and support staff roles — so job seekers can
-          find relevant opportunities faster, and districts can reach qualified
-          candidates more directly.
+        <p className="mt-6 text-lg leading-8 text-slate-600">
+          NJSchoolCareers now features more than 500 New Jersey education jobs
+          across teaching, administration, coaching, and support staff roles.
+          New jobs are added and updated regularly as schools across New Jersey
+          continue hiring throughout the year.
         </p>
 
-        <h2 className="mt-12 text-2xl font-semibold">Why NJSchoolCareers?</h2>
+        <p className="mt-6 text-lg leading-8 text-slate-600">
+          We focus exclusively on New Jersey school jobs — including teaching,
+          administration, coaching, and support staff roles — so job seekers
+          can find relevant opportunities faster, and districts can reach
+          qualified candidates more directly.
+        </p>
 
-        <ul className="mt-6 space-y-4 text-slate-600 text-lg">
+        <p className="mt-6 text-lg leading-8 text-slate-600">
+          Schools maintain full control over their own application and hiring
+          processes while using NJSchoolCareers to increase visibility and
+          connect with candidates.
+        </p>
+
+        <h2 className="mt-12 text-2xl font-semibold">
+          Why NJSchoolCareers?
+        </h2>
+
+        <ul className="mt-6 space-y-4 text-lg text-slate-600">
           <li>• No accounts required for job seekers</li>
           <li>• Simple and fast job posting for schools</li>
           <li>• Focused exclusively on New Jersey education jobs</li>
@@ -32,11 +47,11 @@ export default function AboutPage() {
           Built from Experience
         </h2>
 
-        <p className="mt-6 text-lg text-slate-600 leading-8">
+        <p className="mt-6 text-lg leading-8 text-slate-600">
           NJSchoolCareers was created after firsthand experience working in the
-          education job space. The goal is simple: create a cleaner, more
-          effective platform that actually helps both job seekers and school
-          districts.
+          education job space. The platform was designed to simplify school
+          hiring by helping districts reach candidates faster while reducing
+          unnecessary barriers for applicants.
         </p>
       </div>
     </main>
