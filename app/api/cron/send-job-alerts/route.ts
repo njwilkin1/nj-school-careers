@@ -27,11 +27,10 @@ function normalize(value: string | null | undefined): string {
   return String(value || "").trim().toLowerCase();
 }
 
-function buildJobCards(unsentJobs: Job[]): string {
-  return unsentJobs
+function buildJobCards(jobsToSend: Job[]): string {
+  return jobsToSend
     .map((job) => {
-      const jobUrl =
-        job.applyUrl || `https://njschoolcareers.com/jobs/${job.slug}`;
+      const jobUrl = job.applyUrl || `https://njschoolcareers.com/jobs/${job.slug}`;
 
       return `
         <div style="margin-bottom:18px;padding:22px;border:1px solid #e2e8f0;border-radius:18px;background:#ffffff;">
@@ -44,20 +43,24 @@ function buildJobCards(unsentJobs: Job[]): string {
           </div>
 
           ${
-  job.posted
-    ? `<div style="font-size:13px;color:#64748b;margin-bottom:8px;">
-         Posted ${new Date(job.posted).toLocaleDateString("en-US", {
-           month: "short",
-           day: "numeric",
-           year: "numeric",
-         })}
-       </div>`
-    : ""
-}
+            job.posted
+              ? `<div style="font-size:13px;color:#64748b;margin-bottom:8px;">
+                   Posted ${new Date(job.posted).toLocaleDateString("en-US", {
+                     month: "short",
+                     day: "numeric",
+                     year: "numeric",
+                   })}
+                 </div>`
+              : ""
+          }
 
-          <div style="font-size:14px;color:#64748b;margin-bottom:16px;line-height:1.6;">
-            ${job.location}${job.county ? ` • ${job.county}` : ""}${job.type ? ` • ${job.type}` : ""}
-          </div>
+          ${
+            job.location || job.county || job.type
+              ? `<div style="font-size:14px;color:#64748b;margin-bottom:16px;line-height:1.6;">
+                   ${[job.location, job.county, job.type].filter(Boolean).join(" • ")}
+                 </div>`
+              : ""
+          }
 
           ${
             job.overview
@@ -85,26 +88,25 @@ function buildJobCards(unsentJobs: Job[]): string {
     .join("");
 }
 
-function buildEmailHtml(unsentJobs: Job[], email: string): string {
+function buildEmailHtml(jobsToSend: Job[], email: string, totalMatches: number): string {
   const headingText =
-    unsentJobs.length === 1
-      ? "We found 1 new New Jersey education job that matches your alert preferences."
-      : `We found ${unsentJobs.length} new New Jersey education jobs that match your alert preferences.`;
+    totalMatches > jobsToSend.length
+      ? `We found ${totalMatches} matching New Jersey education jobs. Showing the ${jobsToSend.length} newest positions for your alert.`
+      : jobsToSend.length === 1
+        ? "We found 1 new New Jersey education job that matches your alert preferences."
+        : `We found ${jobsToSend.length} new New Jersey education jobs that match your alert preferences.`;
 
-  const unsubscribeUrl = `https://njschoolcareers.com/api/unsubscribe?email=${encodeURIComponent(
-    email
-  )}`;
+  const unsubscribeUrl = `https://njschoolcareers.com/api/unsubscribe?email=${encodeURIComponent(email)}`;
 
   return `
     <div style="background:#f8fafc;padding:40px 20px;font-family:Arial,Helvetica,sans-serif;">
       <div style="max-width:680px;margin:auto;background:#ffffff;border-radius:24px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 4px 14px rgba(15,23,42,0.06);">
-
         <div style="background:#eff6ff;padding:40px 40px 28px;border-bottom:1px solid #dbeafe;">
           <div style="font-size:15px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2563eb;margin-bottom:18px;">
             New Jersey Education Job Alerts
           </div>
 
-          <div style="color:#020617;font-size:40px;line-height:1.05;font-weight:800;margin-bottom:18px;">
+          <div style="color:#020617;font-size:34px;line-height:1.1;font-weight:800;margin-bottom:18px;word-break:break-word;">
             NJSchoolCareers
           </div>
 
@@ -126,21 +128,12 @@ function buildEmailHtml(unsentJobs: Job[], email: string): string {
             Apply early. Many New Jersey school positions receive applications quickly.
           </div>
 
-          ${buildJobCards(unsentJobs)}
+          ${buildJobCards(jobsToSend)}
 
           <div style="text-align:center;margin-top:30px;">
             <a
               href="https://njschoolcareers.com/jobs"
-              style="
-                display:inline-block;
-                background:#f97316;
-                color:#ffffff;
-                text-decoration:none;
-                padding:14px 24px;
-                border-radius:12px;
-                font-size:15px;
-                font-weight:700;
-              "
+              style="display:inline-block;background:#f97316;color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:12px;font-size:15px;font-weight:700;"
             >
               Browse More NJ Jobs
             </a>
@@ -162,7 +155,6 @@ function buildEmailHtml(unsentJobs: Job[], email: string): string {
             </a>
           </div>
         </div>
-
       </div>
     </div>
   `;
@@ -176,46 +168,43 @@ export async function GET() {
     const fromEmail = process.env.ALERTS_FROM_EMAIL;
 
     if (!supabaseUrl || !supabaseServiceRoleKey || !resendApiKey || !fromEmail) {
-      return NextResponse.json(
-        { error: "Missing environment variables." },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Missing environment variables." }, { status: 500 });
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-    const { data: manualJobs } = await supabase
-  .from("jobs")
-  .select("*")
-  .eq("status", "published");
-
-const { data: importedJobs } = await supabase
-  .from("job_imports")
-  .select("*");
-
-const allJobs = [
-  ...(manualJobs || []).map((job) => ({
-    slug: job.slug || String(job.id || ""),
-    title: job.title || "",
-    district: job.district || "",
-    location: job.city || job.location || "",
-    county: job.county || "",
-    type: job.type || "",
-    posted: job.posted || job.created_at || "",
-    applyUrl: job.applyUrl || job.apply_url || "",
-  })),
-
-  ...(importedJobs || []).map((job) => ({
-    slug: job.slug || String(job.id || ""),
-    title: job.title || "",
-    district: job.district || "",
-    location: job.city || job.location || "",
-    county: job.county || "",
-    type: job.position_type || job.type || "",
-    posted: job.date_posted || job.created_at || "",
-    applyUrl: job.apply_url || "",
-  })),
-];
     const resend = new Resend(resendApiKey);
+
+    const { data: manualJobs } = await supabase
+      .from("jobs")
+      .select("*")
+      .eq("status", "published");
+
+    const { data: importedJobs } = await supabase
+      .from("job_imports")
+      .select("*");
+
+    const allJobs: Job[] = [
+      ...(manualJobs || []).map((job) => ({
+        slug: job.slug || String(job.id || ""),
+        title: job.title || "",
+        district: job.district || "",
+        location: job.city || job.location || "",
+        county: job.county || "",
+        type: job.type || "",
+        posted: job.posted || job.created_at || "",
+        applyUrl: job.applyUrl || job.apply_url || "",
+      })),
+      ...(importedJobs || []).map((job) => ({
+        slug: job.slug || String(job.id || ""),
+        title: job.title || "",
+        district: job.district || "",
+        location: job.city || job.location || "",
+        county: job.county || "",
+        type: job.position_type || job.type || "",
+        posted: job.date_posted || job.created_at || "",
+        applyUrl: job.apply_url || "",
+      })),
+    ];
 
     const { data: subscribers, error: subscriberError } = await supabase
       .from("job_alert_subscribers")
@@ -228,16 +217,10 @@ const allJobs = [
       );
     }
 
-    const debugResults: Array<{
-      email: string;
-      matchedJobs: number;
-      newJobs: number;
-      sent: boolean;
-      error?: unknown;
-    }> = [];
+    const debugResults = [];
 
     for (const sub of (subscribers || []) as Subscriber[]) {
-      const matches = (allJobs as Job[]).filter((job) => {
+      const matches = allJobs.filter((job) => {
         const matchCounty =
           !sub.county || normalize(job.county).includes(normalize(sub.county));
 
@@ -293,8 +276,15 @@ const allJobs = [
         continue;
       }
 
-const jobsToSend = unsentJobs.slice(0, 20);
-      const emailHtml = buildEmailHtml(jobsToSend, sub.email);
+      const jobsToSend = unsentJobs
+        .sort((a, b) => {
+          const dateA = new Date(a.posted || 0).getTime();
+          const dateB = new Date(b.posted || 0).getTime();
+          return dateB - dateA;
+        })
+        .slice(0, 20);
+
+      const emailHtml = buildEmailHtml(jobsToSend, sub.email, unsentJobs.length);
 
       const emailResult = await resend.emails.send({
         from: fromEmail,
