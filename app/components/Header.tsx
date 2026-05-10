@@ -29,12 +29,12 @@ export default function Header() {
         </nav>
 
         {/* Mobile Hamburger */}
-        <button
-          className="md:hidden text-2xl"
-          onClick={() => setOpen(!open)}
-        >
-          ☰
-        </button>
+      <button
+  className="md:hidden text-3xl text-[#050B2C] hover:text-orange-600"
+  onClick={() => setOpen(!open)}
+>
+  ☰
+</button>
       </div>
 
       {/* Mobile Menu */}
