@@ -17,9 +17,21 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "NJ School Careers",
   description: "Find education jobs across New Jersey",
- icons: {
-  icon: "/favicon-v2.png",
-},
+
+  icons: {
+    icon: "/favicon-v2.png",
+  },
+
+  openGraph: {
+    title: "NJ School Careers",
+    description: "Find education jobs across New Jersey",
+    images: ["/og-image.png"],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
