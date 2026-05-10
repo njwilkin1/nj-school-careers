@@ -75,7 +75,7 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
   const [type, setType] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const JOBS_PER_PAGE = 20;
+  const JOBS_PER_PAGE = 15;
 
   const counties = useMemo(() => {
     return Array.from(
@@ -300,7 +300,21 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
             </article>
           );
         })}
-
+<div className="mt-8 text-center text-sm text-slate-500">
+  Showing{" "}
+  <span className="font-semibold text-slate-900">
+    {(currentPage - 1) * JOBS_PER_PAGE + 1}
+  </span>
+  –
+  <span className="font-semibold text-slate-900">
+    {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)}
+  </span>{" "}
+  of{" "}
+  <span className="font-semibold text-slate-900">
+    {filteredJobs.length}
+  </span>{" "}
+  jobs
+</div>
         {totalPages > 1 && (
           <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
             <button
