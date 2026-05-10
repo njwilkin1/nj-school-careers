@@ -2,14 +2,8 @@ import Link from "next/link";
 
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-
+import ApplyButton from "./ApplyButton";
 import { createClient } from "@supabase/supabase-js";
-
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -427,23 +421,15 @@ export default async function JobDetailPage({ params }: PageProps) {
               )}
             </div>
 
-            {href && (
-              <a
-  href={href}
-  target="_blank"
-  rel="noreferrer"
-  onClick={() => {
-    window.gtag?.("event", "apply_click", {
-      district: job.district,
-      job_title: job.title,
-    });
-  }}
-                className="rounded-2xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-              >
-                Apply Now
-              </a>
-            )}
-          </div>
+ {href && (
+  <ApplyButton
+    href={href}
+    district={job.district}
+    jobTitle={job.title}
+    label="Apply Now"
+    className="rounded-2xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
+  />
+)}         </div>
 
           <div className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700 md:grid-cols-2">
             {displayType && (
@@ -602,18 +588,17 @@ export default async function JobDetailPage({ params }: PageProps) {
             </section>
           )}
 
-          {href && (
-            <div className="mt-10 border-t border-slate-200 pt-6">
-              <a
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-block rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-              >
-                Apply for This Job
-              </a>
-            </div>
-          )}
+   {href && (
+  <div className="mt-10 border-t border-slate-200 pt-6">
+    <ApplyButton
+      href={href}
+      district={job.district}
+      jobTitle={job.title}
+      label="Apply for This Job"
+      className="inline-block rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
+    />
+  </div>
+)}
         </article>
       </div>
   </main>
