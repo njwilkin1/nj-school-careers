@@ -1,3 +1,4 @@
+import JobSearchForm from "./components/JobSearchForm";
 import EmailSignup from "./components/EmailSignup";
 import { createClient } from "@supabase/supabase-js";
 
@@ -113,27 +114,7 @@ export default async function Home() {
 </p>
 
             <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-xl">
-              <form action="/jobs" className="grid gap-3 md:grid-cols-[1.2fr_1fr_auto]">
-                <input
-                  name="search"
-                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none placeholder:text-slate-400 focus:border-blue-400"
-                  placeholder="Job title, role, or keyword"
-                />
-
-                <input
-                  name="location"
-                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none placeholder:text-slate-400 focus:border-blue-400"
-                  placeholder="City or county"
-                />
-
-                <button
-                  type="submit"
-                  className="rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-                >
-                  Search Jobs
-                </button>
-              </form>
-
+              <JobSearchForm />
               <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
                 <span>Trending searches:</span>
                 {popularSearches.map((item) => (
