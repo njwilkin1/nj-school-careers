@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+
 function getCategory(title: string) {
   const value = title.toLowerCase();
 
@@ -66,11 +67,15 @@ function isNew(posted?: string) {
 }
 
 export default function JobFilters({ jobs }: { jobs: any[] }) {
-    const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
+
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [county, setCounty] = useState("");
   const [category, setCategory] = useState("");
   const [type, setType] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const JOBS_PER_PAGE = 20;
 
   const counties = useMemo(() => {
     return Array.from(
@@ -100,30 +105,40 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
     );
   });
 
+  const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE);
+
+  const paginatedJobs = filteredJobs.slice(
+    (currentPage - 1) * JOBS_PER_PAGE,
+    currentPage * JOBS_PER_PAGE
+  );
+
   function clearFilters() {
     setSearch("");
     setCounty("");
     setCategory("");
     setType("");
+    setCurrentPage(1);
   }
-async function handleShare(job: any) {
-  const jobUrl = `https://www.njschoolcareers.com/jobs/${job.slug || job.id}`;
 
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: job.title,
-        text: `${job.title} at ${job.district}`,
-        url: jobUrl,
-      });
-    } catch {
-      // user cancelled share
+  async function handleShare(job: any) {
+    const jobUrl = `https://www.njschoolcareers.com/jobs/${job.slug || job.id}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: job.title,
+          text: `${job.title} at ${job.district}`,
+          url: jobUrl,
+        });
+      } catch {
+        // user cancelled share
+      }
+    } else {
+      await navigator.clipboard.writeText(jobUrl);
+      alert("Job link copied!");
     }
-  } else {
-    await navigator.clipboard.writeText(jobUrl);
-    alert("Job link copied!");
   }
-}
+
   return (
     <div className="mt-8">
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -131,13 +146,19 @@ async function handleShare(job: any) {
           <input
             placeholder="Search title, district, or keyword"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
             className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:outline-none"
           />
 
           <select
             value={county}
-            onChange={(e) => setCounty(e.target.value)}
+            onChange={(e) => {
+              setCounty(e.target.value);
+              setCurrentPage(1);
+            }}
             className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:border-orange-500 focus:outline-none"
           >
             <option value="">All counties</option>
@@ -150,7 +171,10 @@ async function handleShare(job: any) {
 
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              setCurrentPage(1);
+            }}
             className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:border-orange-500 focus:outline-none"
           >
             <option value="">All roles</option>
@@ -164,7 +188,10 @@ async function handleShare(job: any) {
 
           <select
             value={type}
-            onChange={(e) => setType(e.target.value)}
+            onChange={(e) => {
+              setType(e.target.value);
+              setCurrentPage(1);
+            }}
             className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:border-orange-500 focus:outline-none"
           >
             <option value="">All job types</option>
@@ -187,16 +214,18 @@ async function handleShare(job: any) {
         <p className="mt-4 text-sm text-slate-500">
           Showing{" "}
           <span className="font-semibold text-slate-900">
-            {filteredJobs.length}
+            {paginatedJobs.length}
           </span>{" "}
           of{" "}
-          <span className="font-semibold text-slate-900">{jobs.length}</span>{" "}
-          jobs
+          <span className="font-semibold text-slate-900">
+            {filteredJobs.length}
+          </span>{" "}
+          matching jobs
         </p>
       </section>
 
       <div className="mt-8 space-y-4">
-        {filteredJobs.map((job, index) => {
+        {paginatedJobs.map((job, index) => {
           const categoryLabel = getCategory(job.title || "");
 
           return (
@@ -243,33 +272,76 @@ async function handleShare(job: any) {
                 </div>
               </div>
 
-            <div className="mt-5 flex flex-wrap gap-3">
-  <Link
-    href={`/jobs/${job.slug || job.id}`}
-    className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-orange-500 hover:text-orange-600"
-  >
-    View Details
-  </Link>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Link
+                  href={`/jobs/${job.slug || job.id}`}
+                  className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-orange-500 hover:text-orange-600"
+                >
+                  View Details
+                </Link>
 
-  <a
-    href={job.applyUrl || `/jobs/${job.slug || job.id}`}
-    target={job.applyUrl ? "_blank" : "_self"}
-    rel="noreferrer"
-    className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
-  >
-    Apply Now
-  </a>
-  <button
-  type="button"
-  onClick={() => handleShare(job)}
-  className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-500 hover:text-blue-600"
->
-  Share
-</button>
-</div>
+                <a
+                  href={job.applyUrl || `/jobs/${job.slug || job.id}`}
+                  target={job.applyUrl ? "_blank" : "_self"}
+                  rel="noreferrer"
+                  className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+                >
+                  Apply Now
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => handleShare(job)}
+                  className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-500 hover:text-blue-600"
+                >
+                  Share
+                </button>
+              </div>
             </article>
           );
         })}
+
+        {totalPages > 1 && (
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
+            <button
+              type="button"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              className="rounded-xl border border-slate-300 px-4 py-2 text-sm disabled:opacity-40"
+            >
+              Previous
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .slice(
+                Math.max(0, currentPage - 3),
+                Math.min(totalPages, currentPage + 2)
+              )
+              .map((page) => (
+                <button
+                  key={page}
+                  type="button"
+                  onClick={() => setCurrentPage(page)}
+                  className={`rounded-xl px-4 py-2 text-sm font-semibold ${
+                    page === currentPage
+                      ? "bg-orange-500 text-white"
+                      : "border border-slate-300 hover:bg-slate-100"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+
+            <button
+              type="button"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              className="rounded-xl border border-slate-300 px-4 py-2 text-sm disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
+        )}
 
         {filteredJobs.length === 0 && (
           <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
