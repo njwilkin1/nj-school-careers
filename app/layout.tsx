@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "NJ School Careers",
   description: "Find education jobs across New Jersey",
+ icons: {
+  icon: "/favicon-v2.png",
+},
 };
 
 export default function RootLayout({
