@@ -5,6 +5,12 @@ import { Metadata } from "next";
 
 import { createClient } from "@supabase/supabase-js";
 
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -423,9 +429,15 @@ export default async function JobDetailPage({ params }: PageProps) {
 
             {href && (
               <a
-                href={href}
-                target="_blank"
-                rel="noreferrer"
+  href={href}
+  target="_blank"
+  rel="noreferrer"
+  onClick={() => {
+    window.gtag?.("event", "apply_click", {
+      district: job.district,
+      job_title: job.title,
+    });
+  }}
                 className="rounded-2xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
               >
                 Apply Now
