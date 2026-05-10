@@ -11,9 +11,13 @@ export default function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold text-slate-900">
-          NJSchoolCareers
-        </Link>
+       <Link href="/" className="flex items-center">
+  <img
+    src="/NJSchoolCareers-logo-header.png"
+    alt="NJSchoolCareers"
+    className="h-20 w-auto"
+  />
+</Link>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex gap-8 text-sm text-slate-700">
