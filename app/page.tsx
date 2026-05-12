@@ -115,7 +115,7 @@ export default async function Home() {
 
             <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-xl">
               <JobSearchForm />
-              <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
+              <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-600">
                 <span>Trending searches:</span>
                 {popularSearches.map((item) => (
                   <a
@@ -195,7 +195,7 @@ export default async function Home() {
                     <h3 className="font-semibold text-slate-950 group-hover:text-blue-700">
                       {title}
                     </h3>
-                    <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+                    <p className="mt-1 text-sm text-slate-600">{subtitle}</p>
                   </div>
                   <span className="text-xl text-blue-600 transition group-hover:translate-x-1">
                     →
@@ -208,22 +208,22 @@ export default async function Home() {
           <div className="mx-auto mt-10 grid max-w-5xl gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-4">
             <div>
               <div className="font-semibold text-slate-950">Apply Directly</div>
-              <p className="mt-1 text-sm text-slate-500">No unnecessary accounts.</p>
+              <p className="mt-1 text-sm text-slate-600">No unnecessary accounts.</p>
             </div>
 
             <div>
               <div className="font-semibold text-slate-950">NJ Focused</div>
-              <p className="mt-1 text-sm text-slate-500">Only New Jersey school jobs.</p>
+              <p className="mt-1 text-sm text-slate-600">Only New Jersey school jobs.</p>
             </div>
 
             <div>
               <div className="font-semibold text-slate-950">Updated Regularly</div>
-              <p className="mt-1 text-sm text-slate-500">Fresh opportunities added.</p>
+              <p className="mt-1 text-sm text-slate-600">Fresh opportunities added.</p>
             </div>
 
             <div>
               <div className="font-semibold text-slate-950">Simple Search</div>
-              <p className="mt-1 text-sm text-slate-500">Find openings faster.</p>
+              <p className="mt-1 text-sm text-slate-600">Find openings faster.</p>
             </div>
           </div>
         </div>
@@ -326,7 +326,7 @@ export default async function Home() {
                     <p className="mt-2 text-base font-medium text-slate-700">
                       {job.district}
                     </p>
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-slate-600">
                       {job.location}
                       {job.county ? ` · ${job.county}` : ""}
                     </p>
@@ -357,7 +357,7 @@ export default async function Home() {
             ))
           ) : (
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-slate-500">
+              <p className="text-slate-600">
                 No featured jobs are available right now.
               </p>
             </div>
