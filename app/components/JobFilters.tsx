@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import EmailSignup from "@/app/components/EmailSignup";
 
 function getCategory(title: string) {
   const value = title.toLowerCase();
@@ -229,10 +230,8 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
           const categoryLabel = getCategory(job.title || "");
 
           return (
-            <article
-              key={`${job.id || job.slug || index}`}
-              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-md"
-            >
+  <div key={`${job.id || job.slug || index}`}>
+    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-md">
               <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
                 <div className="min-w-0">
                   <div className="mb-2 flex flex-wrap gap-2">
@@ -297,8 +296,16 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
                   Share
                 </button>
               </div>
-            </article>
-          );
+          </article>
+
+{index === 14 && (
+  <div className="my-8">
+    <EmailSignup searchTerm={search} />
+  </div>
+)}
+
+</div>
+);
         })}
 <div className="mt-8 text-center text-sm text-slate-500">
   Showing{" "}

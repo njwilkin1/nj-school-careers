@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 
-export default function EmailSignup() {
+export default function EmailSignup({
+  searchTerm = "",
+}: {
+  searchTerm?: string;
+}) {
+
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -26,7 +31,7 @@ export default function EmailSignup() {
         body: JSON.stringify({
           email,
           county: "",
-          keyword: "",
+          keyword: searchTerm,
           job_type: "",
         }),
       });
@@ -59,13 +64,16 @@ export default function EmailSignup() {
   return (
     <div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <h2 className="text-2xl font-semibold text-slate-950">
-        Never miss new NJ school openings
-      </h2>
+  {searchTerm
+    ? `Get new ${searchTerm} jobs in New Jersey`
+    : "Never miss new NJ school openings"}
+</h2>
 
-      <p className="mt-2 text-slate-600">
-        Get new teaching, administration, coaching, and support staff jobs
-        delivered directly to your inbox.
-      </p>
+     <p className="mt-2 text-slate-600">
+  {searchTerm
+    ? `Get new ${searchTerm} openings delivered directly to your inbox.`
+    : "Get new teaching, administration, coaching, and support staff jobs delivered directly to your inbox."}
+</p>
 
       <p className="mt-2 text-sm text-slate-500">
         500+ New Jersey education jobs • No spam • Unsubscribe anytime
