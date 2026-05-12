@@ -123,9 +123,31 @@ export default function RootLayout({
 
           </div>
 
-          <div className="border-t border-slate-200 px-6 py-8 text-center text-base text-slate-500">
-            © 2026 NJSchoolCareers. All rights reserved.
-          </div>
+        <div className="border-t border-slate-200 px-6 py-8 text-center text-base text-slate-500">
+  <div>© 2026 NJSchoolCareers. All rights reserved.</div>
+
+  <div className="mt-4 flex justify-center gap-4">
+    <a
+      href="https://www.linkedin.com/company/njschoolcareers"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="NJSchoolCareers on LinkedIn"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 text-lg font-semibold hover:border-[#050B2C] hover:text-[#050B2C] transition"
+    >
+      <span className="font-bold">in</span>
+    </a>
+
+    <a
+      href="https://www.facebook.com/NJSchoolCareers"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="NJSchoolCareers on Facebook"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 text-lg font-semibold hover:border-[#050B2C] hover:text-[#050B2C] transition"
+    >
+      <span className="font-bold">f</span>
+    </a>
+  </div>
+</div>
         </footer>
 
         <Script
