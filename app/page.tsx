@@ -43,6 +43,7 @@ function isNewJob(posted?: string) {
 }
 
 export default async function Home() {
+    const totalJobs = 873;
   const popularSearches = [
     "Assistant Principal",
     "Spanish Teacher",
@@ -109,8 +110,8 @@ export default async function Home() {
   Focused exclusively on New Jersey education jobs.
 </p>
 
-<p className="mt-3 text-sm text-slate-600">
-  Browse 500+ New Jersey school jobs. Updated regularly.
+<p className="mt-3 text-sm font-medium text-slate-700">
+  Search {totalJobs}+ New Jersey education jobs. New openings added regularly.
 </p>
 
             <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-xl">
@@ -128,11 +129,11 @@ export default async function Home() {
                 ))}
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-3 text-sm text-slate-600">
-                <span>✔ Apply directly</span>
-                <span>✔ No account required</span>
-                <span>✔ Direct access to school openings</span>
-              </div>
+            <div className="mt-4 flex flex-wrap gap-3 text-sm text-slate-700">
+  <span>✔ {totalJobs}+ NJ education jobs</span>
+  <span>✔ Updated regularly</span>
+  <span>✔ Apply directly to schools</span>
+</div>
             </div>
           </div>
 
@@ -218,7 +219,7 @@ export default async function Home() {
 
             <div>
               <div className="font-semibold text-slate-950">Updated Regularly</div>
-              <p className="mt-1 text-sm text-slate-600">Fresh opportunities added.</p>
+              <p className="mt-1 text-sm text-slate-600">{totalJobs}+ jobs and growing.</p>
             </div>
 
             <div>
@@ -285,7 +286,7 @@ export default async function Home() {
             href="/post-job"
             className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-orange-500 hover:text-orange-600"
           >
-            Post a Featured Jobs
+            Post a Featured Job
           </a>
         </div>
 
