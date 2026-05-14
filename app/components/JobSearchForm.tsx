@@ -7,7 +7,9 @@ declare global {
 }
 
 export default function JobSearchForm() {
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     const formData = new FormData(event.currentTarget);
 
     const search = String(formData.get("search") || "").trim();
@@ -17,11 +19,27 @@ export default function JobSearchForm() {
       search_term: search,
       location,
     });
+
+    if (search.length > 1) {
+      await fetch("/api/log-search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: search }),
+      });
+    }
+
+    const params = new URLSearchParams();
+
+    if (search) params.set("search", search);
+    if (location) params.set("location", location);
+
+    window.location.href = `/jobs?${params.toString()}`;
   }
 
   return (
     <form
-      action="/jobs"
       onSubmit={handleSubmit}
       className="grid gap-3 md:grid-cols-[1.2fr_1fr_auto]"
     >

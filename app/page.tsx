@@ -111,7 +111,7 @@ export default async function Home() {
 </p>
 
 <p className="mt-3 text-sm font-medium text-slate-700">
-  Search {totalJobs}+ New Jersey education jobs. New openings added regularly.
+  Search {totalJobs}+ New Jersey education jobs. New school openings added regularly.
 </p>
 
             <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-xl">
@@ -363,6 +363,15 @@ export default async function Home() {
               </p>
             </div>
           )}
+              </div>
+
+        <div className="mt-8 text-center">
+          <a
+            href="/jobs"
+            className="inline-flex items-center justify-center rounded-xl bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800"
+          >
+            Browse all {totalJobs}+ NJ education jobs →
+          </a>
         </div>
       </section>
 

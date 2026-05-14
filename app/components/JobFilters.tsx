@@ -112,7 +112,25 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
     (currentPage - 1) * JOBS_PER_PAGE,
     currentPage * JOBS_PER_PAGE
   );
+async function logSearchQuery(value: string) {
+  const cleaned = value.trim().toLowerCase();
 
+  if (cleaned.length < 2) return;
+
+  try {
+    await fetch("/api/log-search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: cleaned,
+      }),
+    });
+  } catch (error) {
+    console.error("Failed to log search query:", error);
+  }
+}
   function clearFilters() {
     setSearch("");
     setCounty("");
@@ -147,10 +165,14 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
           <input
             placeholder="Search title, district, or keyword"
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
-            }}
+          onChange={(e) => {
+  setSearch(e.target.value);
+  setCurrentPage(1);
+}}
+
+onBlur={() => {
+  logSearchQuery(search);
+}}
             className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:outline-none"
           />
 
