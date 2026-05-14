@@ -44,13 +44,13 @@ function isNewJob(posted?: string) {
 
 export default async function Home() {
     const totalJobs = 873;
-  const popularSearches = [
-    "Assistant Principal",
-    "Spanish Teacher",
-    "Substitute Teacher",
-    "Supervisor",
-    "Guidance Counselor",
-  ];
+const defaultSearches = [
+  "Assistant Principal",
+  "Spanish Teacher",
+  "Substitute Teacher",
+  "Supervisor",
+  "Guidance Counselor",
+];
 
   const employerHighlights = [
     "Post a job in minutes",
@@ -86,6 +86,35 @@ export default async function Home() {
   }
 
   const featuredJobs: Job[] = data ?? [];
+  const { data: searchData, error: searchError } = await supabase
+  .from("search_queries")
+  .select("query, created_at")
+  .gte(
+    "created_at",
+    new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  );
+
+if (searchError) {
+  console.error("Popular searches fetch error:", searchError);
+}
+
+const popularSearches =
+  searchData && searchData.length > 0
+    ? Object.entries(
+        searchData.reduce<Record<string, number>>((acc, item) => {
+          const query = item.query
+            .trim()
+            .toLowerCase()
+            .replace(/\b\w/g, (char) => char.toUpperCase());
+
+          acc[query] = (acc[query] || 0) + 1;
+          return acc;
+        }, {})
+      )
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([query]) => query)
+    : defaultSearches;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
