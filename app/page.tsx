@@ -43,7 +43,7 @@ function isNewJob(posted?: string) {
 }
 
 export default async function Home() {
-    const totalJobs = 873;
+    const totalJobs = 1139;
 const defaultSearches = [
   "Assistant Principal",
   "Spanish Teacher",
@@ -105,7 +105,8 @@ const popularSearches =
           const query = item.query
             .trim()
             .toLowerCase()
-.replace(/\b\w/g, (char: string) => char.toUpperCase());
+            .replace(/\b\w/g, (char: string) => char.toUpperCase());
+
           acc[query] = (acc[query] || 0) + 1;
           return acc;
         }, {})
