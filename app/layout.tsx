@@ -25,12 +25,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: "NJ School Careers",
     description: "Find education jobs across New Jersey",
-    images: ["/og-image.png"],
+    images: ["/og-image-v2.png"],
   },
 
   twitter: {
     card: "summary_large_image",
-    images: ["/og-image.png"],
+    images: ["/og-image-v2.png"],
   },
 };
 
