@@ -105,8 +105,7 @@ const popularSearches =
           const query = item.query
             .trim()
             .toLowerCase()
-            .replace(/\b\w/g, (char) => char.toUpperCase());
-
+.replace(/\b\w/g, (char: string) => char.toUpperCase());
           acc[query] = (acc[query] || 0) + 1;
           return acc;
         }, {})
