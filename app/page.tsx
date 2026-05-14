@@ -79,7 +79,7 @@ const defaultSearches = [
     .select("slug, title, district, location, county, type, posted, applyUrl, is_featured")
     .eq("is_featured", true)
     .order("posted", { ascending: false })
-    .limit(8);
+    .limit(10);
 
   if (error) {
     console.error("Homepage featured jobs fetch error:", error);
