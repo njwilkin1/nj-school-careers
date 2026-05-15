@@ -422,10 +422,11 @@ export default async function JobDetailPage({ params }: PageProps) {
             </div>
 
  {href && (
-  <ApplyButton
-    href={href}
-    district={job.district}
-    jobTitle={job.title}
+ <ApplyButton
+  href={href}
+  district={job.district}
+  county={job.county}
+  jobTitle={job.title}
     label="Apply Now"
     className="rounded-2xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
   />
@@ -590,10 +591,11 @@ export default async function JobDetailPage({ params }: PageProps) {
 
    {href && (
   <div className="mt-10 border-t border-slate-200 pt-6">
-    <ApplyButton
-      href={href}
-      district={job.district}
-      jobTitle={job.title}
+   <ApplyButton
+  href={href}
+  district={job.district}
+  county={job.county}
+  jobTitle={job.title}
       label="Apply for This Job"
       className="inline-block rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
     />

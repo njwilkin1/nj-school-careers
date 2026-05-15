@@ -3,6 +3,7 @@
 type ApplyButtonProps = {
   href: string;
   district?: string | null;
+  county?: string | null;
   jobTitle?: string | null;
   label: string;
   className?: string;
@@ -17,6 +18,7 @@ declare global {
 export default function ApplyButton({
   href,
   district,
+  county,
   jobTitle,
   label,
   className,
@@ -30,6 +32,7 @@ export default function ApplyButton({
       onClick={() => {
         window.gtag?.("event", "apply_click", {
           district,
+          county,
           job_title: jobTitle,
         });
       }}
