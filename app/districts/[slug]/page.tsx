@@ -1,6 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -39,11 +42,14 @@ export default async function DistrictPage({ params }: PageProps) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
+  const districtSearchName = slug.replace(/-/g, " ");
+
   const { data: importedJobs, error } = await supabase
     .from("job_imports")
     .select("*")
+    .ilike("district", `%${districtSearchName}%`)
     .order("created_at", { ascending: false })
-    .limit(5000);
+    .limit(100);
 
   if (error) {
     console.error("Supabase district page error:", error);
@@ -101,28 +107,28 @@ export default async function DistrictPage({ params }: PageProps) {
 
         <div className="mt-12 flex flex-wrap gap-3">
           <Link
-            href="/categories/math-teacher"
+            href="/jobs?search=Math Teacher"
             className="rounded-full bg-slate-100 px-4 py-2 text-sm hover:bg-orange-100"
           >
             Math Teacher Jobs
           </Link>
 
           <Link
-            href="/categories/special-education"
+            href="/jobs?search=Special Education"
             className="rounded-full bg-slate-100 px-4 py-2 text-sm hover:bg-orange-100"
           >
             Special Education Jobs
           </Link>
 
           <Link
-            href="/categories/spanish-teacher"
+            href="/jobs?search=Spanish Teacher"
             className="rounded-full bg-slate-100 px-4 py-2 text-sm hover:bg-orange-100"
           >
             Spanish Teacher Jobs
           </Link>
 
           <Link
-            href="/categories/assistant-principal"
+            href="/jobs?search=Assistant Principal"
             className="rounded-full bg-slate-100 px-4 py-2 text-sm hover:bg-orange-100"
           >
             Assistant Principal Jobs
