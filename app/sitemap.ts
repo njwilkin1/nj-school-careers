@@ -1,6 +1,15 @@
 import { createClient } from "@supabase/supabase-js";
 import { MetadataRoute } from "next";
 
+function slugify(value: string) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createClient(
     process.env.SUPABASE_URL!,
@@ -9,6 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const baseUrl = "https://www.njschoolcareers.com";
 
+  // STATIC PAGES
   const staticPages = [
     "",
     "/jobs",
@@ -21,9 +31,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "daily" as const,
-    priority: route === "" ? 1 : 0.8,
+    priority: route === "" ? 1 : 0.9,
   }));
 
+  // MAIN JOB PAGES
   const { data: jobs } = await supabase
     .from("jobs")
     .select("slug, created_at")
@@ -38,22 +49,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           ? new Date(job.created_at)
           : new Date(),
         changeFrequency: "daily" as const,
-        priority: 0.7,
+        priority: 0.8,
       }));
 
+  // IMPORTED JOB DATA
   const { data: importedJobs } = await supabase
     .from("job_imports")
-    .select("district, county");
+    .select("district, county, title");
 
+  // DISTRICT PAGES
   const uniqueDistricts = [
     ...new Set(
       (importedJobs ?? [])
-        .map((job) =>
-          job.district
-            ?.toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-")
-        )
+        .map((job) => slugify(job.district))
         .filter(Boolean)
     ),
   ];
@@ -65,15 +73,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // COUNTY PAGES
   const uniqueCounties = [
     ...new Set(
       (importedJobs ?? [])
-        .map((job) =>
-          job.county
-            ?.toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-")
-        )
+        .map((job) => slugify(job.county))
         .filter(Boolean)
     ),
   ];
@@ -85,10 +89,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // CATEGORY PAGES
+  const categoryKeywords = [
+    "spanish teacher",
+    "special education teacher",
+    "school counselor",
+    "assistant principal",
+    "math teacher",
+    "science teacher",
+    "esl teacher",
+    "school psychologist",
+    "speech therapist",
+    "supervisor",
+  ];
+
+  const categoryPages = categoryKeywords.map((category) => ({
+    url: `${baseUrl}/jobs/${slugify(category)}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.9,
+  }));
+
   return [
     ...staticPages,
     ...jobPages,
     ...districtPages,
     ...countyPages,
+    ...categoryPages,
   ];
 }
