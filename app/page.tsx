@@ -2,6 +2,9 @@ import JobSearchForm from "./components/JobSearchForm";
 import EmailSignup from "./components/EmailSignup";
 import { createClient } from "@supabase/supabase-js";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type Job = {
   slug: string;
   title: string;
