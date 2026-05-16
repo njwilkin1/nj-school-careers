@@ -173,62 +173,63 @@ function getCategoryLinks(title: string) {
 
   if (value.includes("special education")) {
     links.push({
-      href: "/categories/special-education",
+      href: "/jobs/special-education-teacher",
       label: "Special Education",
     });
   }
 
   if (value.includes("spanish")) {
     links.push({
-      href: "/categories/spanish-teacher",
+      href: "/jobs/spanish-teacher",
       label: "Spanish Teacher",
     });
   }
 
   if (value.includes("substitute")) {
     links.push({
-      href: "/categories/substitute-teacher",
+      href: "/jobs/substitute-teacher",
       label: "Substitute Teacher",
     });
   }
 
   if (value.includes("paraprofessional")) {
     links.push({
-      href: "/categories/paraprofessional",
+      href: "/jobs/paraprofessional",
       label: "Paraprofessional",
     });
   }
 
   if (value.includes("counselor")) {
     links.push({
-      href: "/categories/school-counselor",
+      href: "/jobs/school-counselor",
       label: "School Counselor",
     });
   }
 
   if (value.includes("math")) {
     links.push({
-      href: "/categories/math-teacher",
+      href: "/jobs/math-teacher",
       label: "Math Teacher",
     });
   }
 
   if (value.includes("science")) {
     links.push({
-      href: "/categories/science-teacher",
+      href: "/jobs/science-teacher",
       label: "Science Teacher",
     });
   }
 
   if (value.includes("elementary")) {
     links.push({
-      href: "/categories/elementary-teacher",
+      href: "/jobs/elementary-teacher",
       label: "Elementary Teacher",
     });
   }
 
   return links;
 }
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -247,11 +248,7 @@ export async function generateMetadata({
         .select("*")
         .eq("id", Number(slug))
         .maybeSingle()
-    : await supabase
-        .from("jobs")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
+    : await supabase.from("jobs").select("*").eq("slug", slug).maybeSingle();
 
   if (!data) {
     return {
@@ -279,6 +276,7 @@ export async function generateMetadata({
     },
   };
 }
+
 export default async function JobDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
@@ -306,7 +304,7 @@ export default async function JobDetailPage({ params }: PageProps) {
   const postedDate = job.date_posted || job.posted;
   const displayType = getDisplayType(job.title, job.position_type || job.type);
   const locationLabel = job.city || job.location || job.district;
-  const href = applyHref(job.applyUrl);
+  const href = applyHref(job.applyUrl || job.apply_url);
   const categoryLinks = getCategoryLinks(job.title || "");
 
   const importedDetails = isImportedJob
@@ -326,284 +324,331 @@ export default async function JobDetailPage({ params }: PageProps) {
   const legacyRequirements = !isImportedJob ? toArray(job.requirements) : [];
 
   return (
-    <>  
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "JobPosting",
-        title: job.title,
-        description: job.description || job.title,
-        datePosted: job.created_at,
-        hiringOrganization: {
-          "@type": "Organization",
-          name: job.district || "NJSchoolCareers",
-          sameAs: "https://www.njschoolcareers.com",
-        },
-        jobLocation: {
-          "@type": "Place",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: job.city || "New Jersey",
-            addressRegion: "NJ",
-            addressCountry: "US",
-          },
-        },
-        employmentType: "FULL_TIME",
-        url: `https://www.njschoolcareers.com/jobs/${job.slug || job.id}`,
-      }),
-    }}
-  />
-    <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
-      <div className="mx-auto max-w-4xl">
-        <Link
-          href="/jobs"
-          className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm transition hover:border-orange-500 hover:text-orange-600"
-        >
-          ← Back to Jobs
-        </Link>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "JobPosting",
+            title: job.title,
+            description: job.description || job.title,
+            datePosted: job.created_at,
+            hiringOrganization: {
+              "@type": "Organization",
+              name: job.district || "NJSchoolCareers",
+              sameAs: "https://www.njschoolcareers.com",
+            },
+            jobLocation: {
+              "@type": "Place",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: job.city || "New Jersey",
+                addressRegion: "NJ",
+                addressCountry: "US",
+              },
+            },
+            employmentType: "FULL_TIME",
+            url: `https://www.njschoolcareers.com/jobs/${job.slug || job.id}`,
+          }),
+        }}
+      />
 
-        <article className="mt-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight text-slate-950">
-                {job.title}
-              </h1>
+      <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
+        <div className="mx-auto max-w-4xl">
+          <Link
+            href="/jobs"
+            className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm transition hover:border-orange-500 hover:text-orange-600"
+          >
+            ← Back to Jobs
+          </Link>
 
-              <p className="mt-3 text-lg font-medium text-slate-700">
-  <Link
-    href={`/districts/${slugify(job.district || "")}`}
-    className="hover:text-orange-600 hover:underline"
-  >
-    {job.district}
-  </Link>
-</p>
+          <article className="mt-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h1 className="text-4xl font-bold tracking-tight text-slate-950">
+                  {job.title}
+                </h1>
 
-{categoryLinks.length > 0 && (
-  <div className="mt-3 flex flex-wrap gap-2">
-    {categoryLinks.map((item) => (
-      <Link
-        key={item.href}
-        href={item.href}
-        className="rounded-full bg-orange-50 px-3 py-1 text-sm font-medium text-orange-700 hover:bg-orange-100"
-      >
-        {item.label}
-      </Link>
-    ))}
-  </div>
-)}
+                <p className="mt-3 text-lg font-medium text-slate-700">
+                  <Link
+                    href={`/districts/${slugify(job.district || "")}`}
+                    className="hover:text-orange-600 hover:underline"
+                  >
+                    {job.district}
+                  </Link>
+                </p>
 
-{locationLabel && locationLabel !== job.district && (
-  <p className="mt-2 text-sm text-slate-500">
-    {locationLabel}
+                {categoryLinks.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {categoryLinks.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="rounded-full bg-orange-50 px-3 py-1 text-sm font-medium text-orange-700 hover:bg-orange-100"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
 
-    {job.county && (
-      <>
-        {" · "}
+                {locationLabel && locationLabel !== job.district && (
+                  <p className="mt-2 text-sm text-slate-500">
+                    {locationLabel}
 
-        <Link
-          href={`/counties/${slugify(job.county)}`}
-          className="hover:text-orange-600 hover:underline"
-        >
-          {job.county}
-        </Link>
-      </>
-    )}
-  </p>
-)}
+                    {job.county && (
+                      <>
+                        {" · "}
+
+                        <Link
+                          href={`/counties/${slugify(job.county)}`}
+                          className="hover:text-orange-600 hover:underline"
+                        >
+                          {job.county}
+                        </Link>
+                      </>
+                    )}
+                  </p>
+                )}
+
+                {!isImportedJob && job.salary_range && (
+                  <p className="mt-4 text-xl font-semibold text-slate-950">
+                    {job.salary_range}
+                    {displayType ? ` · ${displayType}` : ""}
+                  </p>
+                )}
+              </div>
+
+              {href && (
+                <ApplyButton
+                  href={href}
+                  district={job.district}
+                  county={job.county}
+                  jobTitle={job.title}
+                  label="Apply Now"
+                  className="rounded-2xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
+                />
+              )}
+            </div>
+
+            <div className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700 md:grid-cols-2">
+              {displayType && (
+                <p>
+                  <span className="font-semibold text-slate-950">
+                    Position Type:
+                  </span>{" "}
+                  {displayType}
+                </p>
+              )}
+
+              {postedDate && (
+                <p>
+                  <span className="font-semibold text-slate-950">
+                    Date Posted:
+                  </span>{" "}
+                  {formatDate(postedDate)}
+                </p>
+              )}
+
+              {locationLabel && (
+                <p>
+                  <span className="font-semibold text-slate-950">
+                    Location:
+                  </span>{" "}
+                  {job.location && job.location !== "District"
+                    ? job.location
+                    : locationLabel}
+                </p>
+              )}
+
+              {(job.closing_date || job.closingDate) && (
+                <p>
+                  <span className="font-semibold text-slate-950">
+                    Closing Date:
+                  </span>{" "}
+                  {formatDate(job.closing_date || job.closingDate)}
+                </p>
+              )}
 
               {!isImportedJob && job.salary_range && (
-                <p className="mt-4 text-xl font-semibold text-slate-950">
+                <p>
+                  <span className="font-semibold text-slate-950">
+                    Salary Range:
+                  </span>{" "}
                   {job.salary_range}
-                  {displayType ? ` · ${displayType}` : ""}
                 </p>
               )}
             </div>
 
- {href && (
- <ApplyButton
-  href={href}
-  district={job.district}
-  county={job.county}
-  jobTitle={job.title}
-    label="Apply Now"
-    className="rounded-2xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-  />
-)}         </div>
+            {!isImportedJob && benefits.length > 0 && (
+              <section className="mt-8">
+                <h2 className="text-2xl font-semibold text-slate-950">
+                  Benefits
+                </h2>
 
-          <div className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700 md:grid-cols-2">
-            {displayType && (
-              <p>
-                <span className="font-semibold text-slate-950">
-                  Position Type:
-                </span>{" "}
-                {displayType}
-              </p>
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+                  <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                    {benefits.map((item, index) => (
+                      <li key={`benefit-${index}`} className="ml-5 list-disc">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
             )}
 
-            {postedDate && (
-              <p>
-                <span className="font-semibold text-slate-950">
-                  Date Posted:
-                </span>{" "}
-                {formatDate(postedDate)}
-              </p>
-            )}
+            {!isImportedJob && manualDescriptionSections.length > 0 && (
+              <section className="mt-8">
+                <h2 className="text-2xl font-semibold text-slate-950">
+                  Job Description
+                </h2>
 
-            {locationLabel && (
-              <p>
-                <span className="font-semibold text-slate-950">Location:</span>{" "}
-                {job.location && job.location !== "District"
-                  ? job.location
-                  : locationLabel}
-              </p>
-            )}
+                <div className="mt-4 space-y-6 rounded-2xl border border-slate-200 bg-white p-5">
+                  {manualDescriptionSections.map((section, index) => (
+                    <div key={`manual-detail-${index}`}>
+                      {section.title && (
+                        <h3 className="mb-2 text-lg font-semibold text-slate-950">
+                          {section.title}
+                        </h3>
+                      )}
 
-            {(job.closing_date || job.closingDate) && (
-              <p>
-                <span className="font-semibold text-slate-950">
-                  Closing Date:
-                </span>{" "}
-                {formatDate(job.closing_date || job.closingDate)}
-              </p>
-            )}
-
-            {!isImportedJob && job.salary_range && (
-              <p>
-                <span className="font-semibold text-slate-950">
-                  Salary Range:
-                </span>{" "}
-                {job.salary_range}
-              </p>
-            )}
-          </div>
-
-          {!isImportedJob && benefits.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-2xl font-semibold text-slate-950">
-                Benefits
-              </h2>
-
-              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
-                <ul className="space-y-2 text-sm leading-7 text-slate-700">
-                  {benefits.map((item, index) => (
-                    <li key={`benefit-${index}`} className="ml-5 list-disc">
-                      {item}
-                    </li>
+                      <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                        {section.content.map((line, i) => (
+                          <li key={i} className="ml-5 list-disc">
+                            {line}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
-                </ul>
-              </div>
-            </section>
-          )}
+                </div>
+              </section>
+            )}
 
-          {!isImportedJob && manualDescriptionSections.length > 0 && (
-            <section className="mt-8">
+            {!isImportedJob && legacyResponsibilities.length > 0 && (
+              <section className="mt-8">
+                <h2 className="text-2xl font-semibold text-slate-950">
+                  Responsibilities
+                </h2>
+
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+                  <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                    {legacyResponsibilities.map((item, index) => (
+                      <li key={`resp-${index}`} className="ml-5 list-disc">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            )}
+
+            {!isImportedJob && legacyRequirements.length > 0 && (
+              <section className="mt-8">
+                <h2 className="text-2xl font-semibold text-slate-950">
+                  Requirements
+                </h2>
+
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+                  <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                    {legacyRequirements.map((item, index) => (
+                      <li key={`req-${index}`} className="ml-5 list-disc">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            )}
+
+            {isImportedJob && importedDetails.length > 0 && (
+              <section className="mt-8">
+                <h2 className="text-2xl font-semibold text-slate-950">
+                  Job Details
+                </h2>
+
+                <div className="mt-4 space-y-6 rounded-2xl border border-slate-200 bg-white p-5">
+                  {importedDetails.map((section, index) => (
+                    <div key={`imported-detail-${index}`}>
+                      {section.title && (
+                        <h3 className="mb-2 text-lg font-semibold text-slate-950">
+                          {section.title}
+                        </h3>
+                      )}
+
+                      <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                        {section.content.map((line, i) => (
+                          <li key={i} className="ml-5 list-disc">
+                            {line}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <div className="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-6">
               <h2 className="text-2xl font-semibold text-slate-950">
-                Job Description
+                Explore More New Jersey School Jobs
               </h2>
 
-              <div className="mt-4 space-y-6 rounded-2xl border border-slate-200 bg-white p-5">
-                {manualDescriptionSections.map((section, index) => (
-                  <div key={`manual-detail-${index}`}>
-                    {section.title && (
-                      <h3 className="mb-2 text-lg font-semibold text-slate-950">
-                        {section.title}
-                      </h3>
-                    )}
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href="/jobs"
+                  className="rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-orange-50"
+                >
+                  Browse All Jobs
+                </Link>
 
-                    <ul className="space-y-2 text-sm leading-7 text-slate-700">
-                      {section.content.map((line, i) => (
-                        <li key={i} className="ml-5 list-disc">
-                          {line}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                {job.district && (
+                  <Link
+                    href={`/districts/${slugify(job.district)}`}
+                    className="rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-orange-50"
+                  >
+                    More jobs from {job.district}
+                  </Link>
+                )}
+
+                {job.county && (
+                  <Link
+                    href={`/counties/${slugify(job.county)}`}
+                    className="rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-orange-50"
+                  >
+                    More jobs in {job.county}
+                  </Link>
+                )}
+
+                {categoryLinks.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-orange-50"
+                  >
+                    {item.label} Jobs
+                  </Link>
                 ))}
               </div>
-            </section>
-          )}
+            </div>
 
-          {!isImportedJob && legacyResponsibilities.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-2xl font-semibold text-slate-950">
-                Responsibilities
-              </h2>
-
-              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
-                <ul className="space-y-2 text-sm leading-7 text-slate-700">
-                  {legacyResponsibilities.map((item, index) => (
-                    <li key={`resp-${index}`} className="ml-5 list-disc">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+            {href && (
+              <div className="mt-10 border-t border-slate-200 pt-6">
+                <ApplyButton
+                  href={href}
+                  district={job.district}
+                  county={job.county}
+                  jobTitle={job.title}
+                  label="Apply for This Job"
+                  className="inline-block rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
+                />
               </div>
-            </section>
-          )}
-
-          {!isImportedJob && legacyRequirements.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-2xl font-semibold text-slate-950">
-                Requirements
-              </h2>
-
-              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
-                <ul className="space-y-2 text-sm leading-7 text-slate-700">
-                  {legacyRequirements.map((item, index) => (
-                    <li key={`req-${index}`} className="ml-5 list-disc">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </section>
-          )}
-
-          {isImportedJob && importedDetails.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-2xl font-semibold text-slate-950">
-                Job Details
-              </h2>
-
-              <div className="mt-4 space-y-6 rounded-2xl border border-slate-200 bg-white p-5">
-                {importedDetails.map((section, index) => (
-                  <div key={`imported-detail-${index}`}>
-                    {section.title && (
-                      <h3 className="mb-2 text-lg font-semibold text-slate-950">
-                        {section.title}
-                      </h3>
-                    )}
-
-                    <ul className="space-y-2 text-sm leading-7 text-slate-700">
-                      {section.content.map((line, i) => (
-                        <li key={i} className="ml-5 list-disc">
-                          {line}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-   {href && (
-  <div className="mt-10 border-t border-slate-200 pt-6">
-   <ApplyButton
-  href={href}
-  district={job.district}
-  county={job.county}
-  jobTitle={job.title}
-      label="Apply for This Job"
-      className="inline-block rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-    />
-  </div>
-)}
-        </article>
-      </div>
-  </main>
-</>
+            )}
+          </article>
+        </div>
+      </main>
+    </>
   );
 }
