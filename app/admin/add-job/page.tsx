@@ -1,4 +1,5 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -36,9 +37,18 @@ const jobTypes = [
   "Administrative",
 ];
 
+function addDays(dateString: string, days: number) {
+  const date = new Date(dateString);
+  date.setDate(date.getDate() + days);
+  return date.toISOString().split("T")[0];
+}
+
 export default function AdminAddJobPage() {
-    const router = useRouter();
+  const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
+
+  const [previewMode, setPreviewMode] = useState(false);
+  const [status, setStatus] = useState("");
 
   const [form, setForm] = useState({
     adminSecret: "",
@@ -49,7 +59,7 @@ export default function AdminAddJobPage() {
     location: "",
     type: "Full Time",
     posted: today,
-    closing_date: "",
+    closing_date: addDays(today, 45),
     salary_range: "",
     benefits: "",
     job_description: "",
@@ -59,16 +69,30 @@ export default function AdminAddJobPage() {
     contact_email: "",
   });
 
-  const [status, setStatus] = useState("");
-
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "posted") {
+      setForm({
+        ...form,
+        posted: value,
+        closing_date: addDays(value, 45),
+      });
+      return;
+    }
+
+    setForm({ ...form, [name]: value });
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handlePreview(e: React.FormEvent) {
     e.preventDefault();
+    setStatus("");
+    setPreviewMode(true);
+  }
+
+  async function handleSubmit() {
     setStatus("Submitting...");
 
     const res = await fetch("/api/admin/add-job", {
@@ -85,7 +109,111 @@ export default function AdminAddJobPage() {
     }
 
     setStatus("✅ Job posted successfully. Redirecting...");
-router.push("/jobs");
+    router.push("/jobs");
+  }
+
+  if (previewMode) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-white px-6 py-12 text-slate-900">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-orange-100 bg-white p-8 shadow-lg">
+          <h1 className="text-3xl font-bold">Preview Job Posting</h1>
+          <p className="mt-2 text-sm text-slate-500">
+            Review the job before publishing it to NJSchoolCareers.
+          </p>
+
+          <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+            <h2 className="text-3xl font-bold text-slate-950">{form.title}</h2>
+
+            <p className="mt-3 text-lg font-medium text-slate-700">
+              {form.district}
+            </p>
+
+            <p className="mt-2 text-sm text-slate-600">
+              {form.city}, NJ · {form.county}
+              {form.location ? ` · ${form.location}` : ""}
+            </p>
+
+            <div className="mt-5 grid gap-3 text-sm text-slate-700 md:grid-cols-2">
+              <p>
+                <span className="font-semibold text-slate-950">Type:</span>{" "}
+                {form.type}
+              </p>
+
+              <p>
+                <span className="font-semibold text-slate-950">Posted:</span>{" "}
+                {form.posted}
+              </p>
+
+              <p>
+                <span className="font-semibold text-slate-950">
+                  Closing Date:
+                </span>{" "}
+                {form.closing_date || "Not provided"}
+              </p>
+
+              <p>
+                <span className="font-semibold text-slate-950">Salary:</span>{" "}
+                {form.salary_range}
+              </p>
+            </div>
+          </div>
+
+          <section className="mt-8">
+            <h3 className="text-xl font-semibold text-slate-950">Benefits</h3>
+            <ul className="mt-3 list-disc space-y-2 pl-6 text-sm leading-7 text-slate-700">
+              {form.benefits
+                .split("\n")
+                .filter(Boolean)
+                .map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+            </ul>
+          </section>
+
+          <section className="mt-8">
+            <h3 className="text-xl font-semibold text-slate-950">
+              Job Description
+            </h3>
+            <div className="mt-3 whitespace-pre-wrap rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-700">
+              {form.job_description}
+            </div>
+          </section>
+
+          <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
+            <h3 className="text-xl font-semibold text-slate-950">
+              Contact Information
+            </h3>
+
+            <div className="mt-3 space-y-2 text-sm text-slate-700">
+              <p>{form.contact_name}</p>
+              <p>{form.contact_title}</p>
+              <p>{form.contact_email}</p>
+              <p className="break-all">{form.applyUrl}</p>
+            </div>
+          </section>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setPreviewMode(false)}
+              className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-orange-500 hover:text-orange-600"
+            >
+              Edit Job
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="rounded-xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-600"
+            >
+              Publish Job
+            </button>
+          </div>
+
+          {status && <p className="mt-4 text-sm font-medium">{status}</p>}
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -96,7 +224,7 @@ router.push("/jobs");
           Add a structured job directly to your database.
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <form onSubmit={handlePreview} className="mt-6 space-y-4">
           <input
             name="adminSecret"
             type="password"
@@ -188,22 +316,23 @@ router.push("/jobs");
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
           />
 
+          <p className="-mt-2 text-xs text-slate-500">
+            If no employer deadline is provided, use the automatic 45-day
+            closing date.
+          </p>
+
           <input
             name="salary_range"
-            placeholder="Salary Range (required): Example $60,000 - $75,000"
+            placeholder="Salary Range: Example $60,000 - $75,000"
             value={form.salary_range}
             onChange={handleChange}
             className="w-full rounded-xl border border-slate-300 px-4 py-3"
             required
           />
 
-          <p className="-mt-2 text-xs text-slate-500">
-            NJ law requires a good-faith salary range in job postings.
-          </p>
-
           <textarea
             name="benefits"
-            placeholder="Benefits (required): Enter each benefit on a new line"
+            placeholder="Benefits: Enter each benefit on a new line"
             value={form.benefits}
             onChange={handleChange}
             rows={5}
@@ -213,7 +342,7 @@ router.push("/jobs");
 
           <textarea
             name="job_description"
-            placeholder={`Job Description (required)
+            placeholder={`Job Description
 
 Use headings if helpful:
 Responsibilities:
@@ -271,7 +400,7 @@ Qualifications:
             type="submit"
             className="w-full rounded-xl bg-orange-500 px-4 py-3 font-semibold text-white transition hover:bg-orange-600"
           >
-            Submit Job
+            Preview Job
           </button>
 
           {status && <p className="text-sm font-medium">{status}</p>}
