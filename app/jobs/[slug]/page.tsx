@@ -354,14 +354,57 @@ export default async function JobDetailPage({ params }: PageProps) {
         }}
       />
 
-      <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900">
+        <main className="min-h-screen bg-slate-50 px-6 pb-28 pt-12 text-slate-900 md:pb-12">
         <div className="mx-auto max-w-4xl">
-          <Link
-            href="/jobs"
-            className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm transition hover:border-orange-500 hover:text-orange-600"
-          >
-            ← Back to Jobs
-          </Link>
+          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+  <Link
+    href="/"
+    className="hover:text-orange-600 hover:underline"
+  >
+    Home
+  </Link>
+
+  <span>/</span>
+
+  <Link
+    href="/jobs"
+    className="hover:text-orange-600 hover:underline"
+  >
+    Jobs
+  </Link>
+
+  {job.county && (
+    <>
+      <span>/</span>
+
+      <Link
+        href={`/counties/${slugify(job.county)}`}
+        className="hover:text-orange-600 hover:underline"
+      >
+        {job.county}
+      </Link>
+    </>
+  )}
+
+  {job.district && (
+    <>
+      <span>/</span>
+
+      <Link
+        href={`/districts/${slugify(job.district)}`}
+        className="hover:text-orange-600 hover:underline"
+      >
+        {job.district}
+      </Link>
+    </>
+  )}
+
+  <span>/</span>
+
+  <span className="font-medium text-slate-700">
+    {job.title}
+  </span>
+</nav>
 
           <article className="mt-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
             <div className="flex flex-wrap items-start justify-between gap-4">
@@ -648,6 +691,18 @@ export default async function JobDetailPage({ params }: PageProps) {
             )}
           </article>
         </div>
+        {href && (
+  <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white p-4 shadow-lg md:hidden">
+    <ApplyButton
+      href={href}
+      district={job.district}
+      county={job.county}
+      jobTitle={job.title}
+      label="Apply Now"
+      className="block w-full rounded-2xl bg-orange-500 px-6 py-4 text-center text-lg font-semibold text-white shadow-sm transition hover:bg-orange-600"
+    />
+  </div>
+)}
       </main>
     </>
   );
