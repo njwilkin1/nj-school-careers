@@ -1,232 +1,267 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-const countyOptions = [
-  "Atlantic County", "Bergen County", "Burlington County", "Camden County",
-  "Cape May County", "Cumberland County", "Essex County", "Gloucester County",
-  "Hudson County", "Hunterdon County", "Mercer County", "Middlesex County",
-  "Monmouth County", "Morris County", "Ocean County", "Passaic County",
-  "Salem County", "Somerset County", "Sussex County", "Union County",
-  "Warren County",
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString("en-US");
+}
+
+type JobFormData = {
+  title: string;
+  district: string;
+  city: string;
+  county: string;
+  location: string;
+  type: string;
+  postingDate: string;
+  applicationDeadline: string;
+  salary: string;
+  benefits: string;
+  description: string;
+  applyUrl: string;
+  contactName: string;
+  contactTitle: string;
+  contactEmail: string;
+};
+
+const counties = [
+  "Atlantic", "Bergen", "Burlington", "Camden", "Cape May", "Cumberland",
+  "Essex", "Gloucester", "Hudson", "Hunterdon", "Mercer", "Middlesex",
+  "Monmouth", "Morris", "Ocean", "Passaic", "Salem", "Somerset",
+  "Sussex", "Union", "Warren",
 ];
 
-export default function PostJobPage() {
-  const [form, setForm] = useState({
-    jobTitle: "",
+const jobTypes = [
+  "Full Time",
+  "Part Time",
+  "Substitute",
+  "Administrative",
+  "Support Staff",
+  "Coaching",
+];
+
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function addDays(dateString: string, days: number) {
+  const date = dateString ? new Date(dateString) : new Date();
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+export default function PostJobForm() {
+  const router = useRouter();
+
+  const [formData, setFormData] = useState<JobFormData>({
+    title: "",
     district: "",
     city: "",
     county: "",
     location: "",
-    jobType: "",
-    salaryRange: "",
+    type: "",
+    postingDate: today(),
+    applicationDeadline: "",
+    salary: "",
     benefits: "",
-    jobDescription: "",
-    applicationLink: "",
+    description: "",
+    applyUrl: "",
     contactName: "",
     contactTitle: "",
     contactEmail: "",
   });
 
-  const [status, setStatus] = useState("");
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
-  const inputStyle =
-    "w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none";
-
-  function handleChange(
+  const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  function hasSalaryRange(value: string) {
-    const v = value.trim().toLowerCase();
-    const hasNumber = /\d/.test(v);
-    const hasRange = /\s(-|–|—|to)\s/i.test(v);
-    const badOpenEnded = /\+|and up|starting at|competitive|commensurate/.test(v);
-    return hasNumber && hasRange && !badOpenEnded;
-  }
-
-  function isValidUrlOrEmail(value: string) {
-    const trimmed = value.trim();
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return true;
-
-    try {
-      const url = new URL(trimmed);
-      return ["http:", "https:"].includes(url.protocol);
-    } catch {
-      return false;
-    }
-  }
-
-  function validateForm() {
-    if (!form.jobTitle.trim()) return "Job title is required.";
-    if (!form.district.trim()) return "School / district name is required.";
-    if (!form.city.trim()) return "City is required.";
-    if (!form.county.trim()) return "County is required.";
-    if (!form.jobType.trim()) return "Job type is required.";
-    if (!form.salaryRange.trim()) return "Salary range is required.";
-
-    if (!hasSalaryRange(form.salaryRange)) {
-      return "Please enter a good-faith salary range, such as $60,000 - $75,000 or $25/hr - $30/hr.";
-    }
-
-    if (!form.benefits.trim()) return "Benefits are required.";
-    if (!form.jobDescription.trim()) return "Job description is required.";
-    if (!form.applicationLink.trim()) return "Application link or hiring email is required.";
-
-    if (!isValidUrlOrEmail(form.applicationLink)) {
-      return "Application must be a valid URL or email address.";
-    }
-
-    if (!form.contactName.trim()) return "Contact name is required.";
-    if (!form.contactTitle.trim()) return "Contact title is required.";
-    if (!form.contactEmail.trim()) return "Contact email is required.";
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.contactEmail.trim())) {
-      return "Contact email must be valid.";
-    }
-
-    return null;
-  }
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const handlePreview = (e: React.FormEvent) => {
     e.preventDefault();
+    setPreviewOpen(true);
+  };
+
+  const handleSubmit = async () => {
     setLoading(true);
-    setStatus("");
+    setStatus(null);
 
-    const validationError = validateForm();
+    const finalDeadline =
+      formData.applicationDeadline || addDays(formData.postingDate, 45);
 
-    if (validationError) {
-      setStatus(validationError);
-      setLoading(false);
-      return;
-    }
+    const payload = {
+      ...formData,
+      applicationDeadline: finalDeadline,
+    };
 
     try {
-      const response = await fetch("/api/add-job", {
+      const res = await fetch("/api/jobs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (response.ok) {
-        setStatus(
-          "Thank you. Your job was submitted successfully and is pending review."
-        );
-
-        setForm({
-          jobTitle: "",
-          district: "",
-          city: "",
-          county: "",
-          location: "",
-          jobType: "",
-          salaryRange: "",
-          benefits: "",
-          jobDescription: "",
-          applicationLink: "",
-          contactName: "",
-          contactTitle: "",
-          contactEmail: "",
-        });
-      } else {
-        setStatus(data.error || "Something went wrong. Please try again.");
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to submit job.");
       }
-    } catch {
-      setStatus("Something went wrong. Please try again.");
-    } finally {
+
+      sessionStorage.setItem(
+        "lastSubmittedJob",
+        JSON.stringify({
+          title: payload.title,
+          district: payload.district,
+          posted: payload.postingDate,
+          application_deadline: payload.applicationDeadline,
+        })
+      );
+
+      router.push("/post-job/confirmation");
+    } catch (err: any) {
+      setStatus({
+        type: "error",
+        message: err.message || "Something went wrong.",
+      });
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-16 text-slate-900">
-      <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-10 shadow-sm">
-        <h1 className="text-3xl font-bold tracking-tight">Post a Job</h1>
+    <main className="min-h-screen bg-slate-50 px-6 py-12">
+      <form
+        onSubmit={handlePreview}
+        className="mx-auto max-w-3xl space-y-5 rounded-3xl bg-white p-8 shadow-sm"
+      >
+        <h1 className="text-3xl font-bold text-slate-900">Post a Job</h1>
 
-        <p className="mt-2 text-sm font-semibold text-orange-500">
-          Free job posting during our launch period. Paid plans coming soon.
-        </p>
-
-        <p className="mt-2 text-slate-600">
-          Submit your job for review. Approved postings will appear on NJSchoolCareers.com.
-        </p>
-
-        <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
-          <input name="jobTitle" value={form.jobTitle} onChange={handleChange} placeholder="Job Title" className={inputStyle} />
-          <input name="district" value={form.district} onChange={handleChange} placeholder="School / District Name" className={inputStyle} />
-          <input name="city" value={form.city} onChange={handleChange} placeholder="City" className={inputStyle} />
-
-          <select name="county" value={form.county} onChange={handleChange} className={inputStyle}>
-            <option value="">Select County</option>
-            {countyOptions.map((county) => (
-              <option key={county} value={county}>{county}</option>
-            ))}
-          </select>
-
-          <input name="location" value={form.location} onChange={handleChange} placeholder="Location / School Building (optional)" className={inputStyle} />
-
-          <select name="jobType" value={form.jobType} onChange={handleChange} className={inputStyle}>
-            <option value="">Job Type</option>
-            <option>Full Time</option>
-            <option>Part Time</option>
-            <option>Leave Replacement</option>
-            <option>Substitute</option>
-            <option>Contract</option>
-            <option>Stipend</option>
-            <option>Summer</option>
-            <option>Other</option>
-          </select>
-
-          <div>
-            <input name="salaryRange" value={form.salaryRange} onChange={handleChange} placeholder="Salary Range: Example $60,000 - $75,000" className={inputStyle} />
-            <p className="mt-1 text-xs text-slate-500">
-              New Jersey law requires a good-faith salary range in job postings.
-            </p>
+        {status && (
+          <div className={status.type === "error" ? "text-red-600" : "text-green-600"}>
+            {status.message}
           </div>
+        )}
 
-          <textarea name="benefits" value={form.benefits} onChange={handleChange} placeholder="Benefits: Enter each benefit on a new line" rows={4} className={inputStyle} />
+        <input name="title" placeholder="Job Title" required value={formData.title} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
 
-          <textarea
-            name="jobDescription"
-            value={form.jobDescription}
-            onChange={handleChange}
-            placeholder={`Job Description
+        <input name="district" placeholder="School / District Name" required value={formData.district} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
 
-Use headings if helpful:
-Responsibilities:
-- Teach students
-- Collaborate with staff
+        <input name="city" placeholder="City" required value={formData.city} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
 
-Qualifications:
-- NJ certification required
-- Experience preferred`}
-            rows={9}
-            className={inputStyle}
-          />
+        <select name="county" required value={formData.county} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500">
+          <option value="">Select County</option>
+          {counties.map((county) => (
+            <option key={county} value={county}>
+              {county}
+            </option>
+          ))}
+        </select>
 
-          <input name="applicationLink" value={form.applicationLink} onChange={handleChange} placeholder="Application link or hiring email" className={inputStyle} />
-          <input name="contactName" value={form.contactName} onChange={handleChange} placeholder="Contact Name" className={inputStyle} />
-          <input name="contactTitle" value={form.contactTitle} onChange={handleChange} placeholder="Contact Title, e.g. HR Director, Principal" className={inputStyle} />
-          <input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} placeholder="Contact Email" className={inputStyle} />
+        <input name="location" placeholder="Location / School Building (optional)" value={formData.location} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60"
-          >
-            {loading ? "Submitting..." : "Submit Job for Review"}
-          </button>
-        </form>
+        <select name="type" required value={formData.type} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500">
+          <option value="">Select Job Type</option>
+          {jobTypes.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
 
-        {status && <p className="mt-4 text-sm text-slate-600">{status}</p>}
-      </div>
+        <div>
+          <label className="font-semibold text-slate-800">Posting Date</label>
+          <input type="date" name="postingDate" value={formData.postingDate} onChange={handleChange} className="mt-2 w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+          <p className="mt-1 text-sm text-slate-500">
+            Use the date the job was posted by the district or employer.
+          </p>
+        </div>
+
+        <div>
+          <label className="font-semibold text-slate-800">Application Deadline</label>
+          <input type="date" name="applicationDeadline" value={formData.applicationDeadline} onChange={handleChange} className="mt-2 w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+          <p className="mt-1 text-sm text-slate-500">
+            If left blank, a 45-day closing date will be used.
+          </p>
+        </div>
+
+        <input name="salary" placeholder="Salary Range: Example $60,000 - $75,000" value={formData.salary} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+
+        <textarea name="benefits" placeholder="Benefits: Enter each benefit on a new line" rows={4} value={formData.benefits} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+
+        <textarea name="description" placeholder="Job Description" required rows={7} value={formData.description} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+
+        <input name="applyUrl" placeholder="Application URL or hiring email" required value={formData.applyUrl} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+
+        <input name="contactName" placeholder="Contact Name" value={formData.contactName} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+
+        <input name="contactTitle" placeholder="Contact Title, e.g. HR Director, Principal" value={formData.contactTitle} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+
+        <input name="contactEmail" placeholder="Contact Email" type="email" value={formData.contactEmail} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+
+        <button
+          type="submit"
+          className="w-full rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600"
+        >
+          Preview Job
+        </button>
+      </form>
+
+      {previewOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-6">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-8 shadow-xl">
+            <h2 className="text-2xl font-bold text-slate-900">Preview Job</h2>
+
+            <div className="mt-4 space-y-3 text-slate-700">
+              <p><strong>Title:</strong> {formData.title}</p>
+              <p><strong>District:</strong> {formData.district}</p>
+              <p><strong>City:</strong> {formData.city}</p>
+              <p><strong>County:</strong> {formData.county}</p>
+              <p><strong>Job Type:</strong> {formData.type}</p>
+              <p>
+  <strong>Posting Date:</strong>{" "}
+  {formatDate(formData.postingDate)}
+</p>
+
+<p>
+  <strong>Application Deadline:</strong>{" "}
+  {formatDate(
+    formData.applicationDeadline || addDays(formData.postingDate, 45)
+  )}
+</p>
+              <p><strong>Salary:</strong> {formData.salary}</p>
+              <p><strong>Benefits:</strong> {formData.benefits}</p>
+              <p><strong>Description:</strong> {formData.description}</p>
+              <p><strong>Apply:</strong> {formData.applyUrl}</p>
+            </div>
+
+            <div className="mt-6 flex gap-4">
+              <button
+                type="button"
+                onClick={() => setPreviewOpen(false)}
+                className="flex-1 rounded-xl border border-orange-500 px-6 py-3 font-semibold text-orange-500 hover:bg-orange-50"
+              >
+                Edit Job
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="flex-1 rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+              >
+                {loading ? "Submitting..." : "Submit Job"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

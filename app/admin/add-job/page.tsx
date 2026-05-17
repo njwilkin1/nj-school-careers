@@ -1,411 +1,294 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-const counties = [
-  "Atlantic County",
-  "Bergen County",
-  "Burlington County",
-  "Camden County",
-  "Cape May County",
-  "Cumberland County",
-  "Essex County",
-  "Gloucester County",
-  "Hudson County",
-  "Hunterdon County",
-  "Mercer County",
-  "Middlesex County",
-  "Monmouth County",
-  "Morris County",
-  "Ocean County",
-  "Passaic County",
-  "Salem County",
-  "Somerset County",
-  "Sussex County",
-  "Union County",
-  "Warren County",
-];
+type JobFormData = {
+  title: string;
+  district: string;
+  city: string;
+  county: string;
+  location: string;
+  type: string;
+  postingDate: string;
+  applicationDeadline: string;
+  salary: string;
+  benefits: string;
+  description: string;
+  applyUrl: string;
+  contactName: string;
+  contactTitle: string;
+  contactEmail: string;
+};
 
-const jobTypes = [
-  "Full Time",
-  "Part Time",
-  "Substitute",
-  "Coaching",
-  "Stipend",
-  "Summer",
-  "Administrative",
-];
-
-function addDays(dateString: string, days: number) {
-  const date = new Date(dateString);
-  date.setDate(date.getDate() + days);
-  return date.toISOString().split("T")[0];
-}
-
-export default function AdminAddJobPage() {
+export default function PostJobForm() {
   const router = useRouter();
-  const today = new Date().toISOString().split("T")[0];
 
-  const [previewMode, setPreviewMode] = useState(false);
-  const [status, setStatus] = useState("");
-
-  const [form, setForm] = useState({
-    adminSecret: "",
+  const [formData, setFormData] = useState<JobFormData>({
     title: "",
     district: "",
     city: "",
     county: "",
     location: "",
-    type: "Full Time",
-    posted: today,
-    closing_date: addDays(today, 45),
-    salary_range: "",
+    type: "",
+    postingDate: "",
+    applicationDeadline: "",
+    salary: "",
     benefits: "",
-    job_description: "",
+    description: "",
     applyUrl: "",
-    contact_name: "",
-    contact_title: "",
-    contact_email: "",
+    contactName: "",
+    contactTitle: "",
+    contactEmail: "",
   });
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) {
+  const [loading, setLoading] = useState(false);
+
+  const [status, setStatus] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setLoading(true);
+    setStatus(null);
+
+    try {
+      const res = await fetch("/api/jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const contentType = res.headers.get("content-type");
+
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await res.text();
+
+        console.error("NON-JSON RESPONSE:", text);
+
+        setStatus({
+          type: "error",
+          message: "Server returned an invalid response.",
+        });
+
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus({
+          type: "error",
+          message: data.error || "Something went wrong.",
+        });
+
+        setLoading(false);
+        return;
+      }
+
+      // Save submitted job info for confirmation page
+      sessionStorage.setItem(
+        "lastSubmittedJob",
+        JSON.stringify({
+          title: formData.title,
+          district: formData.district,
+          city: formData.city,
+          county: formData.county,
+          type: formData.type,
+          postingDate: formData.postingDate,
+          applicationDeadline: formData.applicationDeadline,
+        })
+      );
+
+      // Redirect to confirmation page
+      router.push("/post-job/confirmation");
+
+    } catch (err: any) {
+      console.error(err);
+
+      setStatus({
+        type: "error",
+        message: err.message || "Something went wrong.",
+      });
+
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
 
-    if (name === "posted") {
-      setForm({
-        ...form,
-        posted: value,
-        closing_date: addDays(value, 45),
-      });
-      return;
-    }
-
-    setForm({ ...form, [name]: value });
-  }
-
-  function handlePreview(e: React.FormEvent) {
-    e.preventDefault();
-    setStatus("");
-    setPreviewMode(true);
-  }
-
-  async function handleSubmit() {
-    setStatus("Submitting...");
-
-    const res = await fetch("/api/admin/add-job", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setStatus(`❌ ${data.error || "Something went wrong."}`);
-      return;
-    }
-
-    setStatus("✅ Job posted successfully. Redirecting...");
-    router.push("/jobs");
-  }
-
-  if (previewMode) {
-    return (
-      <main className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-white px-6 py-12 text-slate-900">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-orange-100 bg-white p-8 shadow-lg">
-          <h1 className="text-3xl font-bold">Preview Job Posting</h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Review the job before publishing it to NJSchoolCareers.
-          </p>
-
-          <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6">
-            <h2 className="text-3xl font-bold text-slate-950">{form.title}</h2>
-
-            <p className="mt-3 text-lg font-medium text-slate-700">
-              {form.district}
-            </p>
-
-            <p className="mt-2 text-sm text-slate-600">
-              {form.city}, NJ · {form.county}
-              {form.location ? ` · ${form.location}` : ""}
-            </p>
-
-            <div className="mt-5 grid gap-3 text-sm text-slate-700 md:grid-cols-2">
-              <p>
-                <span className="font-semibold text-slate-950">Type:</span>{" "}
-                {form.type}
-              </p>
-
-              <p>
-                <span className="font-semibold text-slate-950">Posted:</span>{" "}
-                {form.posted}
-              </p>
-
-              <p>
-                <span className="font-semibold text-slate-950">
-                  Closing Date:
-                </span>{" "}
-                {form.closing_date || "Not provided"}
-              </p>
-
-              <p>
-                <span className="font-semibold text-slate-950">Salary:</span>{" "}
-                {form.salary_range}
-              </p>
-            </div>
-          </div>
-
-          <section className="mt-8">
-            <h3 className="text-xl font-semibold text-slate-950">Benefits</h3>
-            <ul className="mt-3 list-disc space-y-2 pl-6 text-sm leading-7 text-slate-700">
-              {form.benefits
-                .split("\n")
-                .filter(Boolean)
-                .map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-            </ul>
-          </section>
-
-          <section className="mt-8">
-            <h3 className="text-xl font-semibold text-slate-950">
-              Job Description
-            </h3>
-            <div className="mt-3 whitespace-pre-wrap rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-700">
-              {form.job_description}
-            </div>
-          </section>
-
-          <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
-            <h3 className="text-xl font-semibold text-slate-950">
-              Contact Information
-            </h3>
-
-            <div className="mt-3 space-y-2 text-sm text-slate-700">
-              <p>{form.contact_name}</p>
-              <p>{form.contact_title}</p>
-              <p>{form.contact_email}</p>
-              <p className="break-all">{form.applyUrl}</p>
-            </div>
-          </section>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={() => setPreviewMode(false)}
-              className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-orange-500 hover:text-orange-600"
-            >
-              Edit Job
-            </button>
-
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="rounded-xl bg-orange-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-600"
-            >
-              Publish Job
-            </button>
-          </div>
-
-          {status && <p className="mt-4 text-sm font-medium">{status}</p>}
-        </div>
-      </main>
-    );
-  }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-white px-6 py-12 text-slate-900">
-      <div className="mx-auto max-w-xl rounded-2xl border border-orange-100 bg-white p-8 shadow-lg">
-        <h1 className="text-3xl font-bold">Admin Job Entry</h1>
-        <p className="mt-2 text-sm text-slate-500">
-          Add a structured job directly to your database.
-        </p>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-3xl mx-auto space-y-6 bg-white p-8 rounded-3xl shadow-sm"
+    >
+      {status && (
+        <div
+          className={
+            status.type === "error"
+              ? "text-red-600"
+              : "text-green-600"
+          }
+        >
+          {status.message}
+        </div>
+      )}
 
-        <form onSubmit={handlePreview} className="mt-6 space-y-4">
-          <input
-            name="adminSecret"
-            type="password"
-            placeholder="Admin password"
-            value={form.adminSecret}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
+      <input
+        name="title"
+        placeholder="Job Title"
+        required
+        value={formData.title}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <input
-            name="title"
-            placeholder="Job title"
-            value={form.title}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
+      <input
+        name="district"
+        placeholder="School District"
+        required
+        value={formData.district}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <input
-            name="district"
-            placeholder="School / District Name"
-            value={form.district}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
+      <input
+        name="city"
+        placeholder="City"
+        value={formData.city}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <input
-            name="city"
-            placeholder="City"
-            value={form.city}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
+      <input
+        name="county"
+        placeholder="County"
+        value={formData.county}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <select
-            name="county"
-            value={form.county}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          >
-            <option value="">Select county</option>
-            {counties.map((county) => (
-              <option key={county} value={county}>
-                {county}
-              </option>
-            ))}
-          </select>
+      <input
+        name="location"
+        placeholder="Location"
+        value={formData.location}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <input
-            name="location"
-            placeholder="Location / School Building (optional)"
-            value={form.location}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-          />
+      <select
+        name="type"
+        value={formData.type}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      >
+        <option value="">Select Job Type</option>
+        <option value="Full Time">Full Time</option>
+        <option value="Part Time">Part Time</option>
+        <option value="Substitute">Substitute</option>
+        <option value="Administrative">Administrative</option>
+        <option value="Support Staff">Support Staff</option>
+        <option value="Coaching">Coaching</option>
+      </select>
 
-          <select
-            name="type"
-            value={form.type}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          >
-            {jobTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
+      <input
+        name="postingDate"
+        type="date"
+        value={formData.postingDate}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <input
-            name="posted"
-            type="date"
-            value={form.posted}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
+      <input
+        name="applicationDeadline"
+        type="date"
+        value={formData.applicationDeadline}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <input
-            name="closing_date"
-            type="date"
-            value={form.closing_date}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-          />
+      <input
+        name="salary"
+        placeholder="Salary Range"
+        value={formData.salary}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <p className="-mt-2 text-xs text-slate-500">
-            If no employer deadline is provided, use the automatic 45-day
-            closing date.
-          </p>
+      <textarea
+        name="benefits"
+        placeholder="Benefits"
+        rows={4}
+        value={formData.benefits}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <input
-            name="salary_range"
-            placeholder="Salary Range: Example $60,000 - $75,000"
-            value={form.salary_range}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
+      <textarea
+        name="description"
+        placeholder="Job Description"
+        rows={6}
+        value={formData.description}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <textarea
-            name="benefits"
-            placeholder="Benefits: Enter each benefit on a new line"
-            value={form.benefits}
-            onChange={handleChange}
-            rows={5}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
+      <input
+        name="applyUrl"
+        placeholder="Application URL"
+        value={formData.applyUrl}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <textarea
-            name="job_description"
-            placeholder={`Job Description
+      <input
+        name="contactName"
+        placeholder="Contact Name"
+        value={formData.contactName}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-Use headings if helpful:
-Responsibilities:
-- Teach students
-- Collaborate with staff
+      <input
+        name="contactTitle"
+        placeholder="Contact Title"
+        value={formData.contactTitle}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-Qualifications:
-- NJ certification required
-- Experience preferred`}
-            value={form.job_description}
-            onChange={handleChange}
-            rows={9}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
+      <input
+        name="contactEmail"
+        placeholder="Contact Email"
+        value={formData.contactEmail}
+        onChange={handleChange}
+        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
+      />
 
-          <input
-            name="applyUrl"
-            placeholder="Application link or hiring email"
-            value={form.applyUrl}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
-
-          <input
-            name="contact_name"
-            placeholder="Contact Name"
-            value={form.contact_name}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
-
-          <input
-            name="contact_title"
-            placeholder="Contact Title, e.g. HR Director, Principal"
-            value={form.contact_title}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
-
-          <input
-            name="contact_email"
-            type="email"
-            placeholder="Contact Email"
-            value={form.contact_email}
-            onChange={handleChange}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3"
-            required
-          />
-
-          <button
-            type="submit"
-            className="w-full rounded-xl bg-orange-500 px-4 py-3 font-semibold text-white transition hover:bg-orange-600"
-          >
-            Preview Job
-          </button>
-
-          {status && <p className="text-sm font-medium">{status}</p>}
-        </form>
-      </div>
-    </main>
+      <button
+        type="submit"
+        disabled={loading}
+        className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+      >
+        {loading ? "Submitting..." : "Submit Job"}
+      </button>
+    </form>
   );
 }
