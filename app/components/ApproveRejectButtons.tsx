@@ -1,45 +1,33 @@
 "use client";
 
-export default function ApproveRejectButtons({
-  id,
-}: {
-  id: string;
-}) {
-  async function handleApprove() {
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+export default function ApproveRejectButtons({ id }: { id: string }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  async function updateStatus(action: "approve" | "reject") {
+    setLoading(true);
+
     try {
-      const res = await fetch(`/api/jobs/${id}/approve`, {
+      const res = await fetch(`/api/jobs/${id}/${action}`, {
         method: "POST",
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
-        alert(data.error || "Approve failed");
+        alert(data.error || `${action} failed`);
+        setLoading(false);
         return;
       }
 
-      window.location.reload();
+      router.refresh();
     } catch (err) {
       console.error(err);
-      alert("Something went wrong approving the job.");
-    }
-  }
-
-  async function handleReject() {
-    try {
-      const res = await fetch(`/api/jobs/${id}/reject`, {
-        method: "POST",
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        alert(data.error || "Reject failed");
-        return;
-      }
-
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong rejecting the job.");
+      alert(`Something went wrong trying to ${action} this job.`);
+      setLoading(false);
     }
   }
 
@@ -47,16 +35,18 @@ export default function ApproveRejectButtons({
     <>
       <button
         type="button"
-        onClick={handleApprove}
-        className="rounded-lg bg-green-100 px-3 py-1 text-xs font-semibold text-green-700 hover:bg-green-200"
+        disabled={loading}
+        onClick={() => updateStatus("approve")}
+        className="rounded-lg bg-green-100 px-3 py-1 text-xs font-semibold text-green-700 hover:bg-green-200 disabled:opacity-60"
       >
         Approve
       </button>
 
       <button
         type="button"
-        onClick={handleReject}
-        className="rounded-lg bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-200"
+        disabled={loading}
+        onClick={() => updateStatus("reject")}
+        className="rounded-lg bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-200 disabled:opacity-60"
       >
         Reject
       </button>

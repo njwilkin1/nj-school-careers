@@ -21,6 +21,16 @@ export default async function AdminPage() {
     rejected: "red",
   };
 
+  const sortedJobs = [...(jobs ?? [])].sort((a, b) => {
+  if (a.status === "pending" && b.status !== "pending") return -1;
+  if (a.status !== "pending" && b.status === "pending") return 1;
+
+  return (
+    new Date(b.created_at || 0).getTime() -
+    new Date(a.created_at || 0).getTime()
+  );
+});
+
   return (
     <main className="min-h-screen bg-gray-50 px-6 py-10">
       <div className="mx-auto max-w-5xl">
@@ -51,7 +61,7 @@ export default async function AdminPage() {
             </thead>
 
             <tbody>
-              {(jobs ?? []).map((job) => (
+              {sortedJobs.map((job) => (
                 <tr key={job.id} className="border-t">
                   <td className="p-4 font-medium text-slate-900">{job.title}</td>
                   <td className="p-4 text-slate-600">{job.district}</td>
