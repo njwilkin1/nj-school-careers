@@ -49,6 +49,12 @@ export default function PostJobForm() {
     message: string;
   } | null>(null);
 
+  const inputClass =
+    "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200 transition";
+
+  const labelClass =
+    "mb-2 block text-sm font-semibold text-slate-700";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -92,7 +98,6 @@ export default function PostJobForm() {
         return;
       }
 
-      // Save submitted job info for confirmation page
       sessionStorage.setItem(
         "lastSubmittedJob",
         JSON.stringify({
@@ -106,9 +111,7 @@ export default function PostJobForm() {
         })
       );
 
-      // Redirect to confirmation page
       router.push("/post-job/confirmation");
-
     } catch (err: any) {
       console.error(err);
 
@@ -137,155 +140,206 @@ export default function PostJobForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-3xl mx-auto space-y-6 bg-white p-8 rounded-3xl shadow-sm"
+      className="mx-auto w-full max-w-3xl space-y-6 rounded-3xl border border-slate-200 bg-white p-10 shadow-sm"
     >
       {status && (
         <div
           className={
             status.type === "error"
-              ? "text-red-600"
-              : "text-green-600"
+              ? "rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700"
+              : "rounded-xl bg-green-50 px-4 py-3 text-sm font-semibold text-green-700"
           }
         >
           {status.message}
         </div>
       )}
 
-      <input
-        name="title"
-        placeholder="Job Title"
-        required
-        value={formData.title}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Job Title</label>
+        <input
+          name="title"
+          placeholder="Enter job title"
+          required
+          value={formData.title}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
-      <input
-        name="district"
-        placeholder="School District"
-        required
-        value={formData.district}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>School / District Name</label>
+        <input
+          name="district"
+          placeholder="Enter school or district name"
+          required
+          value={formData.district}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
-      <input
-        name="city"
-        placeholder="City"
-        value={formData.city}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>City</label>
+        <input
+          name="city"
+          placeholder="Enter city"
+          value={formData.city}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
-      <input
-        name="county"
-        placeholder="County"
-        value={formData.county}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>County</label>
+        <input
+          name="county"
+          placeholder="Enter county"
+          value={formData.county}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
-      <input
-        name="location"
-        placeholder="Location"
-        value={formData.location}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Location / School Building</label>
+        <input
+          name="location"
+          placeholder="Optional"
+          value={formData.location}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
-      <select
-        name="type"
-        value={formData.type}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      >
-        <option value="">Select Job Type</option>
-        <option value="Full Time">Full Time</option>
-        <option value="Part Time">Part Time</option>
-        <option value="Substitute">Substitute</option>
-        <option value="Administrative">Administrative</option>
-        <option value="Support Staff">Support Staff</option>
-        <option value="Coaching">Coaching</option>
-      </select>
+      <div>
+        <label className={labelClass}>Job Type</label>
+        <select
+          name="type"
+          value={formData.type}
+          onChange={handleChange}
+          className={inputClass}
+        >
+          <option value="">Select Job Type</option>
+          <option value="Full Time">Full Time</option>
+          <option value="Part Time">Part Time</option>
+          <option value="Substitute">Substitute</option>
+          <option value="Administrative">Administrative</option>
+          <option value="Support Staff">Support Staff</option>
+          <option value="Coaching">Coaching</option>
+        </select>
+      </div>
 
-      <input
-        name="postingDate"
-        type="date"
-        value={formData.postingDate}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Posting Date</label>
+        <input
+          name="postingDate"
+          type="date"
+          value={formData.postingDate}
+          onChange={handleChange}
+          className={inputClass}
+        />
+        <p className="mt-1 text-sm text-slate-600">
+          Use the date the job was posted by the district or employer.
+        </p>
+      </div>
 
-      <input
-        name="applicationDeadline"
-        type="date"
-        value={formData.applicationDeadline}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Application Deadline</label>
+        <input
+          name="applicationDeadline"
+          type="date"
+          value={formData.applicationDeadline}
+          onChange={handleChange}
+          className={inputClass}
+        />
+        <p className="mt-1 text-sm text-slate-600">
+          If left blank, a 45-day closing date will be used.
+        </p>
+      </div>
 
-      <input
-        name="salary"
-        placeholder="Salary Range"
-        value={formData.salary}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Salary Range</label>
+        <input
+          name="salary"
+          placeholder="Example: $60,000 - $75,000"
+          value={formData.salary}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
-      <textarea
-        name="benefits"
-        placeholder="Benefits"
-        rows={4}
-        value={formData.benefits}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Benefits</label>
+        <textarea
+          name="benefits"
+          placeholder="Enter each benefit on a new line"
+          rows={4}
+          value={formData.benefits}
+          onChange={handleChange}
+          className={`${inputClass} resize-y`}
+        />
+      </div>
 
-      <textarea
-        name="description"
-        placeholder="Job Description"
-        rows={6}
-        value={formData.description}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Job Description</label>
+        <textarea
+          name="description"
+          placeholder="Enter the job description"
+          rows={6}
+          value={formData.description}
+          onChange={handleChange}
+          className={`${inputClass} resize-y`}
+        />
+      </div>
 
-      <input
-        name="applyUrl"
-        placeholder="Application URL"
-        value={formData.applyUrl}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Application URL or Hiring Email</label>
+        <input
+          name="applyUrl"
+          placeholder="Enter application URL or email"
+          value={formData.applyUrl}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
-      <input
-        name="contactName"
-        placeholder="Contact Name"
-        value={formData.contactName}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div className="border-t border-slate-200 pt-6">
+        <label className={labelClass}>Contact Name</label>
+        <input
+          name="contactName"
+          placeholder="Enter contact name"
+          value={formData.contactName}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
-      <input
-        name="contactTitle"
-        placeholder="Contact Title"
-        value={formData.contactTitle}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Contact Title</label>
+        <input
+          name="contactTitle"
+          placeholder="Example: HR Director, Principal"
+          value={formData.contactTitle}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
-      <input
-        name="contactEmail"
-        placeholder="Contact Email"
-        value={formData.contactEmail}
-        onChange={handleChange}
-        className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500"
-      />
+      <div>
+        <label className={labelClass}>Contact Email</label>
+        <input
+          name="contactEmail"
+          placeholder="Enter contact email"
+          value={formData.contactEmail}
+          onChange={handleChange}
+          className={inputClass}
+        />
+      </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+        className="w-full rounded-xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60"
       >
         {loading ? "Submitting..." : "Submit Job"}
       </button>
