@@ -79,7 +79,7 @@ export default async function AdminPage() {
                       <ToggleFeaturedButton id={job.id} isFeatured={job.is_featured} />
 
             {job.status === "pending" && (
-  <ApproveRejectButtons jobId={job.id} />
+<ApproveRejectButtons id={job.id} />
 )}
                     </div>
                   </td>

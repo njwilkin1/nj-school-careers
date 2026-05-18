@@ -1,27 +1,47 @@
 "use client";
 
-type ApproveRejectButtonsProps = {
-  jobId: string;
-};
-
 export default function ApproveRejectButtons({
-  jobId,
-}: ApproveRejectButtonsProps) {
-  const handleApprove = async () => {
-    await fetch(`/api/jobs/${jobId}/approve`, {
-      method: "POST",
-    });
+  id,
+}: {
+  id: string;
+}) {
+  async function handleApprove() {
+    try {
+      const res = await fetch(`/api/jobs/${id}/approve`, {
+        method: "POST",
+      });
 
-    window.location.reload();
-  };
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || "Approve failed");
+        return;
+      }
 
-  const handleReject = async () => {
-    await fetch(`/api/jobs/${jobId}/reject`, {
-      method: "POST",
-    });
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong approving the job.");
+    }
+  }
 
-    window.location.reload();
-  };
+  async function handleReject() {
+    try {
+      const res = await fetch(`/api/jobs/${id}/reject`, {
+        method: "POST",
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || "Reject failed");
+        return;
+      }
+
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong rejecting the job.");
+    }
+  }
 
   return (
     <>
