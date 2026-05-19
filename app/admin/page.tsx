@@ -4,38 +4,48 @@ import DeleteJobButton from "../components/DeleteJobButton";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
   const supabase = createClient(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
- const { data: jobs } = await supabase
-  .from("jobs")
-  .select("id, title, district, status, created_at, is_featured")
-  .order("id", { ascending: false });
-
-  const statusColors: Record<string, string> = {
-    published: "green",
-    pending: "yellow",
-    rejected: "red",
-  };
+  const { data: jobs } = await supabase
+    .from("jobs")
+    .select("id, title, district, status, created_at, is_featured");
 
   const sortedJobs = [...(jobs ?? [])].sort((a, b) => {
-  if (a.status === "pending" && b.status !== "pending") return -1;
-  if (a.status !== "pending" && b.status === "pending") return 1;
+    if (a.status === "pending" && b.status !== "pending") return -1;
+    if (a.status !== "pending" && b.status === "pending") return 1;
 
-  return (
-    new Date(b.created_at || 0).getTime() -
-    new Date(a.created_at || 0).getTime()
-  );
-});
+    return (
+      new Date(b.created_at || 0).getTime() -
+      new Date(a.created_at || 0).getTime()
+    );
+  });
+
+  const getStatusClass = (status: string | null) => {
+    if (status === "pending") {
+      return "bg-yellow-50 text-yellow-700";
+    }
+
+    if (status === "rejected") {
+      return "bg-red-50 text-red-700";
+    }
+
+    return "bg-green-50 text-green-700";
+  };
 
   return (
     <main className="min-h-screen bg-gray-50 px-6 py-10">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-slate-900">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold text-slate-900">
+            Admin Dashboard
+          </h1>
+
           <Link
             href="/admin/add-job"
             className="rounded-xl bg-orange-500 px-4 py-2 font-semibold text-white hover:bg-orange-600"
@@ -45,7 +55,7 @@ export default async function AdminPage() {
         </div>
 
         <p className="mt-2 text-sm text-slate-500">
-          Manage your latest job postings.
+          Pending jobs appear first, followed by the newest postings.
         </p>
 
         <div className="mt-8 overflow-hidden rounded-2xl bg-white shadow">
@@ -63,20 +73,32 @@ export default async function AdminPage() {
             <tbody>
               {sortedJobs.map((job) => (
                 <tr key={job.id} className="border-t">
-                  <td className="p-4 font-medium text-slate-900">{job.title}</td>
-                  <td className="p-4 text-slate-600">{job.district}</td>
+                  <td className="p-4 font-medium text-slate-900">
+                    {job.title}
+                  </td>
+
+                  <td className="p-4 text-slate-600">
+                    {job.district}
+                  </td>
+
                   <td className="p-4">
                     <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold text-${statusColors[job.status || "published"]}-700 bg-${statusColors[job.status || "published"]}-50`}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${getStatusClass(
+                        job.status
+                      )}`}
                     >
                       {job.status || "published"}
                     </span>
                   </td>
+
                   <td className="p-4 text-slate-500">
-                    {job.created_at ? new Date(job.created_at).toLocaleDateString() : ""}
+                    {job.created_at
+                      ? new Date(job.created_at).toLocaleDateString("en-US")
+                      : ""}
                   </td>
+
                   <td className="p-4">
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <a
                         href={`/admin/edit-job/${job.id}`}
                         className="rounded-lg bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200"
@@ -86,11 +108,14 @@ export default async function AdminPage() {
 
                       <DeleteJobButton id={job.id} />
 
-                      <ToggleFeaturedButton id={job.id} isFeatured={job.is_featured} />
+                      <ToggleFeaturedButton
+                        id={job.id}
+                        isFeatured={job.is_featured}
+                      />
 
-            {job.status === "pending" && (
-<ApproveRejectButtons id={job.id} />
-)}
+                      {job.status === "pending" && (
+                        <ApproveRejectButtons id={job.id} />
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -98,7 +123,7 @@ export default async function AdminPage() {
             </tbody>
           </table>
 
-          {(!jobs || jobs.length === 0) && (
+          {sortedJobs.length === 0 && (
             <p className="p-6 text-slate-500">No jobs found.</p>
           )}
         </div>
