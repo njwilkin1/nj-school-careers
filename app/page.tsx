@@ -46,8 +46,9 @@ function isNewJob(posted?: string) {
 }
 
 export default async function Home() {
-    const totalJobs = 1139;
-const defaultSearches = [
+  const totalJobs = 1100;
+
+  const defaultSearches = [
   "Assistant Principal",
   "Spanish Teacher",
   "Substitute Teacher",
@@ -72,10 +73,10 @@ const defaultSearches = [
     ["Coaching Jobs", "Athletics and activities", "/jobs?search=Coaching"],
   ];
 
-  const supabase = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!
-  );
+ const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
   const { data, error } = await supabase
     .from("jobs")
