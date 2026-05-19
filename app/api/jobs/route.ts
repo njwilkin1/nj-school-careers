@@ -105,7 +105,7 @@ export async function POST(req: Request) {
         from:
           process.env.ALERTS_FROM_EMAIL ||
           "alerts@mail.njschoolcareers.com",
-        to: process.env.ADMIN_ALERT_EMAIL || "njwilkin@hotmail.com",
+        to: process.env.ADMIN_ALERT_EMAIL || "info@njschoolcareers.com",
         subject: `New job submitted: ${title}`,
         html: `
           <h2>New Job Submitted for Review</h2>

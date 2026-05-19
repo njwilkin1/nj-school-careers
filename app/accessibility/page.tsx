@@ -44,7 +44,7 @@ export default function AccessibilityPage() {
         <p>
           <strong>Contact:</strong>{" "}
           <a
-            href="mailto:njwilkin@hotmail.com"
+            href="mailto:info@njschoolcareers.com"
             className="underline"
           >
             info@njschoolcareers.com
