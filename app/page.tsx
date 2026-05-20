@@ -46,7 +46,7 @@ function isNewJob(posted?: string) {
 }
 
 export default async function Home() {
-  const totalJobs = 1100;
+  const totalJobs = 2000;
 
   const defaultSearches = [
   "Assistant Principal",
