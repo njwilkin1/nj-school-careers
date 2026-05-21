@@ -13,15 +13,22 @@ export default function Header() {
         {/* Logo */}
        <Link href="/" className="flex items-center">
   <img
-    src="/NJSchoolCareers-logo-header.png"
-    alt="NJSchoolCareers"
-    className="h-20 w-auto"
-  />
+  src="/NJSchoolCareers-logo-header.png"
+  alt="NJSchoolCareers"
+  width={450}
+  height={92}
+  className="h-20 w-auto"
+/>
 </Link>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex gap-8 text-sm text-slate-700">
-          <Link href="/jobs" className="hover:text-orange-600">Browse Jobs</Link>
+          <Link href="/jobs" className="hover:text-orange-600 transition">Browse Jobs</Link>
+
+          <Link href="/career-resources" className="hover:text-orange-600">
+            Career Resources
+          </Link>
+
           <Link href="/employers" className="hover:text-orange-600">Employers</Link>
           <Link href="/post-job" className="hover:text-orange-600">Post a Job</Link>
           <Link href="/about" className="hover:text-orange-600">About</Link>
@@ -42,6 +49,9 @@ export default function Header() {
         <div className="md:hidden border-t border-slate-200 px-6 pb-4">
           <nav className="flex flex-col gap-4 pt-4 text-base text-slate-700">
             <Link href="/jobs" onClick={() => setOpen(false)}>Browse Jobs</Link>
+            <Link href="/career-resources" onClick={() => setOpen(false)}>
+              Career Resources
+           </Link>
             <Link href="/employers" onClick={() => setOpen(false)}>Employers</Link>
             <Link href="/post-job" onClick={() => setOpen(false)}>Post a Job</Link>
             <Link href="/about" onClick={() => setOpen(false)}>About</Link>
