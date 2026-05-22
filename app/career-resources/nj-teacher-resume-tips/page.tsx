@@ -2,92 +2,121 @@ import Link from "next/link";
 
 export default function NJTeacherResumeTipsPage() {
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-12">
-      <div className="mx-auto max-w-4xl">
+    <main className="bg-slate-50 py-16">
+      <div className="mx-auto max-w-4xl px-6">
+
         <div className="rounded-3xl bg-white p-8 shadow-sm md:p-12">
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-500">
+
+          <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-orange-600">
             Career Resources
           </p>
 
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-900">
-            NJ Teacher Resume Tips
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900">
+            How to Write a Strong Teacher Resume
           </h1>
 
-          <p className="mt-6 text-lg leading-8 text-slate-600">
-            A strong teaching resume helps school districts quickly understand
-            your experience, certifications, and strengths as an educator.
-            Clear formatting and relevant information can help New Jersey
-            teachers stand out during the hiring process.
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            A strong teacher resume can help you stand out in a competitive job market.
+            Many qualified candidates are overlooked simply because their resumes fail
+            to clearly showcase their experience, strengths, and potential value to a
+            school district.
           </p>
 
-          <div className="mt-12 space-y-10 text-slate-700">
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Keep Your Resume Clear and Organized
-              </h2>
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            Your resume is not a curriculum vitae or a complete history of every job
+            you have ever held. Instead, it should be a focused and professional
+            document that highlights the experience and qualifications most relevant
+            to the teaching position you are applying for.
+          </p>
 
-              <p className="mt-4 leading-8">
-                Use a clean layout with clear section headings, consistent
-                formatting, and readable fonts. Administrators often review
-                many applications quickly, so clarity matters.
-              </p>
-            </section>
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            Whether you are a first-year teacher or an experienced educator, a
+            polished resume can help you make a strong first impression with hiring
+            administrators and school districts throughout New Jersey.
+          </p>
 
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Highlight Certifications and Endorsements
-              </h2>
+          <h2 className="mt-12 text-2xl font-bold text-slate-900">
+            Use a Professional and Unique Format
+          </h2>
 
-              <p className="mt-4 leading-8">
-                Make sure your New Jersey certifications and endorsements are
-                easy to find near the top of the resume. Include grade levels,
-                subject areas, and bilingual or special education credentials
-                when applicable.
-              </p>
-            </section>
+          <p className="mt-4 text-lg leading-8 text-slate-700">
+            School districts review many resumes during the hiring process, so your
+            resume should be clean, organized, and visually appealing. A professional
+            format helps employers quickly identify your strengths and qualifications.
+          </p>
 
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Focus on Impact and Student Learning
-              </h2>
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            Think of your resume as your professional introduction. It should clearly
+            communicate your teaching experience, certifications, classroom skills,
+            and accomplishments while remaining easy to read and navigate.
+          </p>
 
-              <p className="mt-4 leading-8">
-                Whenever possible, describe accomplishments and contributions
-                instead of only listing responsibilities. Mention curriculum
-                development, student engagement strategies, technology use, or
-                extracurricular involvement.
-              </p>
-            </section>
+          <h2 className="mt-12 text-2xl font-bold text-slate-900">
+            Proofread Carefully
+          </h2>
 
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Proofread Before Applying
-              </h2>
+          <p className="mt-4 text-lg leading-8 text-slate-700">
+            Attention to detail matters in education. Even small spelling or grammar
+            mistakes can leave a negative impression on hiring administrators.
+          </p>
 
-              <p className="mt-4 leading-8">
-                Small spelling or formatting errors can create a negative
-                impression. Review your resume carefully and ask a trusted
-                colleague or mentor to review it before submitting applications.
-              </p>
-            </section>
-          </div>
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            Before submitting your resume, review it multiple times and ask trusted
+            colleagues, mentors, or friends to proofread it as well. A polished,
+            error-free resume demonstrates professionalism and strong communication
+            skills.
+          </p>
 
-          <div className="mt-14 rounded-2xl bg-slate-100 p-8">
+          <h2 className="mt-12 text-2xl font-bold text-slate-900">
+            Make Your Resume Easy to Read
+          </h2>
+
+          <p className="mt-4 text-lg leading-8 text-slate-700">
+            Hiring managers often spend only a short amount of time reviewing each
+            application. Your resume should be easy to scan with clear headings,
+            clean spacing, and readable fonts.
+          </p>
+
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            Professional fonts such as Arial, Calibri, or Times New Roman are good
+            choices. Use bold section headings and consistent formatting to help key
+            information stand out.
+          </p>
+
+          <h2 className="mt-12 text-2xl font-bold text-slate-900">
+            Tailor Your Resume to Each School District
+          </h2>
+
+          <p className="mt-4 text-lg leading-8 text-slate-700">
+            One of the best ways to strengthen your resume is to customize it for
+            each position you apply for. Research the school district and review the
+            job description carefully before submitting your application.
+          </p>
+
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            Highlight the skills, experiences, and qualifications that align most
+            closely with the district’s needs. Tailoring your resume shows initiative
+            and demonstrates genuine interest in the position.
+          </p>
+
+          <div className="mt-14 rounded-2xl bg-slate-100 p-8 text-center">
             <h3 className="text-2xl font-bold text-slate-900">
-              Ready to apply for teaching jobs?
+              Ready to Apply?
             </h3>
 
-            <p className="mt-3 text-slate-600">
-              Browse current New Jersey education jobs on NJSchoolCareers.
+            <p className="mt-4 text-lg text-slate-700">
+              Browse current New Jersey education jobs and find teaching opportunities
+              across the state.
             </p>
 
             <Link
               href="/jobs"
-              className="mt-6 inline-flex rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600"
+              className="mt-6 inline-flex rounded-xl bg-orange-500 px-6 py-3 text-base font-semibold text-white transition hover:bg-orange-600"
             >
               Browse Current NJ Education Jobs
             </Link>
           </div>
+
         </div>
       </div>
     </main>

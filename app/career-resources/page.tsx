@@ -25,12 +25,12 @@ const resources = [
       "Helpful strategies for building routines, expectations, and student trust.",
     href: "/career-resources/classroom-management-tips",
   },
-  {
-    title: "First-Year Teacher Advice",
-    description:
-      "Support for new teachers starting their first year in the classroom.",
-    href: "/career-resources/first-year-teacher-advice",
-  },
+{
+  title: "Teacher Demo Lesson Tips",
+  description:
+    "How to prepare, present, and succeed during a teaching demo lesson interview.",
+  href: "/career-resources/teacher-demo-lesson-tips",
+},
   {
     title: "School Leadership Careers",
     description:

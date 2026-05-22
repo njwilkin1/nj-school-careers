@@ -2,83 +2,47 @@ import Link from "next/link";
 
 export default function AssistantPrincipalInterviewTipsPage() {
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-12">
-      <div className="mx-auto max-w-4xl">
-        <div className="rounded-3xl bg-white p-8 shadow-sm md:p-12">
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-orange-500">
+    <main className="bg-slate-50 py-16">
+      <div className="mx-auto max-w-3xl px-6">
+
+        <div className="rounded-3xl bg-white p-8 shadow-sm md:p-12 text-center">
+
+          <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-orange-600">
             Career Resources
           </p>
 
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900">
             Assistant Principal Interview Tips
           </h1>
 
-          <p className="mt-6 text-lg leading-8 text-slate-600">
-            Assistant principal interviews often focus on instructional
-            leadership, school culture, student support, communication, and how
-            you respond to real school-based scenarios.
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            We’re currently updating this resource with practical interview
+            advice, leadership preparation strategies, and insights for aspiring
+            assistant principals and school leaders in New Jersey.
           </p>
 
-          <div className="mt-12 space-y-10 text-slate-700">
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Prepare Leadership Examples
-              </h2>
-              <p className="mt-4 leading-8">
-                Be ready to discuss times when you led a team, supported a
-                school initiative, helped colleagues grow, or contributed to
-                improving student outcomes.
-              </p>
-            </section>
+          <p className="mt-6 text-lg leading-8 text-slate-700">
+            Please check back soon for updated content.
+          </p>
 
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Connect Your Answers to Instruction
-              </h2>
-              <p className="mt-4 leading-8">
-                School leaders are expected to support teaching and learning.
-                Share how you use data, observe instruction, provide feedback,
-                and help teachers improve practice.
-              </p>
-            </section>
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
 
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Practice Scenario-Based Questions
-              </h2>
-              <p className="mt-4 leading-8">
-                Interview committees may ask how you would handle parent
-                concerns, student discipline, staff conflict, attendance issues,
-                safety concerns, or urgent school situations.
-              </p>
-            </section>
+            <Link
+              href="/career-resources"
+              className="rounded-xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-100"
+            >
+              Back to Career Resources
+            </Link>
 
-            <section>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Show Professional Judgment
-              </h2>
-              <p className="mt-4 leading-8">
-                Strong assistant principal candidates demonstrate fairness,
-                calm communication, confidentiality, follow-through, and the
-                ability to make decisions aligned with school goals.
-              </p>
-            </section>
-          </div>
-
-          <div className="mt-14 rounded-2xl bg-slate-100 p-8">
-            <h3 className="text-2xl font-bold text-slate-900">
-              Ready to explore school leadership jobs?
-            </h3>
-            <p className="mt-3 text-slate-600">
-              Browse current New Jersey education jobs on NJSchoolCareers.
-            </p>
             <Link
               href="/jobs"
-              className="mt-6 inline-flex rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600"
+              className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600"
             >
-              Browse Current NJ Education Jobs
+              Browse NJ Education Jobs
             </Link>
+
           </div>
+
         </div>
       </div>
     </main>
