@@ -11,7 +11,7 @@ export default function PrivacyPage() {
         </h1>
 
         <p className="mt-4 text-sm text-slate-500">
-          Last updated: April 26, 2026
+          Last updated: May 24, 2026
         </p>
 
         <p className="mt-6 leading-8 text-slate-700">
@@ -38,6 +38,11 @@ export default function PrivacyPage() {
             organization name, location, job type, application link, and job
             description details.
           </li>
+          <li>
+            Billing, transaction, or payment-related information associated with
+            employer purchases or paid services, which may be processed through
+            third-party payment providers such as Stripe.
+          </li>
           <li>Messages or other information you send to us by email or forms.</li>
           <li>
             Information you choose to submit when applying to jobs or interacting
@@ -63,6 +68,7 @@ export default function PrivacyPage() {
         <ul className="mt-4 list-disc space-y-2 pl-6 text-slate-700">
           <li>Send job alerts and subscription emails.</li>
           <li>Process and review job posting submissions.</li>
+          <li>Process employer payments, subscriptions, and paid services.</li>
           <li>Display and organize job listings.</li>
           <li>Communicate with job seekers, employers, and school representatives.</li>
           <li>Improve website performance, usability, and content.</li>
@@ -135,8 +141,8 @@ export default function PrivacyPage() {
 
         <p className="mt-3 leading-8 text-slate-700">
           We use third-party services to operate the website, including Supabase,
-          Resend, Formspree, Google Analytics, and Vercel. These providers may
-          process data according to their own privacy policies.
+          Resend, Formspree, Stripe, Google Analytics, and Vercel. These
+          providers may process data according to their own privacy policies.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
@@ -153,13 +159,34 @@ export default function PrivacyPage() {
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
-          8. Payments and Future Services
+          8. Payments and Billing
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          If we introduce paid services, payments may be processed through
-          third-party providers such as Stripe. We do not intend to store full
-          payment card details directly.
+          NJSchoolCareers.com may offer paid services including job postings,
+          featured listings, subscriptions, advertising options, and employer
+          promotional services.
+        </p>
+
+        <p className="mt-3 leading-8 text-slate-700">
+          Payments are processed through third-party payment providers such as
+          Stripe. Payment information submitted during checkout is processed
+          directly by the payment processor according to their own privacy and
+          security practices.
+        </p>
+
+        <p className="mt-3 leading-8 text-slate-700">
+          NJSchoolCareers.com does not store full credit card numbers, complete
+          payment card information, or full financial account details on our
+          servers.
+        </p>
+
+        <p className="mt-3 leading-8 text-slate-700">
+          We may receive limited transaction-related information from payment
+          providers, such as payment confirmation, billing contact information,
+          partial payment details, subscription status, or transaction identifiers
+          necessary to provide services, maintain records, prevent fraud, and
+          support customer service.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
@@ -168,7 +195,8 @@ export default function PrivacyPage() {
 
         <p className="mt-3 leading-8 text-slate-700">
           We do not sell personal information. We may share information with
-          service providers, comply with legal obligations, or protect our rights.
+          service providers, comply with legal obligations, process payments,
+          provide requested services, or protect our rights.
         </p>
 
         <h2 className="mt-8 text-2xl font-semibold">
@@ -185,7 +213,8 @@ export default function PrivacyPage() {
         </h2>
 
         <p className="mt-3 leading-8 text-slate-700">
-          We retain information as needed to operate the website and comply with
+          We retain information as needed to operate the website, provide
+          services, maintain business records, resolve disputes, and comply with
           legal obligations.
         </p>
 
@@ -241,8 +270,8 @@ export default function PrivacyPage() {
 
         <p className="mt-6 text-sm text-slate-500">
           You should use discretion when submitting personal or sensitive
-          information. Once shared with third parties, such as employers, we
-          cannot control how that information is used.
+          information. Once shared with third parties, such as employers or
+          payment providers, we cannot control how that information is used.
         </p>
       </div>
     </main>

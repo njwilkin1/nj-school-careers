@@ -7,55 +7,70 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="border-b border-slate-200 bg-white">
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-
-        {/* Logo */}
-       <Link href="/" className="flex items-center">
-  <img
-  src="/NJSchoolCareers-logo-header.png"
-  alt="NJSchoolCareers"
-  width={450}
-  height={92}
-  className="h-20 w-auto"
-/>
-</Link>
-
-        {/* Desktop Menu */}
-        <nav className="hidden md:flex gap-8 text-sm text-slate-700">
-          <Link href="/jobs" className="hover:text-orange-600 transition">Browse Jobs</Link>
-
-          <Link href="/career-resources" className="hover:text-orange-600">
-            Career Resources
+        <div className="flex items-center gap-10">
+          <Link href="/" className="flex items-center">
+            <img
+              src="/NJSchoolCareers-logo-header.png"
+              alt="NJSchoolCareers"
+              width={450}
+              height={92}
+              className="h-16 w-auto"
+            />
           </Link>
 
-          <Link href="/employers" className="hover:text-orange-600">Employers</Link>
-          <Link href="/post-job" className="hover:text-orange-600">Post a Job</Link>
-          <Link href="/about" className="hover:text-orange-600">About</Link>
-          <Link href="/contact" className="hover:text-orange-600">Contact Us</Link>
+          <nav className="hidden items-center gap-7 text-sm font-medium text-slate-700 md:flex">
+            <Link href="/jobs" className="hover:text-orange-600">
+              Browse Jobs
+            </Link>
+
+            <Link href="/career-resources" className="hover:text-orange-600">
+              Career Resources
+            </Link>
+
+            <Link href="/about" className="hover:text-orange-600">
+              About
+            </Link>
+          </nav>
+        </div>
+
+        <nav className="hidden items-center gap-5 text-sm font-medium text-slate-700 md:flex">
+          <Link href="/employers" className="hover:text-orange-600">
+            Employers / Post Job
+          </Link>
+
         </nav>
 
-        {/* Mobile Hamburger */}
-      <button
-  className="md:hidden text-3xl text-[#050B2C] hover:text-orange-600"
-  onClick={() => setOpen(!open)}
->
-  ☰
-</button>
+        <button
+          className="text-3xl text-[#050B2C] hover:text-orange-600 md:hidden"
+          onClick={() => setOpen(!open)}
+        >
+          ☰
+        </button>
       </div>
 
-      {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden border-t border-slate-200 px-6 pb-4">
-          <nav className="flex flex-col gap-4 pt-4 text-base text-slate-700">
-            <Link href="/jobs" onClick={() => setOpen(false)}>Browse Jobs</Link>
+        <div className="border-t border-slate-200 bg-white px-6 pb-6 md:hidden">
+          <nav className="flex flex-col gap-5 pt-5 text-base font-medium text-slate-700">
+            <Link href="/jobs" onClick={() => setOpen(false)}>
+              Browse Jobs
+            </Link>
+
             <Link href="/career-resources" onClick={() => setOpen(false)}>
               Career Resources
-           </Link>
-            <Link href="/employers" onClick={() => setOpen(false)}>Employers</Link>
-            <Link href="/post-job" onClick={() => setOpen(false)}>Post a Job</Link>
-            <Link href="/about" onClick={() => setOpen(false)}>About</Link>
-            <Link href="/contact" onClick={() => setOpen(false)}>Contact Us</Link>
+            </Link>
+
+            <Link href="/about" onClick={() => setOpen(false)}>
+              About
+            </Link>
+
+            <div className="border-t border-slate-200 pt-5" />
+
+            <Link href="/employers" onClick={() => setOpen(false)}>
+              Employers / Post Job
+            </Link>
+
           </nav>
         </div>
       )}

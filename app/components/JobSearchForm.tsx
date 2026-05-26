@@ -41,23 +41,23 @@ export default function JobSearchForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid gap-3 md:grid-cols-[1.2fr_1fr_auto]"
+      className="grid gap-3 md:grid-cols-[2fr_1.4fr_auto]"
     >
       <input
         name="search"
-        className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none placeholder:text-slate-400 focus:border-blue-400"
-        placeholder="Job title, role, or keyword"
+        className="h-14 rounded-2xl border border-slate-300 px-5 text-base outline-none placeholder:text-slate-400 focus:border-blue-400"
+        placeholder="Job title, keywords, or district"
       />
 
       <input
         name="location"
-        className="rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none placeholder:text-slate-400 focus:border-blue-400"
+        className="h-14 rounded-2xl border border-slate-300 px-5 text-base outline-none placeholder:text-slate-400 focus:border-blue-400"
         placeholder="City or county"
       />
 
       <button
         type="submit"
-        className="rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
+        className="h-14 rounded-2xl bg-orange-500 px-8 text-base font-semibold text-white shadow-sm transition hover:bg-orange-600"
       >
         Search Jobs
       </button>

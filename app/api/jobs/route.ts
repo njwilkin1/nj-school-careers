@@ -33,6 +33,16 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
+    const employerEmail = String(body.employerEmail || "").trim().toLowerCase();
+    const employerOrderId = String(body.employerOrderId || "").trim();
+
+    if (!employerEmail || !employerOrderId) {
+      return NextResponse.json(
+        { error: "Employer access verification is required." },
+        { status: 403 }
+      );
+    }
+
     const title = String(body.title || "").trim();
     const district = String(body.district || "").trim();
     const city = String(body.city || "").trim();
@@ -57,6 +67,8 @@ export async function POST(req: Request) {
     if (!city) return NextResponse.json({ error: "City is required." }, { status: 400 });
     if (!county) return NextResponse.json({ error: "County is required." }, { status: 400 });
     if (!type) return NextResponse.json({ error: "Job type is required." }, { status: 400 });
+    if (!salary) return NextResponse.json({ error: "Salary range is required." }, { status: 400 });
+    if (!benefits) return NextResponse.json({ error: "Benefits summary is required." }, { status: 400 });
     if (!description) return NextResponse.json({ error: "Job description is required." }, { status: 400 });
 
     if (!applyUrl || !isValidUrlOrEmail(applyUrl)) {
@@ -70,6 +82,36 @@ export async function POST(req: Request) {
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
+
+    const { data: order, error: orderError } = await supabase
+      .from("employer_orders")
+      .select("id, employer_email, plan_type, remaining_posts, unlimited_until, has_featured, has_urgent, status")
+      .eq("id", employerOrderId)
+      .eq("employer_email", employerEmail)
+      .eq("status", "active")
+      .single();
+
+    if (orderError || !order) {
+      return NextResponse.json(
+        { error: "No active employer plan found." },
+        { status: 403 }
+      );
+    }
+
+    const now = new Date();
+
+    const hasRemainingPosts =
+      typeof order.remaining_posts === "number" && order.remaining_posts > 0;
+
+    const hasUnlimitedAccess =
+      order.unlimited_until && new Date(order.unlimited_until) > now;
+
+    if (!hasRemainingPosts && !hasUnlimitedAccess) {
+      return NextResponse.json(
+        { error: "This employer plan does not have any active posting access." },
+        { status: 403 }
+      );
+    }
 
     const slug = slugify(`${title}-${district}-${city}-${Date.now()}`);
 
@@ -89,6 +131,10 @@ export async function POST(req: Request) {
       contact_name: contactName,
       contact_title: contactTitle,
       contact_email: contactEmail,
+      employer_email: employerEmail,
+      employer_order_id: employerOrderId,
+      is_featured: !!order.has_featured,
+      is_urgent: !!order.has_urgent,
       slug,
       status: "pending",
     });
@@ -96,6 +142,22 @@ export async function POST(req: Request) {
     if (error) {
       console.error("SUPABASE ERROR:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    if (typeof order.remaining_posts === "number" && order.remaining_posts > 0) {
+      const newRemainingPosts = order.remaining_posts - 1;
+
+      const { error: updateOrderError } = await supabase
+        .from("employer_orders")
+        .update({
+          remaining_posts: newRemainingPosts,
+          status: newRemainingPosts <= 0 ? "used" : "active",
+        })
+        .eq("id", employerOrderId);
+
+      if (updateOrderError) {
+        console.error("ORDER UPDATE ERROR:", updateOrderError);
+      }
     }
 
     try {
@@ -116,7 +178,11 @@ export async function POST(req: Request) {
           <p><strong>Type:</strong> ${type}</p>
           <p><strong>Posting Date:</strong> ${new Date(postingDate).toLocaleDateString("en-US")}</p>
           <p><strong>Application Deadline:</strong> ${new Date(applicationDeadline).toLocaleDateString("en-US")}</p>
-          <p><strong>Salary:</strong> ${salary || "Not provided"}</p>
+          <p><strong>Salary:</strong> ${salary}</p>
+          <p><strong>Benefits:</strong> ${benefits}</p>
+          <p><strong>Featured:</strong> ${order.has_featured ? "Yes" : "No"}</p>
+          <p><strong>Urgent:</strong> ${order.has_urgent ? "Yes" : "No"}</p>
+          <p><strong>Employer Email:</strong> ${employerEmail}</p>
           <p><strong>Contact:</strong> ${contactName || "Not provided"}</p>
           <p><strong>Contact Title:</strong> ${contactTitle || "Not provided"}</p>
           <p><strong>Contact Email:</strong> ${contactEmail || "Not provided"}</p>

@@ -253,26 +253,46 @@ onBlur={() => {
 
           return (
   <div key={`${job.id || job.slug || index}`}>
-    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-md">
+    <article
+  className={`rounded-3xl border bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+    job.is_featured
+      ? "border-2 border-teal-300"
+      : job.is_urgent 
+      ? "border-2 border-red-200"
+      : "border-slate-200 hover:border-orange-200"
+  }`}
+>
               <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
                 <div className="min-w-0">
-                  <div className="mb-2 flex flex-wrap gap-2">
-                    {job.type && (
-                      <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
-                        {job.type}
-                      </span>
-                    )}
+              <div className="mb-2 flex flex-wrap gap-2">
+  {job.is_urgent && (
+    <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-700">
+      Urgent Hiring
+    </span>
+  )}
 
-                    <span className="rounded-full bg-orange-50 px-3 py-1 text-xs text-orange-600">
-                      {categoryLabel}
-                    </span>
+  {job.is_featured && (
+    <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal-700">
+      Featured Placement
+    </span>
+  )}
 
-                    {isNew(job.posted) && (
-                      <span className="rounded-full bg-green-50 px-3 py-1 text-xs text-green-600">
-                        New
-                      </span>
-                    )}
-                  </div>
+  {job.type && (
+    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
+      {job.type}
+    </span>
+  )}
+
+  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs text-orange-600">
+    {categoryLabel}
+  </span>
+
+  {isNew(job.posted) && (
+    <span className="rounded-full bg-green-50 px-3 py-1 text-xs text-green-600">
+      New
+    </span>
+  )}
+</div>
 
                   <h2 className="text-2xl font-bold tracking-tight text-slate-950">
                     {job.title}

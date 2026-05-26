@@ -90,7 +90,7 @@ export default function JobSubmissionConfirmation() {
         </p>
 
         <p className="mt-4 text-slate-700">
-          Our team will review your submission and publish it within 24–48 hours.
+          Our team will review your submission and publish it within 1 business day.
           If changes are needed, we will contact you using the email provided.
         </p>
 
@@ -106,7 +106,7 @@ export default function JobSubmissionConfirmation() {
             href="/post-job"
             className="rounded-xl border border-orange-500 px-6 py-3 font-semibold text-orange-500 hover:bg-orange-50"
           >
-            Submit Another Job
+            Submit Another Job Posting
           </a>
         </div>
       </div>

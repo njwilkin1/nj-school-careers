@@ -11,7 +11,7 @@ export default function TermsPage() {
         </h1>
 
         <p className="mt-4 text-sm text-slate-500">
-          Last updated: April 26, 2026
+          Last updated: May 24, 2026
         </p>
 
         <p className="mt-6 leading-8 text-slate-700">
@@ -131,14 +131,41 @@ export default function TermsPage() {
           another party.
         </p>
 
-        <h2 className="mt-8 text-2xl font-semibold">14. Paid Services</h2>
-        <p className="mt-3 leading-8 text-slate-700">
-          If NJSchoolCareers.com offers paid job postings, featured listings,
-          subscriptions, or other paid services, any pricing, payment, refund, or
-          cancellation terms will be provided at the time of purchase or in a
-          separate agreement.
-        </p>
+     <h2 className="mt-8 text-2xl font-semibold">14. Paid Services</h2>
 
+<p className="mt-3 leading-8 text-slate-700">
+  NJSchoolCareers.com may offer paid services including job postings,
+  featured listings, subscriptions, advertising options, or promotional
+  services for schools, districts, organizations, and employers.
+</p>
+
+<p className="mt-3 leading-8 text-slate-700">
+  All fees, pricing, and service details are presented at the time of
+  purchase. By purchasing a paid service, you agree to the pricing and
+  service terms associated with that purchase.
+</p>
+
+<p className="mt-3 leading-8 text-slate-700">
+  All sales are final. Payments made to NJSchoolCareers.com are
+  non-refundable unless otherwise required by law. We do not provide
+  refunds, credits, partial refunds, or billing adjustments for submitted
+  job postings, featured listings, advertising services, subscriptions,
+  unused time periods, employer dissatisfaction, lack of applicants,
+  application volume, hiring outcomes, website traffic, or campaign
+  performance.
+</p>
+
+<p className="mt-3 leading-8 text-slate-700">
+  NJSchoolCareers.com does not guarantee any specific hiring results,
+  applicant volume, interview activity, website traffic levels, visibility,
+  candidate quality, or employment outcomes from the use of paid services.
+</p>
+
+<p className="mt-3 leading-8 text-slate-700">
+  We reserve the right to reject, remove, edit, suspend, or decline any
+  paid posting, advertisement, or employer content that violates our
+  policies, applicable laws, or these Terms of Use.
+</p>
         <h2 className="mt-8 text-2xl font-semibold">15. Force Majeure</h2>
         <p className="mt-3 leading-8 text-slate-700">
           NJSchoolCareers.com is not responsible for delays, interruptions, data

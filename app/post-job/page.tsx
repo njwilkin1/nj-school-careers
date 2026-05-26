@@ -54,6 +54,12 @@ function addDays(dateString: string, days: number) {
 export default function PostJobForm() {
   const router = useRouter();
 
+  const [accessEmail, setAccessEmail] = useState("");
+  const [accessVerified, setAccessVerified] = useState(false);
+  const [employerOrderId, setEmployerOrderId] = useState<string | null>(null);
+  const [accessLoading, setAccessLoading] = useState(false);
+  const [accessError, setAccessError] = useState("");
+
   const [formData, setFormData] = useState<JobFormData>({
     title: "",
     district: "",
@@ -74,13 +80,62 @@ export default function PostJobForm() {
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  const [status, setStatus] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const inputClass =
+    "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200 transition";
+
+  const labelClass = "mb-2 block text-sm font-semibold text-slate-700";
+
+  async function verifyAccess(e: React.FormEvent) {
+    e.preventDefault();
+    setAccessLoading(true);
+    setAccessError("");
+
+    try {
+      const res = await fetch("/api/employer-access", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: accessEmail.trim().toLowerCase(),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "No active employer plan found.");
+      }
+
+      setEmployerOrderId(data.order.id);
+      setAccessVerified(true);
+    } catch (err: any) {
+      setAccessError(
+        err.message ||
+          "We could not verify an active employer plan for that email."
+      );
+    } finally {
+      setAccessLoading(false);
+    }
+  }
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handlePreview = (e: React.FormEvent) => {
@@ -98,6 +153,8 @@ export default function PostJobForm() {
     const payload = {
       ...formData,
       applicationDeadline: finalDeadline,
+      employerEmail: accessEmail.trim().toLowerCase(),
+      employerOrderId,
     };
 
     try {
@@ -127,87 +184,310 @@ export default function PostJobForm() {
 
       router.push("/post-job/confirmation");
     } catch (err: any) {
-      setStatus({
-        type: "error",
-        message: err.message || "Something went wrong.",
-      });
-      setLoading(false);
-    }
+  setPreviewOpen(false);
+
+  setStatus({
+    type: "error",
+    message: err.message || "Something went wrong.",
+  });
+
+  setLoading(false);
+}
   };
+
+  if (!accessVerified) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-6 py-20">
+        <form
+          onSubmit={verifyAccess}
+          className="mx-auto max-w-xl rounded-3xl border border-slate-200 bg-white p-10 shadow-sm"
+        >
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-500">
+            Employer Access
+          </p>
+
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+            Verify your employer plan
+          </h1>
+
+          <p className="mt-4 leading-7 text-slate-600">
+            Enter the email used during Stripe checkout or the email approved
+            for purchase order access.
+          </p>
+
+          {accessError && (
+            <div className="mt-6 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+              {accessError}
+            </div>
+          )}
+
+          <div className="mt-6">
+            <label className={labelClass}>Employer Email *</label>
+            <input
+              type="email"
+              required
+              value={accessEmail}
+              onChange={(e) => setAccessEmail(e.target.value)}
+              placeholder="hr@district.org"
+              className={inputClass}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={accessLoading}
+            className="mt-6 w-full rounded-xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60"
+          >
+            {accessLoading ? "Verifying..." : "Continue to Job Form"}
+          </button>
+
+          <p className="mt-5 text-sm leading-6 text-slate-600">
+            Need access?{" "}
+            <a
+              href="/employers/pricing"
+              className="font-semibold text-orange-600 hover:text-orange-700"
+            >
+              View employer pricing
+            </a>{" "}
+            or contact info@njschoolcareers.com for purchase order access.
+          </p>
+        </form>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-12">
       <form
         onSubmit={handlePreview}
-        className="mx-auto max-w-3xl space-y-5 rounded-3xl bg-white p-8 shadow-sm"
+        className="mx-auto w-full max-w-3xl space-y-6 rounded-3xl border border-slate-200 bg-white p-10 shadow-sm"
       >
         <h1 className="text-3xl font-bold text-slate-900">Post a Job</h1>
 
+        <div className="rounded-xl bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
+          Employer access verified for {accessEmail.trim().toLowerCase()}.
+        </div>
+
         {status && (
-          <div className={status.type === "error" ? "text-red-600" : "text-green-600"}>
+          <div
+            className={
+              status.type === "error"
+                ? "rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700"
+                : "rounded-xl bg-green-50 px-4 py-3 text-sm font-semibold text-green-700"
+            }
+          >
             {status.message}
           </div>
         )}
 
-        <input name="title" placeholder="Job Title" required value={formData.title} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
-
-        <input name="district" placeholder="School / District Name" required value={formData.district} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
-
-        <input name="city" placeholder="City" required value={formData.city} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
-
-        <select name="county" required value={formData.county} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500">
-          <option value="">Select County</option>
-          {counties.map((county) => (
-            <option key={county} value={county}>
-              {county}
-            </option>
-          ))}
-        </select>
-
-        <input name="location" placeholder="Location / School Building (optional)" value={formData.location} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
-
-        <select name="type" required value={formData.type} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500">
-          <option value="">Select Job Type</option>
-          {jobTypes.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
+        <div>
+          <label className={labelClass}>Job Title *</label>
+          <input
+            name="title"
+            placeholder="Enter job title"
+            required
+            value={formData.title}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
 
         <div>
-          <label className="font-semibold text-slate-800">Posting Date</label>
-          <input type="date" name="postingDate" value={formData.postingDate} onChange={handleChange} className="mt-2 w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
-          <p className="mt-1 text-sm text-slate-500">
+          <label className={labelClass}>School / District Name *</label>
+          <input
+            name="district"
+            placeholder="Enter school or district name"
+            required
+            value={formData.district}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>City *</label>
+          <input
+            name="city"
+            placeholder="Enter city"
+            required
+            value={formData.city}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>County *</label>
+          <select
+            name="county"
+            required
+            value={formData.county}
+            onChange={handleChange}
+            className={inputClass}
+          >
+            <option value="">Select County</option>
+            {counties.map((county) => (
+              <option key={county} value={county}>
+                {county}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>Location / School Building</label>
+          <input
+            name="location"
+            placeholder="Optional"
+            value={formData.location}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Job Type *</label>
+          <select
+            name="type"
+            required
+            value={formData.type}
+            onChange={handleChange}
+            className={inputClass}
+          >
+            <option value="">Select Job Type</option>
+            {jobTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>Posting Date</label>
+          <input
+            type="date"
+            name="postingDate"
+            value={formData.postingDate}
+            onChange={handleChange}
+            className={inputClass}
+          />
+          <p className="mt-1 text-sm text-slate-600">
             Use the date the job was posted by the district or employer.
           </p>
         </div>
 
         <div>
-          <label className="font-semibold text-slate-800">Application Deadline</label>
-          <input type="date" name="applicationDeadline" value={formData.applicationDeadline} onChange={handleChange} className="mt-2 w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
-          <p className="mt-1 text-sm text-slate-500">
+          <label className={labelClass}>Application Deadline</label>
+          <input
+            type="date"
+            name="applicationDeadline"
+            value={formData.applicationDeadline}
+            onChange={handleChange}
+            className={inputClass}
+          />
+          <p className="mt-1 text-sm text-slate-600">
             If left blank, a 45-day closing date will be used.
           </p>
         </div>
 
-        <input name="salary" placeholder="Salary Range: Example $60,000 - $75,000" value={formData.salary} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+        <div>
+          <label className={labelClass}>Salary Range *</label>
+          <input
+            name="salary"
+            placeholder="Example: $60,000 - $75,000"
+            required
+            value={formData.salary}
+            onChange={handleChange}
+            className={inputClass}
+          />
+       <p className="mt-1 text-sm text-slate-600">
+  New Jersey Pay Transparency law requires employers to provide a general description of benefits and salary range information in covered job postings.
+</p>
+        </div>
 
-        <textarea name="benefits" placeholder="Benefits: Enter each benefit on a new line" rows={4} value={formData.benefits} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+        <div>
+          <label className={labelClass}>Benefits Summary *</label>
+          <textarea
+            name="benefits"
+            placeholder="Example: Medical, dental, pension, paid sick days"
+            required
+            rows={4}
+            value={formData.benefits}
+            onChange={handleChange}
+            className={`${inputClass} resize-y`}
+          />
+           <p className="mt-1 text-sm text-slate-600">
+            Provide a general description of the benefits offered for this position.
+          </p>
+        </div>
+        <div>
+          <label className={labelClass}>Job Description *</label>
+          <textarea
+            name="description"
+            placeholder="Enter the job description"
+            required
+            rows={7}
+            value={formData.description}
+            onChange={handleChange}
+            className={`${inputClass} resize-y`}
+          />
+       
+        </div>
 
-        <textarea name="description" placeholder="Job Description" required rows={7} value={formData.description} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+        <div>
+          <label className={labelClass}>Application URL or Hiring Email *</label>
+          <input
+            name="applyUrl"
+            placeholder="Example: https://www.district.org/apply or hr@district.org"
+            required
+            value={formData.applyUrl}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
 
-        <input name="applyUrl" placeholder="Application URL or hiring email" required value={formData.applyUrl} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+        <div className="border-t border-slate-200 pt-6">
+          <label className={labelClass}>Contact Name</label>
+          <input
+            name="contactName"
+            placeholder="Enter contact name"
+            value={formData.contactName}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
 
-        <input name="contactName" placeholder="Contact Name" value={formData.contactName} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+        <div>
+          <label className={labelClass}>Contact Title</label>
+          <input
+            name="contactTitle"
+            placeholder="Example: HR Director, Principal"
+            value={formData.contactTitle}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
 
-        <input name="contactTitle" placeholder="Contact Title, e.g. HR Director, Principal" value={formData.contactTitle} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+        <div>
+          <label className={labelClass}>Contact Email</label>
+          <input
+            name="contactEmail"
+            type="email"
+            placeholder="Enter contact email"
+            value={formData.contactEmail}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
 
-        <input name="contactEmail" placeholder="Contact Email" type="email" value={formData.contactEmail} onChange={handleChange} className="w-full rounded-xl border px-4 py-3 focus:outline-none focus:border-orange-500" />
+        <p className="rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          All employer submissions are reviewed before publication.
+        </p>
 
         <button
           type="submit"
-          className="w-full rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600"
+          className="w-full rounded-xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-600"
         >
           Preview Job
         </button>
@@ -224,17 +504,14 @@ export default function PostJobForm() {
               <p><strong>City:</strong> {formData.city}</p>
               <p><strong>County:</strong> {formData.county}</p>
               <p><strong>Job Type:</strong> {formData.type}</p>
+              <p><strong>Posting Date:</strong> {formatDate(formData.postingDate)}</p>
               <p>
-  <strong>Posting Date:</strong>{" "}
-  {formatDate(formData.postingDate)}
-</p>
-
-<p>
-  <strong>Application Deadline:</strong>{" "}
-  {formatDate(
-    formData.applicationDeadline || addDays(formData.postingDate, 45)
-  )}
-</p>
+                <strong>Application Deadline:</strong>{" "}
+                {formatDate(
+                  formData.applicationDeadline ||
+                    addDays(formData.postingDate, 45)
+                )}
+              </p>
               <p><strong>Salary:</strong> {formData.salary}</p>
               <p><strong>Benefits:</strong> {formData.benefits}</p>
               <p><strong>Description:</strong> {formData.description}</p>

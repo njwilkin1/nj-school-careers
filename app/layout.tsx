@@ -69,17 +69,25 @@ export default function RootLayout({
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                 Job Seekers
               </h3>
-              <div className="mt-6 space-y-4 text-base text-slate-600">
-                <a href="/jobs" className="block hover:text-orange-600">
-                  Browse Jobs
-                </a>
-                <a
-                  href="/jobs?search=Substitute"
-                  className="block hover:text-orange-600"
-                >
-                  Substitute Roles
-                </a>
-              </div>
+             <div className="mt-6 space-y-4 text-base text-slate-600">
+  <a href="/jobs" className="block hover:text-orange-600">
+    Browse Jobs
+  </a>
+
+  <a
+    href="/career-resources"
+    className="block hover:text-orange-600"
+  >
+    Career Resources
+  </a>
+
+  <a
+    href="/jobs?search=Substitute"
+    className="block hover:text-orange-600"
+  >
+    Substitute Roles
+  </a>
+</div>
             </div>
 
            {/* Employers */}

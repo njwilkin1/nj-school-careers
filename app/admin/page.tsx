@@ -1,3 +1,4 @@
+import ToggleUrgentButton from "../components/ToggleUrgentButton";
 import ApproveRejectButtons from "../components/ApproveRejectButtons";
 import ToggleFeaturedButton from "../components/ToggleFeaturedButton";
 import DeleteJobButton from "../components/DeleteJobButton";
@@ -14,7 +15,7 @@ export default async function AdminPage() {
 
   const { data: jobs } = await supabase
     .from("jobs")
-    .select("id, title, district, status, created_at, is_featured");
+    .select("id, title, district, status, created_at, is_featured, is_urgent");
 
   const sortedJobs = [...(jobs ?? [])].sort((a, b) => {
     if (a.status === "pending" && b.status !== "pending") return -1;
@@ -112,6 +113,10 @@ export default async function AdminPage() {
                         id={job.id}
                         isFeatured={job.is_featured}
                       />
+                      <ToggleUrgentButton
+  id={job.id}
+  isUrgent={job.is_urgent}
+/>
 
                       {job.status === "pending" && (
                         <ApproveRejectButtons id={job.id} />

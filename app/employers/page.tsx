@@ -3,29 +3,28 @@ import Link from "next/link";
 export default function EmployersPage() {
   return (
     <main className="min-h-screen bg-slate-50">
-      <section className="bg-gradient-to-b from-blue-50 to-white px-6 py-24 text-center">
+      <section className="bg-gradient-to-b from-slate-50 to-white px-6 py-24 text-center">
         <div className="mx-auto max-w-5xl">
           <p className="text-sm font-bold uppercase tracking-[0.35em] text-orange-500">
             For New Jersey Schools
           </p>
 
           <h1 className="mt-6 text-5xl font-bold tracking-tight text-slate-950 md:text-6xl">
-            Post jobs and reach New Jersey educators faster.
+            Reach New Jersey educators faster.
           </h1>
 
           <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-slate-600">
-            NJSchoolCareers helps New Jersey schools, districts, and education
-            organizations connect with teachers, administrators, support staff,
-            and school professionals through a platform built specifically for
-            NJ education hiring.
+            NJSchoolCareers helps schools, districts, charter schools, private
+            schools, and education organizations promote openings to candidates
+            searching specifically for New Jersey education jobs.
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              href="/post-job"
-              className="rounded-xl bg-orange-500 px-8 py-4 text-lg font-bold text-white shadow-sm transition hover:bg-orange-600"
+              href="/employers/pricing"
+              className="rounded-xl bg-[#007c89] px-8 py-4 text-lg font-bold text-white shadow-sm transition hover:bg-[#006b75]"
             >
-              Post a Job
+              View Pricing
             </Link>
 
             <Link
@@ -77,83 +76,57 @@ export default function EmployersPage() {
 
       <section className="bg-white px-6 py-20">
         <div className="mx-auto max-w-6xl text-center">
-          <p className="text-sm font-bold uppercase tracking-[0.35em] text-blue-600">
-            Posting Options
+          <p className="text-sm font-bold uppercase tracking-[0.35em] text-orange-500">
+            Employer Solutions
           </p>
 
           <h2 className="mt-5 text-4xl font-bold tracking-tight text-slate-950">
-            Simple options for schools and districts.
+            Choose the plan that fits your hiring needs.
           </h2>
 
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600">
-            Start with a standard job post or increase visibility for important,
-            urgent, or hard-to-fill roles.
+            Post a single job, promote urgent openings, or choose an unlimited
+            plan for ongoing school-year recruitment.
           </p>
 
-          <div className="mt-12 grid gap-8 md:grid-cols-2">
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
             <div className="rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-sm">
-              <h3 className="text-3xl font-bold text-slate-950">
-                Standard Job Posting
+              <h3 className="text-2xl font-bold text-slate-950">
+                One-Time Job Posts
               </h3>
-
-              <p className="mt-3 font-semibold text-orange-500">
-                Available during early partner access
+              <p className="mt-5 leading-8 text-slate-600">
+                Ideal for schools with occasional hiring needs or individual
+                openings.
               </p>
-
-              <p className="mt-6 leading-8 text-slate-600">
-                Post a school opening and reach candidates searching for New
-                Jersey education jobs.
-              </p>
-
-              <ul className="mt-8 space-y-4 text-slate-700">
-                <li>✓ Included in job search results</li>
-                <li>✓ Direct application link or email</li>
-                <li>✓ No complicated setup</li>
-                <li>✓ Built for New Jersey education hiring</li>
-              </ul>
-
-              <Link
-                href="/post-job"
-                className="mt-10 inline-flex w-full justify-center rounded-xl bg-orange-500 px-6 py-4 text-lg font-bold text-white transition hover:bg-orange-600"
-              >
-                Post a Job
-              </Link>
             </div>
 
             <div className="rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-sm">
-              <h3 className="text-3xl font-bold text-slate-950">
-                Featured Job Visibility
+              <h3 className="text-2xl font-bold text-slate-950">
+                Visibility Add-Ons
               </h3>
-
-              <p className="mt-3 font-semibold text-orange-500">
-                For high-priority openings
+              <p className="mt-5 leading-8 text-slate-600">
+                Increase exposure for urgent, specialized, or hard-to-fill
+                roles.
               </p>
+            </div>
 
-              <p className="mt-6 leading-8 text-slate-600">
-                Give important openings stronger visibility through featured
-                placement and additional promotion options.
+            <div className="rounded-3xl border border-orange-200 bg-orange-50 p-8 text-left shadow-sm">
+              <h3 className="text-2xl font-bold text-slate-950">
+                Unlimited Plans
+              </h3>
+              <p className="mt-5 leading-8 text-slate-700">
+                Best for districts and organizations with ongoing hiring needs
+                throughout the year.
               </p>
-
-              <ul className="mt-8 space-y-4 text-slate-700">
-                <li>✓ Homepage visibility options</li>
-                <li>✓ Highlighted job placement</li>
-                <li>✓ Stronger visibility for urgent roles</li>
-                <li>✓ Social promotion options available</li>
-              </ul>
-
-              <Link
-                href="/contact"
-                className="mt-10 inline-flex w-full justify-center rounded-xl border border-slate-300 px-6 py-4 text-lg font-bold text-slate-800 transition hover:bg-slate-100"
-              >
-                Contact Us
-              </Link>
             </div>
           </div>
 
-          <p className="mx-auto mt-10 max-w-3xl leading-8 text-slate-600">
-            Featured options are designed for schools that want additional
-            visibility for urgent, specialized, or hard-to-fill positions.
-          </p>
+          <Link
+            href="/employers/pricing"
+            className="mt-12 inline-flex rounded-xl bg-[#007c89] px-8 py-4 text-lg font-bold text-white transition hover:bg-[#006b75]"
+          >
+            View Employer Pricing
+          </Link>
         </div>
       </section>
 
@@ -176,21 +149,21 @@ export default function EmployersPage() {
             </p>
 
             <p className="mt-6 text-lg leading-8 text-slate-700">
-              NJSchoolCareers supports schools and districts that want to
-              advertise openings with a wider audience while keeping the process
-              simple and direct.
+              NJSchoolCareers gives schools and districts a simple way to
+              advertise openings while directing candidates back to their own
+              application process.
             </p>
 
             <Link
-              href="/post-job"
-              className="mt-8 inline-flex rounded-xl bg-orange-500 px-6 py-3 font-bold text-white transition hover:bg-orange-600"
+              href="/employers/pricing"
+              className="mt-8 inline-flex rounded-xl bg-[#007c89] px-6 py-3 font-bold text-white transition hover:bg-[#006b75]"
             >
-              Submit a Job
+              View Pricing
             </Link>
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-sm font-bold uppercase tracking-[0.35em] text-blue-600">
+            <p className="text-sm font-bold uppercase tracking-[0.35em] text-orange-500">
               Why Schools Use Us
             </p>
 
@@ -206,9 +179,9 @@ export default function EmployersPage() {
       </section>
 
       <section className="px-6 py-20">
-        <div className="mx-auto flex max-w-6xl flex-col gap-8 rounded-3xl bg-blue-700 p-10 text-white md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 rounded-3xl bg-[#0f172a] p-10 text-white md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[0.35em] text-blue-100">
+            <p className="text-sm font-bold uppercase tracking-[0.35em] text-orange-300">
               Ready to reach candidates?
             </p>
 
@@ -216,23 +189,24 @@ export default function EmployersPage() {
               Start reaching New Jersey educators today.
             </h2>
 
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-blue-100">
-              Submit your opening today or contact us to discuss visibility
-              options for your school, district, or education organization.
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-300">
+              Review our pricing options or contact us to discuss job posting,
+              visibility, and recruitment advertising options for your school or
+              district.
             </p>
           </div>
 
           <div className="flex flex-col gap-4">
             <Link
-              href="/post-job"
-              className="rounded-xl bg-orange-500 px-8 py-4 text-center text-lg font-bold text-white transition hover:bg-orange-600"
+              href="/employers/pricing"
+              className="rounded-xl bg-[#007c89] px-8 py-4 text-center text-lg font-bold text-white transition hover:bg-[#006b75]"
             >
-              Post a Job
+              View Pricing
             </Link>
 
             <Link
               href="/contact"
-              className="rounded-xl border border-blue-300 px-8 py-4 text-center text-lg font-bold text-white transition hover:bg-blue-600"
+              className="rounded-xl border border-slate-500 px-8 py-4 text-center text-lg font-bold text-white transition hover:bg-slate-800"
             >
               Contact Us
             </Link>

@@ -11,14 +11,14 @@ export default function ContactPage() {
         </h1>
 
         <p className="mt-6 text-lg leading-8 text-slate-700">
-          Have a question about posting a job, reaching New Jersey educators, or
-          promoting your school district’s openings? We’d be happy to help.
+          Have a question about posting a job, reaching New Jersey educators,
+          or promoting your school district’s openings? We’d be happy to help.
         </p>
 
         <p className="mt-4 text-lg leading-8 text-slate-700">
           NJSchoolCareers helps connect New Jersey schools with educators
-          through a growing platform featuring 500+ active education job
-          listings statewide.
+          through a growing platform featuring 2,000+ New Jersey education jobs
+          across teaching, administration, coaching, and support staff roles.
         </p>
 
         <p className="mt-4 text-lg leading-8 text-slate-700">
@@ -33,25 +33,29 @@ export default function ContactPage() {
           </h2>
 
           <p className="mt-3 leading-8 text-slate-700">
-            Contact us to learn more about job postings, featured listings, and
-            employer visibility options. No long-term contracts or complicated
-            setup required.
+            Contact us to learn more about job postings, featured listings,
+            school-year plans, monthly options, and employer visibility
+            services. Flexible posting and recruitment advertising options are
+            available.
           </p>
 
-          <p className="mt-3 leading-8 text-slate-700">
-            Early partner districts and education employers may receive
-            complimentary launch visibility while the platform continues
-            expanding statewide.
-          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href="/employers/pricing"
+              className="inline-block rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-orange-600"
+            >
+              View Employer Pricing
+            </a>
 
-          <a
-            href="mailto:info@njschoolcareers.com"
-            className="mt-5 inline-block rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-orange-600"
-          >
-            Contact NJSchoolCareers
-          </a>
+            <a
+              href="mailto:info@njschoolcareers.com"
+              className="inline-block rounded-xl border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-800 shadow-sm transition hover:bg-slate-100"
+            >
+              Email Us
+            </a>
+          </div>
 
-          <p className="mt-3 text-sm font-medium text-slate-700">
+          <p className="mt-4 text-sm font-medium text-slate-700">
             info@njschoolcareers.com
           </p>
 
@@ -78,7 +82,9 @@ export default function ContactPage() {
           </div>
 
           <div className="rounded-2xl border border-slate-200 p-5">
-            <h3 className="font-semibold text-slate-950">Increase Visibility</h3>
+            <h3 className="font-semibold text-slate-950">
+              Increase Visibility
+            </h3>
             <p className="mt-2 text-sm leading-6 text-slate-600">
               Reach more job seekers beyond your district website or hiring
               system.
@@ -88,8 +94,8 @@ export default function ContactPage() {
           <div className="rounded-2xl border border-slate-200 p-5">
             <h3 className="font-semibold text-slate-950">Ask a Question</h3>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Need help submitting a job or learning how the site works? Reach
-              out anytime.
+              Need help submitting a job or learning how the site works?
+              Reach out anytime.
             </p>
           </div>
         </div>
@@ -113,10 +119,11 @@ export default function ContactPage() {
           <h2 className="text-xl font-semibold text-slate-950">
             For job seekers
           </h2>
+
           <p className="mt-3 leading-8 text-slate-700">
-            If you have a question about a listing, please contact the school or
-            employer listed in the job post directly. For website questions, you
-            may email us at{" "}
+            If you have a question about a listing, please contact the school
+            or employer listed in the job post directly. For website questions,
+            you may email us at{" "}
             <a
               href="mailto:info@njschoolcareers.com"
               className="font-medium text-orange-600 hover:text-orange-700"
