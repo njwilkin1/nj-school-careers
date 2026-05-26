@@ -82,6 +82,7 @@ export default async function Home() {
     .from("jobs")
     .select("slug, title, district, location, county, type, posted, applyUrl, is_featured, is_urgent")
     .eq("is_featured", true)
+    .eq("status", "published")
     .order("posted", { ascending: false })
     .limit(18);
 

@@ -43,6 +43,7 @@ export default async function CategoryPage({
   const { data: jobs } = await supabase
   .from("job_imports")
   .select("*")
+  .or("status.eq.published,status.is.null")
   .ilike("title", `%${category}%`)
   .order("created_at", { ascending: false });
 

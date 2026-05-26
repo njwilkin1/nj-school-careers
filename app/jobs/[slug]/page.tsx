@@ -291,6 +291,7 @@ export default async function JobDetailPage({ params }: PageProps) {
     ? await supabase
         .from("job_imports")
         .select("*")
+        .or("status.eq.published,status.is.null")
         .eq("id", Number(slug))
         .maybeSingle()
     : await supabase.from("jobs").select("*").eq("slug", slug).maybeSingle();
