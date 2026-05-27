@@ -110,7 +110,7 @@ export async function POST(req: Request) {
       has_featured: hasFeatured,
       has_urgent: hasUrgent,
       has_social: hasSocial,
-      stripe_payment_id: session.payment_intent?.toString() || null,
+      stripe_payment_id: session.payment_intent?.toString() || session.id,
       stripe_customer_id: session.customer?.toString() || null,
       stripe_subscription_id: session.subscription?.toString() || null,
       payment_method: "stripe",
