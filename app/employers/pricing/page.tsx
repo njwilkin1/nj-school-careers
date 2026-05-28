@@ -44,7 +44,7 @@ const pricingPlans = [
     title: "District Unlimited Plan",
     price: "$1,999 / year",
     description:
-      "Unlimited school-year postings with ongoing recruitment promotion and featured visibility.",
+      "Unlimited school-year job postings with featured district visibility, ongoing recruitment promotion, and priority employer placement.",
     button: "Start Annual Plan",
     link: "https://buy.stripe.com/28EeVf0k65er09f8OK8IU01",
     featured: true,
