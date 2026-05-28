@@ -33,9 +33,9 @@ const pricingPlans = [
   },
   {
     title: "Monthly Unlimited Plan",
-    price: "$249 / month",
+    price: "$349 / month",
     description:
-      "Unlimited monthly job postings with featured employer visibility and priority placement.",
+      "Unlimited monthly job postings with priority placement and featured employer visibility. Annual agreement required.",
     button: "Start Monthly Plan",
     link: "https://buy.stripe.com/dRmcN73widKX8FL0ie8IU02",
     featured: true,
