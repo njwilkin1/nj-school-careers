@@ -38,16 +38,16 @@ const pricingPlans = [
       "Unlimited monthly job postings with priority placement and featured employer visibility. Annual agreement required.",
     button: "Start Monthly Plan",
     link: "https://buy.stripe.com/dRmcN73widKX8FL0ie8IU02",
-    featured: true,
+    badge: "Most Popular",
   },
   {
     title: "District Unlimited Plan",
     price: "$1,999 / year",
     description:
-      "Unlimited school-year job postings with featured district visibility, ongoing recruitment promotion, and priority employer placement.",
+      "Unlimited school-year job postings with featured district visibility, ongoing recruitment promotion, priority employer placement, and over 50% savings compared to monthly billing.",
     button: "Start Annual Plan",
     link: "https://buy.stripe.com/28EeVf0k65er09f8OK8IU01",
-    featured: true,
+    badge: "Best Value",
   },
 ];
 
@@ -77,20 +77,26 @@ export default function PricingPage() {
 
           {pricingPlans.map((plan) => (
             <div
-              key={plan.title}
-              className={`rounded-2xl border bg-white p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition ${
-                plan.featured
-                  ? "border-[#ffd7b0] ring-2 ring-[#fff3e8]"
-                  : "border-slate-200"
-              }`}
-            >
+  key={plan.title}
+  className={`rounded-2xl border bg-white p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition ${
+    plan.badge
+      ? "border-[#ffd7b0] ring-2 ring-[#fff3e8]"
+      : "border-slate-200"
+  }`}
+>
               <div>
 
-                {plan.featured && (
-                  <div className="inline-block mb-4 bg-orange-100 text-orange-700 text-sm font-semibold px-3 py-1 rounded-full">
-                    Most Popular
-                  </div>
-                )}
+               {plan.badge && (
+  <div
+    className={`inline-block mb-4 text-sm font-semibold px-3 py-1 rounded-full ${
+      plan.badge === "Best Value"
+        ? "bg-green-100 text-green-700"
+        : "bg-orange-100 text-orange-700"
+    }`}
+  >
+    {plan.badge}
+  </div>
+)}
 
                 <h2 className="text-2xl font-bold text-[#0f172a] mb-4">
                   {plan.title}
