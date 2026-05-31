@@ -24,6 +24,8 @@ type JobFormData = {
 export default function PostJobForm() {
   const router = useRouter();
 
+  const [adminSecret, setAdminSecret] = useState("");
+
   const [formData, setFormData] = useState<JobFormData>({
     title: "",
     district: "",
@@ -52,8 +54,7 @@ export default function PostJobForm() {
   const inputClass =
     "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200 transition";
 
-  const labelClass =
-    "mb-2 block text-sm font-semibold text-slate-700";
+  const labelClass = "mb-2 block text-sm font-semibold text-slate-700";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,19 +63,35 @@ export default function PostJobForm() {
     setStatus(null);
 
     try {
-      const res = await fetch("/api/jobs", {
+      const res = await fetch("/api/admin/add-job", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          adminSecret,
+          title: formData.title,
+          district: formData.district,
+          city: formData.city,
+          county: formData.county,
+          location: formData.location,
+          type: formData.type,
+          posted: formData.postingDate,
+          closing_date: formData.applicationDeadline,
+          salary_range: formData.salary,
+          benefits: formData.benefits,
+          job_description: formData.description,
+          applyUrl: formData.applyUrl,
+          contact_name: formData.contactName,
+          contact_title: formData.contactTitle,
+          contact_email: formData.contactEmail,
+        }),
       });
 
       const contentType = res.headers.get("content-type");
 
       if (!contentType || !contentType.includes("application/json")) {
         const text = await res.text();
-
         console.error("NON-JSON RESPONSE:", text);
 
         setStatus({
@@ -98,20 +115,12 @@ export default function PostJobForm() {
         return;
       }
 
-      sessionStorage.setItem(
-        "lastSubmittedJob",
-        JSON.stringify({
-          title: formData.title,
-          district: formData.district,
-          city: formData.city,
-          county: formData.county,
-          type: formData.type,
-          postingDate: formData.postingDate,
-          applicationDeadline: formData.applicationDeadline,
-        })
-      );
+      setStatus({
+        type: "success",
+        message: data.message || "Job added successfully.",
+      });
 
-      router.push("/post-job/confirmation");
+      router.push("/admin");
     } catch (err: any) {
       console.error(err);
 
@@ -155,6 +164,18 @@ export default function PostJobForm() {
       )}
 
       <div>
+        <label className={labelClass}>Admin Password</label>
+        <input
+          type="password"
+          placeholder="Enter admin password"
+          required
+          value={adminSecret}
+          onChange={(e) => setAdminSecret(e.target.value)}
+          className={inputClass}
+        />
+      </div>
+
+      <div>
         <label className={labelClass}>Job Title</label>
         <input
           name="title"
@@ -183,6 +204,7 @@ export default function PostJobForm() {
         <input
           name="city"
           placeholder="Enter city"
+          required
           value={formData.city}
           onChange={handleChange}
           className={inputClass}
@@ -194,6 +216,7 @@ export default function PostJobForm() {
         <input
           name="county"
           placeholder="Enter county"
+          required
           value={formData.county}
           onChange={handleChange}
           className={inputClass}
@@ -215,6 +238,7 @@ export default function PostJobForm() {
         <label className={labelClass}>Job Type</label>
         <select
           name="type"
+          required
           value={formData.type}
           onChange={handleChange}
           className={inputClass}
@@ -234,6 +258,7 @@ export default function PostJobForm() {
         <input
           name="postingDate"
           type="date"
+          required
           value={formData.postingDate}
           onChange={handleChange}
           className={inputClass}
@@ -253,7 +278,7 @@ export default function PostJobForm() {
           className={inputClass}
         />
         <p className="mt-1 text-sm text-slate-600">
-          If left blank, a 45-day closing date will be used.
+          If left blank, no closing date will be stored by the admin route.
         </p>
       </div>
 
@@ -262,6 +287,7 @@ export default function PostJobForm() {
         <input
           name="salary"
           placeholder="Example: $60,000 - $75,000"
+          required
           value={formData.salary}
           onChange={handleChange}
           className={inputClass}
@@ -273,6 +299,7 @@ export default function PostJobForm() {
         <textarea
           name="benefits"
           placeholder="Enter each benefit on a new line"
+          required
           rows={4}
           value={formData.benefits}
           onChange={handleChange}
@@ -285,6 +312,7 @@ export default function PostJobForm() {
         <textarea
           name="description"
           placeholder="Enter the job description"
+          required
           rows={6}
           value={formData.description}
           onChange={handleChange}
@@ -297,6 +325,7 @@ export default function PostJobForm() {
         <input
           name="applyUrl"
           placeholder="Enter application URL or email"
+          required
           value={formData.applyUrl}
           onChange={handleChange}
           className={inputClass}
@@ -308,6 +337,7 @@ export default function PostJobForm() {
         <input
           name="contactName"
           placeholder="Enter contact name"
+          required
           value={formData.contactName}
           onChange={handleChange}
           className={inputClass}
@@ -319,6 +349,7 @@ export default function PostJobForm() {
         <input
           name="contactTitle"
           placeholder="Example: HR Director, Principal"
+          required
           value={formData.contactTitle}
           onChange={handleChange}
           className={inputClass}
@@ -329,7 +360,9 @@ export default function PostJobForm() {
         <label className={labelClass}>Contact Email</label>
         <input
           name="contactEmail"
+          type="email"
           placeholder="Enter contact email"
+          required
           value={formData.contactEmail}
           onChange={handleChange}
           className={inputClass}
