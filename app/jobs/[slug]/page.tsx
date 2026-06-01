@@ -289,11 +289,10 @@ export default async function JobDetailPage({ params }: PageProps) {
 
   const { data, error } = isImportedJob
     ? await supabase
-        .from("job_imports")
-        .select("*")
-        .or("status.eq.published,status.is.null")
-        .eq("id", Number(slug))
-        .maybeSingle()
+     .from("job_imports")
+.select("*")
+.eq("id", Number(slug))
+.maybeSingle()
     : await supabase.from("jobs").select("*").eq("slug", slug).maybeSingle();
 
   if (error || !data) {
