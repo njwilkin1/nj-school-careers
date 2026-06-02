@@ -66,17 +66,17 @@ export default function EmailSignup({
       <h2 className="text-2xl font-semibold text-slate-950">
   {searchTerm
     ? `Get new ${searchTerm} jobs in New Jersey`
-    : "Never miss new NJ school openings"}
+    : "Get NJ Education Job Alerts Before Everyone Else"}
 </h2>
 
      <p className="mt-2 text-slate-600">
   {searchTerm
-    ? `Get new ${searchTerm} openings delivered directly to your inbox.`
-    : "Get new teaching, administration, coaching, and support staff jobs delivered directly to your inbox."}
+    ? `Get new ${searchTerm} jobs delivered directly to your inbox.`
+    : "Receive new teaching, administration, and support staff jobs as soon as they're posted."}
 </p>
 
       <p className="mt-2 text-sm text-slate-500">
-        500+ New Jersey education jobs • No spam • Unsubscribe anytime
+        Join 327 NJ educators already receiving job alerts • No spam • Unsubscribe anytime
       </p>
 
       {message && (
@@ -106,7 +106,7 @@ export default function EmailSignup({
           disabled={loading}
           className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60"
         >
-          {loading ? "Submitting..." : "Get Job Alerts"}
+          {loading ? "Submitting..." : "Get Free Alerts"}
         </button>
       </form>
     </div>

@@ -154,6 +154,16 @@ export default function RootLayout({
     >
       <span className="font-bold">f</span>
     </a>
+
+    <a
+  href="https://x.com/NJSchoolCareers"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="NJSchoolCareers on X"
+  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 text-sm font-bold hover:border-[#050B2C] hover:text-[#050B2C] transition"
+>
+  X
+</a>
   </div>
 </div>
         </footer>
