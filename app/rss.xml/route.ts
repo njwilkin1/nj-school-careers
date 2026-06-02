@@ -28,11 +28,12 @@ export async function GET() {
     .order("created_at", { ascending: false })
     .limit(25);
 
-  const { data: importedJobs } = await supabase
-    .from("job_imports")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(25);
+ const { data: importedJobs } = await supabase
+  .from("job_imports")
+  .select("*")
+  .or("status.eq.new,status.eq.published,status.is.null")
+  .order("created_at", { ascending: false })
+  .limit(25); 
 
   const jobs = [...(manualJobs || []), ...(importedJobs || [])]
     .map((job) => {
