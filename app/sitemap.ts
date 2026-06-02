@@ -34,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === "" ? 1 : 0.9,
   }));
 
-  // MAIN JOB PAGES
+  // MANUAL / PAID JOB PAGES
   const { data: jobs } = await supabase
     .from("jobs")
     .select("slug, created_at")
@@ -45,17 +45,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((job) => job.slug)
       .map((job) => ({
         url: `${baseUrl}/jobs/${job.slug}`,
-        lastModified: job.created_at
-          ? new Date(job.created_at)
-          : new Date(),
+        lastModified: job.created_at ? new Date(job.created_at) : new Date(),
         changeFrequency: "daily" as const,
         priority: 0.8,
       }));
 
-  // IMPORTED JOB DATA
+  // IMPORTED APPLITRACK JOB DATA
   const { data: importedJobs } = await supabase
     .from("job_imports")
-    .select("district, county, title");
+    .select("id, district, county, title, date_posted")
+    .or("status.eq.new,status.eq.published,status.is.null");
+
+  // IMPORTED APPLITRACK JOB DETAIL PAGES
+  const importedJobPages =
+    (importedJobs ?? [])
+      .filter((job) => job.id)
+      .map((job) => ({
+        url: `${baseUrl}/jobs/${job.id}`,
+        lastModified: job.date_posted
+          ? new Date(job.date_posted)
+          : new Date(),
+        changeFrequency: "daily" as const,
+        priority: 0.8,
+      }));
 
   // DISTRICT PAGES
   const uniqueDistricts = [
@@ -113,6 +125,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPages,
     ...jobPages,
+    ...importedJobPages,
     ...districtPages,
     ...countyPages,
     ...categoryPages,
