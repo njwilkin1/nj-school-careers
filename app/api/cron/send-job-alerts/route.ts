@@ -30,7 +30,8 @@ function normalize(value: string | null | undefined): string {
 function buildJobCards(jobsToSend: Job[]): string {
   return jobsToSend
     .map((job) => {
-      const jobUrl = job.applyUrl || `https://njschoolcareers.com/jobs/${job.slug}`;
+      const jobUrl =
+        job.applyUrl || `https://www.njschoolcareers.com/jobs/${job.slug}`;
 
       return `
         <div style="margin-bottom:18px;padding:22px;border:1px solid #e2e8f0;border-radius:18px;background:#ffffff;">
@@ -88,7 +89,11 @@ function buildJobCards(jobsToSend: Job[]): string {
     .join("");
 }
 
-function buildEmailHtml(jobsToSend: Job[], email: string, totalMatches: number): string {
+function buildEmailHtml(
+  jobsToSend: Job[],
+  email: string,
+  totalMatches: number
+): string {
   const headingText =
     totalMatches > jobsToSend.length
       ? `We found ${totalMatches} matching New Jersey education jobs. Showing the ${jobsToSend.length} newest positions for your alert.`
@@ -96,7 +101,9 @@ function buildEmailHtml(jobsToSend: Job[], email: string, totalMatches: number):
         ? "We found 1 new New Jersey education job that matches your alert preferences."
         : `We found ${jobsToSend.length} new New Jersey education jobs that match your alert preferences.`;
 
-  const unsubscribeUrl = `https://njschoolcareers.com/api/unsubscribe?email=${encodeURIComponent(email)}`;
+  const unsubscribeUrl = `https://www.njschoolcareers.com/api/unsubscribe?email=${encodeURIComponent(
+    email
+  )}`;
 
   return `
     <div style="background:#f8fafc;padding:40px 20px;font-family:Arial,Helvetica,sans-serif;">
@@ -132,7 +139,7 @@ function buildEmailHtml(jobsToSend: Job[], email: string, totalMatches: number):
 
           <div style="text-align:center;margin-top:30px;">
             <a
-              href="https://njschoolcareers.com/jobs"
+              href="https://www.njschoolcareers.com/jobs"
               style="display:inline-block;background:#f97316;color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:12px;font-size:15px;font-weight:700;"
             >
               Browse More NJ Jobs
@@ -167,8 +174,16 @@ export async function GET() {
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.ALERTS_FROM_EMAIL;
 
-    if (!supabaseUrl || !supabaseServiceRoleKey || !resendApiKey || !fromEmail) {
-      return NextResponse.json({ error: "Missing environment variables." }, { status: 500 });
+    if (
+      !supabaseUrl ||
+      !supabaseServiceRoleKey ||
+      !resendApiKey ||
+      !fromEmail
+    ) {
+      return NextResponse.json(
+        { error: "Missing environment variables." },
+        { status: 500 }
+      );
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
@@ -181,7 +196,8 @@ export async function GET() {
 
     const { data: importedJobs } = await supabase
       .from("job_imports")
-      .select("*");
+      .select("*")
+      .or("status.eq.new,status.eq.published,status.is.null");
 
     const allJobs: Job[] = [
       ...(manualJobs || []).map((job) => ({
