@@ -4,10 +4,11 @@ import { useState } from "react";
 
 export default function EmailSignup({
   searchTerm = "",
+  compact = false,
 }: {
   searchTerm?: string;
+  compact?: boolean;
 }) {
-
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -45,7 +46,7 @@ export default function EmailSignup({
       const data = await res.json();
 
       if (res.ok) {
-        setMessage("You're subscribed.");
+        setMessage("You're subscribed. Check your inbox for new NJ education job alerts.");
         setMessageType("success");
         setEmail("");
       } else {
@@ -62,22 +63,26 @@ export default function EmailSignup({
   };
 
   return (
-    <div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="text-2xl font-semibold text-slate-950">
-  {searchTerm
-    ? `Get new ${searchTerm} jobs in New Jersey`
-    : "Get NJ Education Job Alerts Before Everyone Else"}
-</h2>
+    <div className={compact ? "w-full" : "mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"}>
+      {!compact && (
+        <>
+          <h2 className="text-2xl font-semibold text-slate-950">
+            {searchTerm
+              ? `Get new ${searchTerm} jobs in New Jersey`
+              : "Get NJ Education Job Alerts Before Everyone Else"}
+          </h2>
 
-     <p className="mt-2 text-slate-600">
-  {searchTerm
-    ? `Get new ${searchTerm} jobs delivered directly to your inbox.`
-    : "Receive new teaching, administration, and support staff jobs as soon as they're posted."}
-</p>
+          <p className="mt-2 text-slate-600">
+            {searchTerm
+              ? `Get new ${searchTerm} jobs delivered directly to your inbox.`
+              : "Receive new teaching, administration, and support staff jobs as soon as they're posted."}
+          </p>
 
-      <p className="mt-2 text-sm text-slate-500">
-        Join 327 NJ educators already receiving job alerts • No spam • Unsubscribe anytime
-      </p>
+          <p className="mt-2 text-sm text-slate-500">
+            Join 327 NJ educators already receiving job alerts • No spam • Unsubscribe anytime
+          </p>
+        </>
+      )}
 
       {message && (
         <div
@@ -91,7 +96,7 @@ export default function EmailSignup({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4 sm:flex-row">
+      <form onSubmit={handleSubmit} className={`${compact ? "mt-0" : "mt-6"} flex flex-col gap-4 sm:flex-row`}>
         <input
           type="email"
           placeholder="Your email"

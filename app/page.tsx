@@ -18,20 +18,6 @@ type Job = {
   is_urgent?: boolean;
 };
 
-function getDaysAgo(posted: string) {
-  const postedDate = new Date(posted);
-  const now = new Date();
-
-  if (Number.isNaN(postedDate.getTime())) return "";
-
-  const diffMs = now.getTime() - postedDate.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays <= 0) return "Posted today";
-  if (diffDays === 1) return "Posted 1 day ago";
-  return `Posted ${diffDays} days ago`;
-}
-
 function isNewJob(posted?: string) {
   if (!posted) return false;
 
@@ -47,20 +33,21 @@ function isNewJob(posted?: string) {
 }
 
 export default async function Home() {
-  const totalJobs = 2000;
+  const totalJobs = 3000;
+  const subscriberCount = 327;
 
- const defaultSearches = [
-  "Teacher",
-  "Kindergarten",
-  "Elementary Teacher",
-  "ESL",
-  "Math",
-  "Assistant Principal",
-  "Special Education",
-  "Substitute Teacher",
-  "School Counselor",
-  "Coaching",
-];
+  const defaultSearches = [
+    "Teacher",
+    "Kindergarten",
+    "Elementary Teacher",
+    "ESL",
+    "Math",
+    "Assistant Principal",
+    "Special Education",
+    "Substitute Teacher",
+    "School Counselor",
+    "Coaching",
+  ];
 
   const quickJobPaths = [
     ["Assistant Principal Jobs", "Leadership roles", "/jobs?search=Assistant%20Principal"],
@@ -125,71 +112,225 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       {/* HERO */}
-<section className="relative overflow-hidden bg-gradient-to-r from-sky-50 via-blue-50 to-white">
-  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(37,99,235,0.12),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(249,115,22,0.08),_transparent_30%)]" />
+      <section className="relative overflow-hidden bg-gradient-to-r from-sky-50 via-blue-50 to-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(37,99,235,0.12),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(249,115,22,0.08),_transparent_30%)]" />
 
-  <div className="relative mx-auto max-w-[1400px] px-6 py-14 text-center md:py-20">
-    <div className="mx-auto max-w-4xl">
-      <div className="mb-4 inline-flex rounded-full bg-blue-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">
-        New Jersey School Hiring
-      </div>
+        <div className="relative mx-auto max-w-[1400px] px-6 py-14 text-center md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-4 inline-flex rounded-full bg-blue-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">
+              New Jersey School Hiring
+            </div>
 
-      <h1 className="text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">
-        Find New Jersey education jobs faster.
-      </h1>
-
-    </div>
-
-    <div className="mx-auto mt-8 max-w-5xl rounded-3xl border border-slate-200 bg-white p-5 shadow-xl">
-      <JobSearchForm />
-    </div>
-
-    <div className="mx-auto mt-8 max-w-5xl">
-      <p className="text-base font-semibold text-slate-700">
-        Popular Searches
-      </p>
-
-      <div className="mt-4 flex flex-wrap justify-center gap-3">
-        {popularSearches.map((item) => (
-          <a
-            key={item}
-            href={`/jobs?search=${encodeURIComponent(item)}`}
-            className="rounded-full bg-white px-5 py-2 text-sm font-medium text-blue-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-blue-50"
-          >
-            {item}
-          </a>
-        ))}
-      </div>
-
-      <div className="mt-6 flex flex-wrap justify-center gap-5 text-sm text-slate-700">
-        <span>✔ {totalJobs}+ New Jersey education jobs</span>
-        <span>✔ New openings added regularly</span>
-        <span>✔ Apply directly to schools and districts</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-      {/* EMPLOYER CTA BAND */}
-      <section className="border-y border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-5 px-6 py-7 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-500">
-              For Employers
+            <h1 className="text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">
+              Find New Jersey Education Jobs Before Everyone Else.
+            </h1>
+<div className="mt-6 flex flex-wrap justify-center gap-6 text-sm font-medium text-slate-600">
+  <span>3,000+ NJ Education Jobs</span>
+  <span>•</span>
+  <span>327+ Subscribers</span>
+  <span>•</span>
+  <span>New Jobs Added Daily</span>
+</div>
+            <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+              Search teaching, administration, support staff, and school leadership jobs across New Jersey.
             </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
-              Hiring for your school or district?
+          </div>
+
+          <div className="mx-auto mt-8 max-w-6xl rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
+            <JobSearchForm />
+          </div>
+
+          {/* EMAIL SIGNUP MOVED ABOVE THE FOLD */}
+          <div className="mx-auto mt-8 max-w-5xl rounded-3xl border border-blue-100 bg-white p-6 shadow-lg">
+            <div className="mb-5 text-center">
+              <h2 className="text-2xl font-bold tracking-tight text-slate-950">
+                Get NJ Education Job Alerts Before Everyone Else
+              </h2>
+              <p className="mt-2 text-base leading-7 text-slate-600">
+                Receive new teaching, administration, and support staff jobs as soon as they&apos;re posted.
+              </p>
+              <p className="mt-2 text-sm font-semibold text-blue-700">
+                Join {subscriberCount}+ NJ educators already receiving alerts.
+              </p>
+            </div>
+
+            <EmailSignup compact />
+
+            <div className="mt-5 grid gap-3 text-sm font-medium text-slate-700 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-xl bg-slate-50 px-4 py-3">✓ No Account Required</div>
+              <div className="rounded-xl bg-slate-50 px-4 py-3">✓ NJ-Focused Job Board</div>
+              <div className="rounded-xl bg-slate-50 px-4 py-3">✓ New Jobs Added Daily</div>
+              <div className="rounded-xl bg-slate-50 px-4 py-3">✓ Free Email Alerts</div>
+            </div>
+          </div>
+
+          {/* POPULAR SEARCHES */}
+          <div className="mx-auto mt-8 max-w-5xl">
+            <p className="text-base font-semibold text-slate-700">
+              Popular Searches
+            </p>
+
+            <div className="mt-4 flex flex-wrap justify-center gap-3">
+              {popularSearches.map((item) => (
+                <a
+                  key={item}
+                  href={`/jobs?search=${encodeURIComponent(item)}`}
+                  className="rounded-full bg-white px-5 py-2 text-sm font-medium text-blue-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-blue-50"
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SOCIAL PROOF */}
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-[1400px] gap-4 px-6 py-8 text-center sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <div className="text-3xl font-bold text-slate-950">
+              {totalJobs}+
+            </div>
+            <p className="mt-1 text-sm font-medium text-slate-600">
+              NJ Education Jobs
+            </p>
+          </div>
+
+          <div>
+            <div className="text-3xl font-bold text-slate-950">
+              {subscriberCount}+
+            </div>
+            <p className="mt-1 text-sm font-medium text-slate-600">
+              Email Subscribers
+            </p>
+          </div>
+
+          <div>
+            <div className="text-3xl font-bold text-slate-950">
+              Daily
+            </div>
+            <p className="mt-1 text-sm font-medium text-slate-600">
+              New Jobs Added
+            </p>
+          </div>
+
+          <div>
+            <div className="text-3xl font-bold text-slate-950">
+              Direct
+            </div>
+            <p className="mt-1 text-sm font-medium text-slate-600">
+              Apply to Schools
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURED JOBS MOVED HIGHER */}
+      <section className="mx-auto max-w-[1400px] px-6 py-12">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+              Featured Jobs
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight">
+              Highlighted openings from New Jersey schools
             </h2>
-            <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
-              Post jobs, promote urgent openings, or choose an unlimited plan to reach New Jersey educators.
+            <p className="mt-3 max-w-2xl text-sm text-slate-600">
+              Explore featured school openings across New Jersey.
             </p>
           </div>
 
           <a
             href="/employers/pricing"
-            className="inline-flex justify-center rounded-xl bg-blue-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-800"
+            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-orange-500 hover:text-orange-600"
           >
-            View Employer Pricing
+            Post a Featured Job
+          </a>
+        </div>
+
+        <div className="mt-8 grid gap-5 lg:grid-cols-2">
+          {featuredJobs.length > 0 ? (
+            featuredJobs.map((job) => (
+              <article
+                key={job.slug}
+                className="rounded-3xl border-2 border-teal-300 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal-700">
+                        Featured Employer
+                      </span>
+
+                      {job.is_urgent && (
+                        <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-700">
+                          Urgent Hiring
+                        </span>
+                      )}
+
+                      {job.type && (
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700">
+                          {job.type}
+                        </span>
+                      )}
+
+                      {isNewJob(job.posted) && (
+                        <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-700">
+                          New
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="mt-3 text-xl font-bold tracking-tight">
+                      {job.title}
+                    </h3>
+
+                    <p className="mt-2 text-sm font-medium text-slate-700">
+                      {job.district}
+                    </p>
+
+                    <p className="mt-1 text-sm text-slate-600">
+                      {job.location}
+                      {job.county ? ` · ${job.county}` : ""}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <a
+                    href={`/jobs/${job.slug}`}
+                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-blue-400 hover:bg-blue-50"
+                  >
+                    View Details
+                  </a>
+
+                  <a
+                    href={job.applyUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
+                  >
+                    Apply Now
+                  </a>
+                </div>
+              </article>
+            ))
+          ) : (
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <p className="text-slate-600">
+                No featured jobs are available right now.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-8 text-center">
+          <a
+            href="/jobs"
+            className="inline-flex items-center justify-center rounded-xl bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800"
+          >
+            Browse all {totalJobs}+ NJ education jobs →
           </a>
         </div>
       </section>
@@ -230,26 +371,48 @@ export default async function Home() {
               </a>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div className="mx-auto mt-8 grid max-w-5xl gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-4">
-            <div>
-              <div className="font-semibold text-slate-950">Apply Directly</div>
-              <p className="mt-1 text-sm text-slate-600">No unnecessary accounts.</p>
+      {/* WHY NJSchoolCareers */}
+      <section className="bg-white px-6 py-12">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+              Why NJSchoolCareers?
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
+              Built for New Jersey education hiring
+            </h2>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h3 className="font-bold text-slate-950">No Account Required</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Apply directly to schools without unnecessary accounts.
+              </p>
             </div>
 
-            <div>
-              <div className="font-semibold text-slate-950">NJ Focused</div>
-              <p className="mt-1 text-sm text-slate-600">Only New Jersey school jobs.</p>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h3 className="font-bold text-slate-950">NJ Focused</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Only New Jersey education jobs in one place.
+              </p>
             </div>
 
-            <div>
-              <div className="font-semibold text-slate-950">Updated Regularly</div>
-              <p className="mt-1 text-sm text-slate-600">{totalJobs}+ jobs and growing.</p>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h3 className="font-bold text-slate-950">Updated Daily</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Fresh school openings are added regularly.
+              </p>
             </div>
 
-            <div>
-              <div className="font-semibold text-slate-950">Simple Search</div>
-              <p className="mt-1 text-sm text-slate-600">Find openings faster.</p>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <h3 className="font-bold text-slate-950">Free Alerts</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Get notified when new jobs match your interests.
+              </p>
             </div>
           </div>
         </div>
@@ -312,120 +475,62 @@ export default async function Home() {
           </div>
         </div>
       </section>
+{/* TRUSTED BY NJ SCHOOLS */}
+<section className="bg-white border-t border-slate-200">
+  <div className="mx-auto max-w-[1400px] px-6 py-12">
+    <div className="text-center">
+      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+        Trusted Across New Jersey
+      </p>
 
-      {/* EMAIL SIGNUP */}
-      <section className="mx-auto max-w-[1400px] px-6 py-8">
-        <EmailSignup />
-      </section>
+      <h2 className="mt-2 text-3xl font-bold text-slate-950">
+        Schools and education organizations use NJSchoolCareers
+      </h2>
 
-      {/* FEATURED JOBS */}
-      <section className="mx-auto max-w-[1400px] px-6 py-12">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <p className="mt-3 text-slate-600">
+        Helping New Jersey schools and education employers connect with candidates.
+      </p>
+    </div>
+
+    <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
+        Trenton Public Schools
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
+        Great Oaks Legacy Charter School
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
+        Oak Crest Day Camp
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
+        Spectrum Support Consulting
+      </div>
+    </div>
+  </div>
+</section>
+      {/* EMPLOYER CTA BAND */}
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-5 px-6 py-7 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-              Featured Jobs
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-500">
+              For Employers
             </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight">
-              Current Openings
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
+              Hiring for your school or district?
             </h2>
-            <p className="mt-3 max-w-2xl text-sm text-slate-600">
-              Explore featured school openings across New Jersey.
+            <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
+              Post jobs, promote urgent openings, or choose an unlimited plan to reach New Jersey educators.
             </p>
           </div>
 
           <a
             href="/employers/pricing"
-            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-orange-500 hover:text-orange-600"
+            className="inline-flex justify-center rounded-xl bg-blue-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-800"
           >
-            Post a Featured Job
-          </a>
-        </div>
-
-        <div className="mt-8 grid gap-5 lg:grid-cols-2">
-          {featuredJobs.length > 0 ? (
-            featuredJobs.map((job) => (
-              <article
-                key={job.slug}
-                className="rounded-3xl border-2 border-teal-300 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                     <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal-700">
-                      Featured Placement
-                      </span>
-                      {job.is_urgent && (
-  <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-700">
-    Urgent Hiring
-  </span>
-)}
-
-                      {job.type && (
-                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700">
-                          {job.type}
-                        </span>
-                      )}
-
-                      {isNewJob(job.posted) && (
-                        <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-700">
-                          New
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="mt-3 text-xl font-bold tracking-tight">
-                      {job.title}
-                    </h3>
-
-                    <p className="mt-2 text-sm font-medium text-slate-700">
-                      {job.district}
-                    </p>
-
-                    <p className="mt-1 text-sm text-slate-600">
-                      {job.location}
-                      {job.county ? ` · ${job.county}` : ""}
-                    </p>
-                  </div>
-
-                  <div className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">
-                    {getDaysAgo(job.posted ?? "")}
-                  </div>
-                </div>
-
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <a
-                    href={`/jobs/${job.slug}`}
-                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-blue-400 hover:bg-blue-50"
-                  >
-                    View Details
-                  </a>
-
-                  <a
-                    href={job.applyUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-                  >
-                    Apply Now
-                  </a>
-                </div>
-              </article>
-            ))
-          ) : (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-slate-600">
-                No featured jobs are available right now.
-              </p>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-8 text-center">
-          <a
-            href="/jobs"
-            className="inline-flex items-center justify-center rounded-xl bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800"
-          >
-            Browse all {totalJobs}+ NJ education jobs →
+            View Employer Pricing
           </a>
         </div>
       </section>
