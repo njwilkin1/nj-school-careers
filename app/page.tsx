@@ -118,7 +118,7 @@ export default async function Home() {
         <div className="relative mx-auto max-w-[1400px] px-6 py-14 text-center md:py-20">
           <div className="mx-auto max-w-4xl">
 
-            <h1 className="text-3xl font-bold tracking-tight text-slate-950 md:text-6xl">   
+            <h1 className="text-3xl font-bold tracking-tight text-slate-950 md:text-6xl">
               Find New Jersey Education Jobs.
             </h1>
 
@@ -129,7 +129,7 @@ export default async function Home() {
 
           <div className="mx-auto mt-8 max-w-6xl rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
             <JobSearchForm />
-            <div className="mt-6 flex flex-wrap justify-center gap-6 text-sm font-medium text-slate-600">
+            <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm font-medium text-slate-600">
   <span>3,000+ NJ Education Jobs</span>
   <span>•</span>
   <span>327+ Subscribers</span>
@@ -152,10 +152,11 @@ export default async function Home() {
               </p>
             </div>
 
-            <EmailSignup compact />
+           <EmailSignup compact />
+</div>
 
-          {/* POPULAR SEARCHES */}
-          <div className="mx-auto mt-8 max-w-5xl">
+{/* POPULAR SEARCHES */}
+<div className="mx-auto mt-8 max-w-5xl">
             <p className="text-base font-semibold text-slate-700">
               Popular Searches
             </p>
