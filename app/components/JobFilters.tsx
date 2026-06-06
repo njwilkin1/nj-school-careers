@@ -67,6 +67,18 @@ function isNew(posted?: string) {
   );
 }
 
+function postedWithinDays(posted?: string, days = 7) {
+  if (!posted) return false;
+
+  const postedDate = new Date(posted);
+  if (Number.isNaN(postedDate.getTime())) return false;
+
+  const diff =
+    (Date.now() - postedDate.getTime()) / (1000 * 60 * 60 * 24);
+
+  return diff <= days;
+}
+
 export default function JobFilters({ jobs }: { jobs: any[] }) {
   const searchParams = useSearchParams();
 
@@ -74,6 +86,7 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
   const [county, setCounty] = useState("");
   const [category, setCategory] = useState("");
   const [type, setType] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const JOBS_PER_PAGE = 15;
@@ -84,27 +97,41 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
     ).sort();
   }, [jobs]);
 
-  const filteredJobs = jobs.filter((job) => {
-    const jobCategory = getCategory(job.title || "");
+  const filteredJobs = jobs
+    .filter((job) => {
+      const jobCategory = getCategory(job.title || "");
 
-    const haystack = [
-      job.title || "",
-      job.district || "",
-      job.county || "",
-      job.location || "",
-      job.city || "",
-      job.type || "",
-    ]
-      .join(" ")
-      .toLowerCase();
+      const haystack = [
+        job.title || "",
+        job.district || "",
+        job.county || "",
+        job.location || "",
+        job.city || "",
+        job.type || "",
+      ]
+        .join(" ")
+        .toLowerCase();
 
-    return (
-      (!search || haystack.includes(search.toLowerCase())) &&
-      (!county || job.county?.toLowerCase() === county.toLowerCase()) &&
-      (!category || jobCategory === category) &&
-      (!type || job.type?.toLowerCase() === type.toLowerCase())
-    );
-  });
+      return (
+        (!search || haystack.includes(search.toLowerCase())) &&
+        (!county || job.county?.toLowerCase() === county.toLowerCase()) &&
+        (!category || jobCategory === category) &&
+        (!type || job.type?.toLowerCase() === type.toLowerCase()) &&
+        (!dateFilter || postedWithinDays(job.posted, Number(dateFilter)))
+      );
+    })
+.sort((a, b) => {
+  if (a.is_urgent && !b.is_urgent) return -1;
+  if (!a.is_urgent && b.is_urgent) return 1;
+
+  if (a.is_featured && !b.is_featured) return -1;
+  if (!a.is_featured && b.is_featured) return 1;
+
+  const dateA = new Date(a.posted || 0).getTime();
+  const dateB = new Date(b.posted || 0).getTime();
+
+  return dateB - dateA;
+});
 
   const totalPages = Math.ceil(filteredJobs.length / JOBS_PER_PAGE);
 
@@ -112,30 +139,33 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
     (currentPage - 1) * JOBS_PER_PAGE,
     currentPage * JOBS_PER_PAGE
   );
-async function logSearchQuery(value: string) {
-  const cleaned = value.trim().toLowerCase();
 
-  if (cleaned.length < 2) return;
+  async function logSearchQuery(value: string) {
+    const cleaned = value.trim().toLowerCase();
 
-  try {
-    await fetch("/api/log-search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: cleaned,
-      }),
-    });
-  } catch (error) {
-    console.error("Failed to log search query:", error);
+    if (cleaned.length < 2) return;
+
+    try {
+      await fetch("/api/log-search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: cleaned,
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to log search query:", error);
+    }
   }
-}
+
   function clearFilters() {
     setSearch("");
     setCounty("");
     setCategory("");
     setType("");
+    setDateFilter("");
     setCurrentPage(1);
   }
 
@@ -161,18 +191,17 @@ async function logSearchQuery(value: string) {
   return (
     <div className="mt-8">
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr_1fr_1fr_auto]">
+        <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_1fr_auto]">
           <input
             placeholder="Search title, district, or keyword"
             value={search}
-          onChange={(e) => {
-  setSearch(e.target.value);
-  setCurrentPage(1);
-}}
-
-onBlur={() => {
-  logSearchQuery(search);
-}}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+            onBlur={() => {
+              logSearchQuery(search);
+            }}
             className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:outline-none"
           />
 
@@ -225,6 +254,18 @@ onBlur={() => {
             <option value="summer">Summer</option>
           </select>
 
+          <select
+            value={dateFilter}
+            onChange={(e) => {
+              setDateFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:border-orange-500 focus:outline-none"
+          >
+            <option value="">Any date</option>
+            <option value="7">Posted in Last 7 Days</option>
+          </select>
+
           <button
             type="button"
             onClick={clearFilters}
@@ -250,120 +291,130 @@ onBlur={() => {
       <div className="mt-8 space-y-4">
         {paginatedJobs.map((job, index) => {
           const categoryLabel = getCategory(job.title || "");
+          const postedLabel = daysAgo(job.posted);
 
           return (
-  <div key={`${job.id || job.slug || index}`}>
-    <article
-  className={`rounded-3xl border bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-    job.is_featured
-      ? "border-2 border-teal-300"
-      : job.is_urgent 
-      ? "border-2 border-red-200"
-      : "border-slate-200 hover:border-orange-200"
-  }`}
->
-              <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-                <div className="min-w-0">
-              <div className="mb-2 flex flex-wrap gap-2">
-  {job.is_urgent && (
-    <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-700">
-      Urgent Hiring
-    </span>
-  )}
+            <div key={`${job.id || job.slug || index}`}>
+              <article
+                className={`rounded-3xl border bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                  job.is_featured
+                    ? "border-2 border-teal-300"
+                    : job.is_urgent
+                      ? "border-2 border-red-200"
+                      : "border-slate-200 hover:border-orange-200"
+                }`}
+              >
+                <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+                  <div className="min-w-0">
+                    <div className="mb-2 flex flex-wrap gap-2">
+                      {job.is_urgent && (
+                        <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-700">
+                          Urgent Hiring
+                        </span>
+                      )}
 
-  {job.is_featured && (
-    <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal-700">
-      Featured Placement
-    </span>
-  )}
+                      {job.is_featured && (
+                        <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal-700">
+                          Featured Placement
+                        </span>
+                      )}
 
-  {job.type && (
-    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
-      {job.type}
-    </span>
-  )}
+                      {job.type && (
+                        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
+                          {job.type}
+                        </span>
+                      )}
 
-  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs text-orange-600">
-    {categoryLabel}
-  </span>
+                      <span className="rounded-full bg-orange-50 px-3 py-1 text-xs text-orange-600">
+                        {categoryLabel}
+                      </span>
 
-  {isNew(job.posted) && (
-    <span className="rounded-full bg-green-50 px-3 py-1 text-xs text-green-600">
-      New
-    </span>
-  )}
-</div>
+                      {postedLabel === "Posted today" ? (
+                        <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                          Posted Today
+                        </span>
+                      ) : (
+                        isNew(job.posted) && (
+                          <span className="rounded-full bg-green-50 px-3 py-1 text-xs text-green-600">
+                            New
+                          </span>
+                        )
+                      )}
+                    </div>
 
-                  <h2 className="text-2xl font-bold tracking-tight text-slate-950">
-                    {job.title}
-                  </h2>
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-950">
+                      {job.title}
+                    </h2>
 
-                  <p className="mt-2 text-base font-medium text-slate-700">
-                    {job.district}
-                  </p>
+                    <p className="mt-2 text-base font-medium text-slate-700">
+                      {job.district}
+                    </p>
 
-                  <p className="mt-1 text-sm text-slate-500">
-                    {job.location || job.city || ""}
-                    {job.county ? ` · ${job.county}` : ""}
-                  </p>
+                    <p className="mt-1 text-sm text-slate-500">
+                      {job.location || job.city || ""}
+                      {job.county ? ` · ${job.county}` : ""}
+                    </p>
+                  </div>
+
+                  <div className="text-sm text-gray-500 md:text-right">
+                    {postedLabel}
+                  </div>
                 </div>
 
-                <div className="text-sm text-gray-500 md:text-right">
-                  {daysAgo(job.posted)}
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link
+                    href={`/jobs/${job.slug || job.id}`}
+                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-orange-500 hover:text-orange-600"
+                  >
+                    View Details
+                  </Link>
+
+                  <a
+                    href={job.applyUrl || `/jobs/${job.slug || job.id}`}
+                    target={job.applyUrl ? "_blank" : "_self"}
+                    rel="noreferrer"
+                    className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+                  >
+                    Apply Now
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => handleShare(job)}
+                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-500 hover:text-blue-600"
+                  >
+                    Share
+                  </button>
                 </div>
-              </div>
+              </article>
 
-              <div className="mt-5 flex flex-wrap gap-3">
-                <Link
-                  href={`/jobs/${job.slug || job.id}`}
-                  className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-orange-500 hover:text-orange-600"
-                >
-                  View Details
-                </Link>
-
-                <a
-                  href={job.applyUrl || `/jobs/${job.slug || job.id}`}
-                  target={job.applyUrl ? "_blank" : "_self"}
-                  rel="noreferrer"
-                  className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
-                >
-                  Apply Now
-                </a>
-
-                <button
-                  type="button"
-                  onClick={() => handleShare(job)}
-                  className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-blue-500 hover:text-blue-600"
-                >
-                  Share
-                </button>
-              </div>
-          </article>
-
-{index === 14 && (
-  <div className="my-8">
-    <EmailSignup searchTerm={search} />
-  </div>
-)}
-
-</div>
-);
+              {index === 14 && (
+                <div className="my-8">
+                  <EmailSignup searchTerm={search} />
+                </div>
+              )}
+            </div>
+          );
         })}
-<div className="mt-8 text-center text-sm text-slate-500">
-  Showing{" "}
-  <span className="font-semibold text-slate-900">
-    {(currentPage - 1) * JOBS_PER_PAGE + 1}
-  </span>
-  –
-  <span className="font-semibold text-slate-900">
-    {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)}
-  </span>{" "}
-  of{" "}
-  <span className="font-semibold text-slate-900">
-    {filteredJobs.length}
-  </span>{" "}
-  jobs
-</div>
+
+        {filteredJobs.length > 0 && (
+          <div className="mt-8 text-center text-sm text-slate-500">
+            Showing{" "}
+            <span className="font-semibold text-slate-900">
+              {(currentPage - 1) * JOBS_PER_PAGE + 1}
+            </span>
+            –
+            <span className="font-semibold text-slate-900">
+              {Math.min(currentPage * JOBS_PER_PAGE, filteredJobs.length)}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-slate-900">
+              {filteredJobs.length}
+            </span>{" "}
+            jobs
+          </div>
+        )}
+
         {totalPages > 1 && (
           <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
             <button
