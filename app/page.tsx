@@ -141,9 +141,6 @@ export default async function Home() {
               <p className="mt-2 text-base leading-7 text-slate-600">
                 Receive new teaching, administration, and support staff jobs as soon as they&apos;re posted.
               </p>
-              <p className="mt-2 text-sm font-semibold text-blue-700">
-                Join {subscriberCount}+ NJ educators already receiving alerts.
-              </p>
             </div>
 
            <EmailSignup compact />
