@@ -146,11 +146,6 @@ export default function PricingPage() {
 
         {/* Disclaimer */}
         <div className="mt-12 text-sm text-slate-500 leading-relaxed">
-          <p>
-            All services are non-refundable. NJSchoolCareers LLC provides
-            recruitment advertising services only and does not guarantee
-            applicant volume, interview activity, or hiring outcomes.
-          </p>
         </div>
 
         {/* Contact */}
