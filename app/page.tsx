@@ -129,13 +129,7 @@ export default async function Home() {
 
           <div className="mx-auto mt-8 max-w-6xl rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
             <JobSearchForm />
-            <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm font-medium text-slate-600">
-  <span>3,000+ NJ Education Jobs</span>
-  <span>•</span>
-  <span>327+ Subscribers</span>
-  <span>•</span>
-  <span>New Jobs Added Daily</span>
-</div>
+           
           </div>
 
           {/* EMAIL SIGNUP MOVED ABOVE THE FOLD */}
