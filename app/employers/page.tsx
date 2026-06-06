@@ -10,7 +10,7 @@ export default function EmployersPage() {
           </p>
 
           <h1 className="mt-6 text-5xl font-bold tracking-tight text-slate-950 md:text-6xl">
-            Reach New Jersey educators faster.
+            Reach New Jersey Educators Where They're Already Looking.
           </h1>
 
           <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-slate-600">
@@ -28,7 +28,7 @@ export default function EmployersPage() {
             </Link>
 
             <Link
-              href="/contact"
+              href="https://calendly.com/njschoolcareers-info/recruitment-consultation"
               className="rounded-xl border border-slate-300 bg-white px-8 py-4 text-lg font-bold text-slate-800 transition hover:bg-slate-100"
             >
               Request Info
@@ -40,7 +40,7 @@ export default function EmployersPage() {
       <section className="px-6 py-16">
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-4xl font-bold text-orange-500">3,400+</p>
+            <p className="text-4xl font-bold text-orange-500">13,400+</p>
             <h2 className="mt-5 text-2xl font-bold text-slate-950">
               Search impressions
             </h2>
@@ -51,7 +51,7 @@ export default function EmployersPage() {
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-4xl font-bold text-orange-500">1,800+</p>
+            <p className="text-4xl font-bold text-orange-500">2,800+</p>
             <h2 className="mt-5 text-2xl font-bold text-slate-950">
               Recent site sessions
             </h2>
@@ -62,9 +62,9 @@ export default function EmployersPage() {
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-4xl font-bold text-orange-500">NJ</p>
+            <p className="text-4xl font-bold text-orange-500">3,900+</p>
             <h2 className="mt-5 text-2xl font-bold text-slate-950">
-              Focused audience
+              Active NJ Education Jobs
             </h2>
             <p className="mt-5 leading-8 text-slate-600">
               Reach candidates looking specifically for New Jersey teaching,
