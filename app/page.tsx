@@ -117,27 +117,25 @@ export default async function Home() {
 
         <div className="relative mx-auto max-w-[1400px] px-6 py-14 text-center md:py-20">
           <div className="mx-auto max-w-4xl">
-            <div className="mb-4 inline-flex rounded-full bg-blue-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">
-              New Jersey School Hiring
-            </div>
 
-            <h1 className="text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">
-              Find New Jersey Education Jobs Before Everyone Else.
+            <h1 className="text-3xl font-bold tracking-tight text-slate-950 md:text-6xl">   
+              Find New Jersey Education Jobs.
             </h1>
-<div className="mt-6 flex flex-wrap justify-center gap-6 text-sm font-medium text-slate-600">
+
+            <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+              Search thousands of New Jersey education jobs.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-8 max-w-6xl rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
+            <JobSearchForm />
+            <div className="mt-6 flex flex-wrap justify-center gap-6 text-sm font-medium text-slate-600">
   <span>3,000+ NJ Education Jobs</span>
   <span>•</span>
   <span>327+ Subscribers</span>
   <span>•</span>
   <span>New Jobs Added Daily</span>
 </div>
-            <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-600">
-              Search teaching, administration, support staff, and school leadership jobs across New Jersey.
-            </p>
-          </div>
-
-          <div className="mx-auto mt-8 max-w-6xl rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
-            <JobSearchForm />
           </div>
 
           {/* EMAIL SIGNUP MOVED ABOVE THE FOLD */}
@@ -155,14 +153,6 @@ export default async function Home() {
             </div>
 
             <EmailSignup compact />
-
-            <div className="mt-5 grid gap-3 text-sm font-medium text-slate-700 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-xl bg-slate-50 px-4 py-3">✓ No Account Required</div>
-              <div className="rounded-xl bg-slate-50 px-4 py-3">✓ NJ-Focused Job Board</div>
-              <div className="rounded-xl bg-slate-50 px-4 py-3">✓ New Jobs Added Daily</div>
-              <div className="rounded-xl bg-slate-50 px-4 py-3">✓ Free Email Alerts</div>
-            </div>
-          </div>
 
           {/* POPULAR SEARCHES */}
           <div className="mx-auto mt-8 max-w-5xl">
