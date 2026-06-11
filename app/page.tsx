@@ -1,5 +1,4 @@
 import JobSearchForm from "./components/JobSearchForm";
-import EmailSignup from "./components/EmailSignup";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +32,7 @@ function isNewJob(posted?: string) {
 }
 
 export default async function Home() {
-  const totalJobs = 3000;
+  const totalJobs = 4000;
   const subscriberCount = 327;
 
   const defaultSearches = [
@@ -132,20 +131,6 @@ export default async function Home() {
            
           </div>
 
-          {/* EMAIL SIGNUP MOVED ABOVE THE FOLD */}
-          <div className="mx-auto mt-8 max-w-5xl rounded-3xl border border-blue-100 bg-white p-6 shadow-lg">
-            <div className="mb-5 text-center">
-              <h2 className="text-2xl font-bold tracking-tight text-slate-950">
-                Get NJ Education Job Alerts Before Everyone Else
-              </h2>
-              <p className="mt-2 text-base leading-7 text-slate-600">
-                Receive new teaching, administration, and support staff jobs as soon as they&apos;re posted.
-              </p>
-            </div>
-
-           <EmailSignup compact />
-</div>
-
 {/* POPULAR SEARCHES */}
 <div className="mx-auto mt-8 max-w-5xl">
             <p className="text-base font-semibold text-slate-700">
@@ -157,7 +142,7 @@ export default async function Home() {
                 <a
                   key={item}
                   href={`/jobs?search=${encodeURIComponent(item)}`}
-                  className="rounded-full bg-white px-5 py-2 text-sm font-medium text-blue-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-blue-50"
+                  className="rounded-full bg-white px-4 py-1.5 text-sm font-medium text-blue-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-blue-50"
                 >
                   {item}
                 </a>
@@ -175,7 +160,7 @@ export default async function Home() {
               {totalJobs}+
             </div>
             <p className="mt-1 text-sm font-medium text-slate-600">
-              NJ Education Jobs
+              Jobs
             </p>
           </div>
 
@@ -184,25 +169,25 @@ export default async function Home() {
               {subscriberCount}+
             </div>
             <p className="mt-1 text-sm font-medium text-slate-600">
-              Email Subscribers
+              Subscribers
             </p>
           </div>
 
           <div>
             <div className="text-3xl font-bold text-slate-950">
+              150+
+            </div>
+            <p className="mt-1 text-sm font-medium text-slate-600">
+              School Districts
+            </p>
+          </div>
+
+          <div>
+            <div className="text-3xl font-bold text-slate-950">
+              Updated
+            </div>
+            <p className="mt-1 text-sm font-medium text-slate-600">
               Daily
-            </div>
-            <p className="mt-1 text-sm font-medium text-slate-600">
-              New Jobs Added
-            </p>
-          </div>
-
-          <div>
-            <div className="text-3xl font-bold text-slate-950">
-              Direct
-            </div>
-            <p className="mt-1 text-sm font-medium text-slate-600">
-              Apply to Schools
             </p>
           </div>
         </div>
