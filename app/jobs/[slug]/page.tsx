@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import ApplyButton from "./ApplyButton";
+import EmailSignup from "@/app/components/EmailSignup";
 import { createClient } from "@supabase/supabase-js";
 
 type PageProps = {
@@ -242,12 +243,12 @@ export async function generateMetadata({
 
   const isImportedJob = /^\d+$/.test(slug);
 
-  const { data } = isImportedJob
-    ? await supabase
-        .from("job_imports")
-        .select("*")
-        .eq("id", Number(slug))
-        .maybeSingle()
+const { data, error } = isImportedJob
+  ? await supabase
+      .from("job_imports")
+      .select("*")
+      .eq("id", Number(slug))
+      .maybeSingle()
     : await supabase.from("jobs").select("*").eq("slug", slug).maybeSingle();
 
   if (!data) {
@@ -677,18 +678,27 @@ export default async function JobDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            {href && (
-              <div className="mt-10 border-t border-slate-200 pt-6">
-                <ApplyButton
-                  href={href}
-                  district={job.district}
-                  county={job.county}
-                  jobTitle={job.title}
-                  label="Apply for This Job"
-                  className="inline-block rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-                />
-              </div>
-            )}
+          {href && (
+  <>
+    <div className="mt-10 border-t border-slate-200 pt-6">
+      <ApplyButton
+        href={href}
+        district={job.district}
+        county={job.county}
+        jobTitle={job.title}
+        label="Apply Now"
+        className="inline-block rounded-2xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
+      />
+    </div>
+
+    <div className="mt-8">
+      <p className="mb-4 text-sm text-slate-600">
+  Not ready to apply? Get notified when similar jobs are posted.
+</p>
+      <EmailSignup searchTerm={job.title} />
+    </div>
+  </>
+)}
           </article>
         </div>
         {href && (
@@ -702,6 +712,7 @@ export default async function JobDetailPage({ params }: PageProps) {
       className="block w-full rounded-2xl bg-orange-500 px-6 py-4 text-center text-lg font-semibold text-white shadow-sm transition hover:bg-orange-600"
     />
   </div>
+  
 )}
       </main>
     </>
