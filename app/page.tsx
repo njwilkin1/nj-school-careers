@@ -34,7 +34,6 @@ function isNewJob(posted?: string) {
 
 export default async function Home() {
   const totalJobs = 4000;
-  const subscriberCount = 327;
 
   const defaultSearches = [
     "Teacher",
@@ -117,7 +116,6 @@ export default async function Home() {
 
         <div className="relative mx-auto max-w-[1400px] px-6 py-14 text-center md:py-20">
           <div className="mx-auto max-w-4xl">
-
             <h1 className="text-3xl font-bold tracking-tight text-slate-950 md:text-6xl">
               Find New Jersey Education Jobs.
             </h1>
@@ -129,11 +127,10 @@ export default async function Home() {
 
           <div className="mx-auto mt-8 max-w-6xl rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
             <JobSearchForm />
-           
           </div>
 
-{/* POPULAR SEARCHES */}
-<div className="mx-auto mt-8 max-w-5xl">
+          {/* POPULAR SEARCHES */}
+          <div className="mx-auto mt-8 max-w-5xl">
             <p className="text-base font-semibold text-slate-700">
               Popular Searches
             </p>
@@ -167,15 +164,6 @@ export default async function Home() {
 
           <div>
             <div className="text-3xl font-bold text-slate-950">
-              {subscriberCount}+
-            </div>
-            <p className="mt-1 text-sm font-medium text-slate-600">
-              Subscribers
-            </p>
-          </div>
-
-          <div>
-            <div className="text-3xl font-bold text-slate-950">
               150+
             </div>
             <p className="mt-1 text-sm font-medium text-slate-600">
@@ -191,10 +179,19 @@ export default async function Home() {
               Daily
             </p>
           </div>
+
+          <div>
+            <div className="text-3xl font-bold text-slate-950">
+              Direct
+            </div>
+            <p className="mt-1 text-sm font-medium text-slate-600">
+              Apply to Schools
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* FEATURED JOBS MOVED HIGHER */}
+      {/* FEATURED JOBS */}
       <section className="mx-auto max-w-[1400px] px-6 py-12">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
@@ -273,14 +270,14 @@ export default async function Home() {
                     View Details
                   </a>
 
-              <ApplyButton
-  href={job.applyUrl}
-  district={job.district}
-  county={job.county}
-  jobTitle={job.title}
-  label="Apply Now"
-  className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-/>
+                  <ApplyButton
+                    href={job.applyUrl}
+                    district={job.district}
+                    county={job.county}
+                    jobTitle={job.title}
+                    label="Apply Now"
+                    className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
+                  />
                 </div>
               </article>
             ))
@@ -300,6 +297,43 @@ export default async function Home() {
           >
             Browse all {totalJobs}+ NJ education jobs →
           </a>
+        </div>
+      </section>
+
+      {/* TRUSTED BY NJ SCHOOLS */}
+      <section className="border-t border-slate-200 bg-white">
+        <div className="mx-auto max-w-[1400px] px-6 py-12">
+          <div className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+              Trusted Across New Jersey
+            </p>
+
+            <h2 className="mt-2 text-3xl font-bold text-slate-950">
+              Schools and education organizations use NJSchoolCareers
+            </h2>
+
+            <p className="mt-3 text-slate-600">
+              Helping New Jersey schools and education employers connect with candidates.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
+              Trenton Public Schools
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
+              Great Oaks Legacy Charter School
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
+              Oak Crest Day Camp
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
+              Spectrum Support Consulting
+            </div>
+          </div>
         </div>
       </section>
 
@@ -323,14 +357,16 @@ export default async function Home() {
               <a
                 key={title}
                 href={href}
-                className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg"
+                className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:border-blue-300 hover:shadow-lg"
               >
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <h3 className="font-semibold text-slate-950 group-hover:text-blue-700">
                       {title}
                     </h3>
-                    <p className="mt-1 text-sm text-slate-600">{subtitle}</p>
+                    <p className="mt-1 text-sm text-slate-600">
+                      {subtitle}
+                    </p>
                   </div>
                   <span className="text-xl text-blue-600 transition group-hover:translate-x-1">
                     →
@@ -342,143 +378,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* WHY NJSchoolCareers */}
-      <section className="bg-white px-6 py-12">
-        <div className="mx-auto max-w-[1400px]">
-          <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-              Why NJSchoolCareers?
-            </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
-              Built for New Jersey education hiring
-            </h2>
-          </div>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-4">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <h3 className="font-bold text-slate-950">No Account Required</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Apply directly to schools without unnecessary accounts.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <h3 className="font-bold text-slate-950">NJ Focused</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Only New Jersey education jobs in one place.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <h3 className="font-bold text-slate-950">Updated Daily</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Fresh school openings are added regularly.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <h3 className="font-bold text-slate-950">Free Alerts</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Get notified when new jobs match your interests.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CAREER RESOURCES PROMO */}
-      <section className="bg-white px-6 py-12">
-        <div className="mx-auto max-w-[1400px] rounded-3xl border border-slate-200 bg-slate-50 p-8">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-                Career Resources
-              </p>
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
-                Get help with your New Jersey school job search
-              </h2>
-              <p className="mt-3 max-w-2xl text-slate-600">
-                Explore interview tips, resume guidance, certification information, and job search resources for educators.
-              </p>
-            </div>
-
-            <a
-              href="/career-resources"
-              className="inline-flex justify-center rounded-xl bg-blue-700 px-6 py-3 font-semibold text-white transition hover:bg-blue-800"
-            >
-              View Career Resources
-            </a>
-          </div>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            <a
-              href="/career-resources"
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-            >
-              <h3 className="font-bold text-slate-950">Resume Tips</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Strengthen your resume for teaching, leadership, and school support roles.
-              </p>
-            </a>
-
-            <a
-              href="/career-resources"
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-            >
-              <h3 className="font-bold text-slate-950">Interview Prep</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Prepare for educator interviews with clear, practical guidance.
-              </p>
-            </a>
-
-            <a
-              href="/career-resources"
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-            >
-              <h3 className="font-bold text-slate-950">Certification Help</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Find resources related to New Jersey educator certification pathways.
-              </p>
-            </a>
-          </div>
-        </div>
-      </section>
-{/* TRUSTED BY NJ SCHOOLS */}
-<section className="bg-white border-t border-slate-200">
-  <div className="mx-auto max-w-[1400px] px-6 py-12">
-    <div className="text-center">
-      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-        Trusted Across New Jersey
-      </p>
-
-      <h2 className="mt-2 text-3xl font-bold text-slate-950">
-        Schools and education organizations use NJSchoolCareers
-      </h2>
-
-      <p className="mt-3 text-slate-600">
-        Helping New Jersey schools and education employers connect with candidates.
-      </p>
-    </div>
-
-    <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
-        Trenton Public Schools
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
-        Great Oaks Legacy Charter School
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
-        Oak Crest Day Camp
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center font-semibold text-slate-800">
-        Spectrum Support Consulting
-      </div>
-    </div>
-  </div>
-</section>
       {/* EMPLOYER CTA BAND */}
       <section className="border-y border-slate-200 bg-white">
         <div className="mx-auto flex max-w-[1400px] flex-col gap-5 px-6 py-7 md:flex-row md:items-center md:justify-between">
@@ -500,38 +399,6 @@ export default async function Home() {
           >
             View Employer Pricing
           </a>
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className="bg-white px-6 py-12">
-        <div className="mx-auto max-w-[1400px] rounded-3xl border border-slate-200 bg-slate-50 p-8">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-                Ready to get started?
-              </p>
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
-                Search jobs or promote your school opening today.
-              </h2>
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <a
-                href="/jobs"
-                className="rounded-xl bg-orange-500 px-6 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600"
-              >
-                Search Jobs
-              </a>
-
-              <a
-                href="/employers/pricing"
-                className="rounded-xl border border-slate-300 px-6 py-3 text-center text-sm font-medium transition hover:border-orange-500 hover:text-orange-600"
-              >
-                Post a Job
-              </a>
-            </div>
-          </div>
         </div>
       </section>
     </div>
