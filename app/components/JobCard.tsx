@@ -1,3 +1,5 @@
+import ApplyButton from "@/app/jobs/[slug]/ApplyButton";
+
 type Job = {
   title: string;
   district: string;
@@ -41,14 +43,15 @@ export default function JobCard({ job }: { job: Job }) {
 
       {/* APPLY BUTTON */}
       <div>
-        <a
-          href={job.applyUrl}
-          target="_blank"
-          className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Apply Now
-        </a>
-      </div>
+  <ApplyButton
+    href={job.applyUrl}
+    district={job.district}
+    county={job.location}
+    jobTitle={job.title}
+    label="Apply Now"
+    className="inline-block rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+  />
+</div>
 
       {/* ADDITIONAL INFO */}
       {job.additional_information && (
