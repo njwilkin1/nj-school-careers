@@ -1,5 +1,6 @@
 "use client";
 
+import ApplyButton from "@/app/jobs/[slug]/ApplyButton";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -296,7 +297,7 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
           return (
             <div key={`${job.id || job.slug || index}`}>
               <article
-                className={`rounded-3xl border bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                className={`rounded-3xl border bg-white p-6 shadow-sm transition hover:shadow-md ${
                   job.is_featured
                     ? "border-2 border-teal-300"
                     : job.is_urgent
@@ -369,14 +370,14 @@ export default function JobFilters({ jobs }: { jobs: any[] }) {
                     View Details
                   </Link>
 
-                  <a
-                    href={job.applyUrl || `/jobs/${job.slug || job.id}`}
-                    target={job.applyUrl ? "_blank" : "_self"}
-                    rel="noreferrer"
-                    className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
-                  >
-                    Apply Now
-                  </a>
+                <ApplyButton
+  href={job.applyUrl}
+  district={job.district}
+  county={job.county}
+  jobTitle={job.title}
+  label="Apply Now"
+  className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+/>
 
                   <button
                     type="button"
