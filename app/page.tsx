@@ -3,7 +3,7 @@ import JobSearchForm from "./components/JobSearchForm";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 3600;
 
 type Job = {
   slug: string;
@@ -218,7 +218,7 @@ export default async function Home() {
           {featuredJobs.length > 0 ? (
             featuredJobs.map((job) => (
               <article
-                key={job.slug}
+                key={`${job.slug || job.applyUrl || job.title}-${job.district}`}
                 className="rounded-3xl border-2 border-teal-300 bg-white p-5 shadow-sm transition hover:shadow-lg"
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
