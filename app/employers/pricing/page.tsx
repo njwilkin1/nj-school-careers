@@ -144,6 +144,31 @@ export default function PricingPage() {
           </div>
         </div>
 
+{/* Advertising Section */}
+<div className="mt-8 rounded-2xl border border-blue-100 bg-blue-50 p-8 shadow-sm">
+  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">
+    Advertising Opportunities
+  </p>
+
+  <h3 className="mt-3 text-2xl font-bold text-[#0f172a]">
+    Want to reach New Jersey educators beyond job postings?
+  </h3>
+
+  <p className="mt-4 max-w-3xl text-slate-700 leading-relaxed">
+    NJSchoolCareers also offers advertising opportunities for universities,
+    certification programs, education vendors, staffing agencies, camps,
+    and organizations that want to promote services to New Jersey educators
+    and school professionals.
+  </p>
+
+  <a
+    href="/advertise"
+    className="mt-6 inline-flex rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600"
+  >
+    Learn About Advertising
+  </a>
+</div>
+
         {/* Disclaimer */}
         <div className="mt-12 text-sm text-slate-500 leading-relaxed">
         </div>

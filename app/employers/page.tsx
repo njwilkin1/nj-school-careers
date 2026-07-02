@@ -121,12 +121,37 @@ export default function EmployersPage() {
             </div>
           </div>
 
-          <Link
-            href="/employers/pricing"
-            className="mt-12 inline-flex rounded-xl bg-[#007c89] px-8 py-4 text-lg font-bold text-white transition hover:bg-[#006b75]"
-          >
-            View Employer Pricing
-          </Link>
+          <div className="mt-12 flex flex-col items-center gap-6">
+
+  <Link
+    href="/employers/pricing"
+    className="inline-flex rounded-xl bg-[#007c89] px-8 py-4 text-lg font-bold text-white transition hover:bg-[#006b75]"
+  >
+    View Employer Pricing
+  </Link>
+
+  <div className="max-w-2xl rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
+    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-500">
+      Looking to Promote Your Organization?
+    </p>
+
+    <p className="mt-3 text-lg leading-8 text-slate-700">
+      NJSchoolCareers also offers advertising opportunities for universities,
+      certification programs, education vendors, staffing agencies, summer
+      camps, tutoring companies, and organizations serving New Jersey
+      educators.
+    </p>
+
+    <Link
+      href="/advertise"
+      className="mt-5 inline-flex font-bold text-[#007c89] hover:underline"
+    >
+      Learn about Advertising Opportunities →
+    </Link>
+
+  </div>
+
+</div>
         </div>
       </section>
 
