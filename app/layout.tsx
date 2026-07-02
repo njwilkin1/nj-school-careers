@@ -99,10 +99,15 @@ export default function RootLayout({
     <a href="/post-job" className="block hover:text-orange-600">
       Post a Job
     </a>
-    <a href="/employers" className="block hover:text-orange-600">
-      Employer Info
-    </a>
-             <a href="/contact" className="block hover:text-orange-600">
+   <a href="/employers" className="block hover:text-orange-600">
+  Employer Info
+</a>
+
+<a href="/advertise" className="block hover:text-orange-600">
+  Advertise
+</a>
+
+<a href="/contact" className="block hover:text-orange-600">
   Contact Us
 </a>
   </div>

@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 3600;
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -40,6 +40,7 @@ export default async function CountyPage({ params }: PageProps) {
   const { data: jobs, error } = await supabase
     .from("job_imports")
     .select("*")
+    .or("status.eq.published,status.is.null")
     .ilike("county", `%${searchCountyName}%`)
     .order("created_at", { ascending: false })
     .limit(100);

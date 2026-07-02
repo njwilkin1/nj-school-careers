@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import JobFilters from "@/app/components/JobFilters";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 3600;
 
 function normalizeCounty(county: string) {
   return String(county || "")
