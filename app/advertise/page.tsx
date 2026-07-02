@@ -7,9 +7,9 @@ export const metadata = {
 };
 
 const audienceStats = [
-  ["6,000+", "Education Jobs Listed"],
+  ["6,000+", "NJ Education Jobs"],
   ["150+", "School Districts Represented"],
-  ["327+", "Job Alert Subscribers"],
+  ["Growing", "Email Audience"],
   ["Updated", "Daily"],
   ["NJ-Focused", "Education Audience"],
 ];
@@ -32,7 +32,7 @@ const adPlacements = [
     title: "Homepage Banner Ad",
     description: "Large rectangular placement near the top of the homepage.",
     size: "Suggested size: 970x90 or responsive equivalent.",
-    price: "Contact for pricing",
+    price: "Custom Quote", 
   },
   {
     title: "Sidebar Square Ad",
@@ -74,7 +74,7 @@ const whyAdvertise = [
   "Reach a highly targeted New Jersey education audience",
   "Advertise alongside 6,000+ education job opportunities",
   "Connect with educators actively searching for career advancement",
-  "A focused, cost-effective alternative to broad online advertising",
+  "A more targeted alternative than broad online advertising"
 ];
 
 const goodFit = [
@@ -296,7 +296,7 @@ export default function AdvertisePage() {
           <div className="grid gap-8 lg:grid-cols-2">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-                Rate Information
+                Advertising Ratess
               </p>
 
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
