@@ -33,7 +33,7 @@ function isNewJob(posted?: string) {
 }
 
 export default async function Home() {
-  const totalJobs = 4000;
+  const totalJobs = 8000;
 
   const defaultSearches = [
     "Teacher",
@@ -117,7 +117,7 @@ export default async function Home() {
         <div className="relative mx-auto max-w-[1400px] px-6 py-14 text-center md:py-20">
           <div className="mx-auto max-w-4xl">
             <h1 className="text-3xl font-bold tracking-tight text-slate-950 md:text-6xl">
-              Find New Jersey Education Jobs.
+              SCHOOLS NEED EDUCATORS
             </h1>
 
             <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-600">
