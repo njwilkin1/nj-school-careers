@@ -5,6 +5,8 @@ import { useState } from "react";
 function cleanSearchTerm(value: string) {
   return value.trim();
 }
+const PRIORITY_ALERTS_URL =
+  "https://buy.stripe.com/cNibJ3d6S6iv2hn9SO8IU08";
 
 export default function EmailSignup({
   searchTerm = "",
@@ -60,7 +62,7 @@ export default function EmailSignup({
       const data = await res.json();
 
       if (res.ok) {
-        setMessage("You're subscribed. We'll send you new matching NJ education jobs.");
+        setMessage("You're subscribed. Want faster alerts? Upgrade to Priority Job Alerts for $12.99/month.");
         setMessageType("success");
         setEmail("");
       } else {
@@ -111,6 +113,16 @@ export default function EmailSignup({
           {message}
         </div>
       )}
+      {messageType === "success" && (
+  <a
+    href={PRIORITY_ALERTS_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="mt-3 inline-block rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+  >
+    Upgrade to Priority Alerts — $12.99/month
+  </a>
+)}
 
       <form
         onSubmit={handleSubmit}
