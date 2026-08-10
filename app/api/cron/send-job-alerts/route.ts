@@ -7,6 +7,8 @@ type Subscriber = {
   county: string | null;
   keyword: string | null;
   job_type: string | null;
+  priority_status?: string | null;
+  last_alert_sent_at?: string | null;
 };
 
 type Job = {
@@ -22,6 +24,8 @@ type Job = {
   responsibilities?: string[];
   requirements?: string[];
 };
+
+const FREE_ALERT_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
 function normalize(value: string | null | undefined): string {
   return String(value || "").trim().toLowerCase();
@@ -58,7 +62,9 @@ function buildJobCards(jobsToSend: Job[]): string {
           ${
             job.location || job.county || job.type
               ? `<div style="font-size:14px;color:#64748b;margin-bottom:16px;line-height:1.6;">
-                   ${[job.location, job.county, job.type].filter(Boolean).join(" • ")}
+                   ${[job.location, job.county, job.type]
+                     .filter(Boolean)
+                     .join(" • ")}
                  </div>`
               : ""
           }
@@ -92,7 +98,8 @@ function buildJobCards(jobsToSend: Job[]): string {
 function buildEmailHtml(
   jobsToSend: Job[],
   email: string,
-  totalMatches: number
+  totalMatches: number,
+  isPriority: boolean
 ): string {
   const headingText =
     totalMatches > jobsToSend.length
@@ -110,7 +117,11 @@ function buildEmailHtml(
       <div style="max-width:680px;margin:auto;background:#ffffff;border-radius:24px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 4px 14px rgba(15,23,42,0.06);">
         <div style="background:#eff6ff;padding:40px 40px 28px;border-bottom:1px solid #dbeafe;">
           <div style="font-size:15px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2563eb;margin-bottom:18px;">
-            New Jersey Education Job Alerts
+            ${
+              isPriority
+                ? "Priority New Jersey Education Job Alerts"
+                : "New Jersey Education Job Alerts"
+            }
           </div>
 
           <div style="color:#020617;font-size:34px;line-height:1.1;font-weight:800;margin-bottom:18px;word-break:break-word;">
@@ -118,7 +129,11 @@ function buildEmailHtml(
           </div>
 
           <div style="font-size:20px;line-height:1.7;color:#475569;max-width:540px;">
-            New school jobs matching your interests.
+            ${
+              isPriority
+                ? "Priority alert: new matching school jobs delivered sooner."
+                : "New school jobs matching your interests."
+            }
           </div>
         </div>
 
@@ -170,7 +185,8 @@ function buildEmailHtml(
 export async function GET() {
   try {
     const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseServiceRoleKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.ALERTS_FROM_EMAIL;
 
@@ -186,7 +202,11 @@ export async function GET() {
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const supabase = createClient(
+      supabaseUrl,
+      supabaseServiceRoleKey
+    );
+
     const resend = new Resend(resendApiKey);
 
     const { data: manualJobs } = await supabase
@@ -222,23 +242,64 @@ export async function GET() {
       })),
     ];
 
-    const { data: subscribers, error: subscriberError } = await supabase
-      .from("job_alert_subscribers")
-      .select("*");
+    const { data: subscribers, error: subscriberError } =
+      await supabase
+        .from("job_alert_subscribers")
+        .select("*");
 
     if (subscriberError) {
       return NextResponse.json(
-        { error: `Subscriber fetch failed: ${subscriberError.message}` },
+        {
+          error: `Subscriber fetch failed: ${subscriberError.message}`,
+        },
         { status: 500 }
       );
     }
 
     const debugResults = [];
+    const now = Date.now();
 
     for (const sub of (subscribers || []) as Subscriber[]) {
+      const isPriority =
+        normalize(sub.priority_status) === "active";
+
+      /*
+       * FREE USERS
+       * ----------
+       * Free subscribers can receive a maximum of one
+       * alert email in any 24-hour period.
+       *
+       * PRIORITY USERS
+       * --------------
+       * Priority subscribers bypass this restriction and
+       * are eligible every time this cron route runs.
+       */
+      if (!isPriority && sub.last_alert_sent_at) {
+        const lastSentAt = new Date(
+          sub.last_alert_sent_at
+        ).getTime();
+
+        if (
+          Number.isFinite(lastSentAt) &&
+          now - lastSentAt < FREE_ALERT_INTERVAL_MS
+        ) {
+          debugResults.push({
+            email: sub.email,
+            priority: false,
+            sent: false,
+            skipped: "free_24_hour_limit",
+          });
+
+          continue;
+        }
+      }
+
       const matches = allJobs.filter((job) => {
         const matchCounty =
-          !sub.county || normalize(job.county).includes(normalize(sub.county));
+          !sub.county ||
+          normalize(job.county).includes(
+            normalize(sub.county)
+          );
 
         const haystack = [
           job.title,
@@ -252,10 +313,12 @@ export async function GET() {
           .toLowerCase();
 
         const matchKeyword =
-          !sub.keyword || haystack.includes(normalize(sub.keyword));
+          !sub.keyword ||
+          haystack.includes(normalize(sub.keyword));
 
         const matchType =
-          !sub.job_type || normalize(job.type) === normalize(sub.job_type);
+          !sub.job_type ||
+          normalize(job.type) === normalize(sub.job_type);
 
         return matchCounty && matchKeyword && matchType;
       });
@@ -263,7 +326,10 @@ export async function GET() {
       const unsentJobs: Job[] = [];
 
       for (const job of matches) {
-        const { data: alreadySent, error: sentCheckError } = await supabase
+        const {
+          data: alreadySent,
+          error: sentCheckError,
+        } = await supabase
           .from("sent_job_alerts")
           .select("id")
           .eq("subscriber_email", sub.email)
@@ -272,7 +338,9 @@ export async function GET() {
 
         if (sentCheckError) {
           return NextResponse.json(
-            { error: `Sent check failed: ${sentCheckError.message}` },
+            {
+              error: `Sent check failed: ${sentCheckError.message}`,
+            },
             { status: 500 }
           );
         }
@@ -285,40 +353,61 @@ export async function GET() {
       if (unsentJobs.length === 0) {
         debugResults.push({
           email: sub.email,
+          priority: isPriority,
           matchedJobs: matches.length,
           newJobs: 0,
           sent: false,
         });
+
         continue;
       }
 
       const jobsToSend = unsentJobs
         .sort((a, b) => {
-          const dateA = new Date(a.posted || 0).getTime();
-          const dateB = new Date(b.posted || 0).getTime();
+          const dateA = new Date(
+            a.posted || 0
+          ).getTime();
+
+          const dateB = new Date(
+            b.posted || 0
+          ).getTime();
+
           return dateB - dateA;
         })
         .slice(0, 20);
 
-      const emailHtml = buildEmailHtml(jobsToSend, sub.email, unsentJobs.length);
+      const emailHtml = buildEmailHtml(
+        jobsToSend,
+        sub.email,
+        unsentJobs.length,
+        isPriority
+      );
 
       const emailResult = await resend.emails.send({
         from: fromEmail,
         to: sub.email,
-        subject: `${jobsToSend.length} New NJ Education Job${
+        subject: `${
+          isPriority ? "Priority: " : ""
+        }${jobsToSend.length} New NJ Education Job${
           jobsToSend.length === 1 ? "" : "s"
         } Matching Your Alert`,
         html: emailHtml,
       });
 
-      if ((emailResult as { error?: unknown })?.error) {
+      if (
+        (emailResult as { error?: unknown })?.error
+      ) {
         debugResults.push({
           email: sub.email,
+          priority: isPriority,
           matchedJobs: matches.length,
           newJobs: unsentJobs.length,
           sent: false,
-          error: (emailResult as { error?: unknown }).error,
+          error: (
+            emailResult as { error?: unknown }
+          ).error,
         });
+
         continue;
       }
 
@@ -327,19 +416,39 @@ export async function GET() {
         job_slug: job.slug,
       }));
 
-      const { error: insertSentError } = await supabase
-        .from("sent_job_alerts")
-        .insert(inserts);
+      const { error: insertSentError } =
+        await supabase
+          .from("sent_job_alerts")
+          .insert(inserts);
 
       if (insertSentError) {
         return NextResponse.json(
-          { error: `Saving sent jobs failed: ${insertSentError.message}` },
+          {
+            error: `Saving sent jobs failed: ${insertSentError.message}`,
+          },
           { status: 500 }
+        );
+      }
+
+      const { error: timestampError } =
+        await supabase
+          .from("job_alert_subscribers")
+          .update({
+            last_alert_sent_at:
+              new Date().toISOString(),
+          })
+          .eq("email", sub.email);
+
+      if (timestampError) {
+        console.error(
+          "Failed updating last alert timestamp:",
+          timestampError
         );
       }
 
       debugResults.push({
         email: sub.email,
+        priority: isPriority,
         matchedJobs: matches.length,
         newJobs: unsentJobs.length,
         sent: true,
@@ -348,12 +457,20 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      totalSubscribers: subscribers?.length || 0,
+      totalSubscribers:
+        subscribers?.length || 0,
       totalJobsInSystem: allJobs.length,
       results: debugResults,
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Cron failed";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const message =
+      err instanceof Error
+        ? err.message
+        : "Cron failed";
+
+    return NextResponse.json(
+      { error: message },
+      { status: 500 }
+    );
   }
 }
