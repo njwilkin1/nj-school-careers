@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 
+const PRIORITY_ALERTS_URL =
+  "https://buy.stripe.com/cNibJ3d6S6iv2hn9SO8IU08";
+
 type ApplyButtonProps = {
   href: string;
   district?: string | null;
@@ -29,9 +32,11 @@ export default function ApplyButton({
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPriorityOffer, setShowPriorityOffer] = useState(false);
 
   function continueToApply() {
     setOpen(false);
+    setShowPriorityOffer(false);
     window.open(href, "_blank", "noopener,noreferrer");
   }
 
@@ -65,7 +70,7 @@ export default function ApplyButton({
         }),
       });
 
-      continueToApply();
+      setShowPriorityOffer(true);
     } catch {
       continueToApply();
     } finally {
@@ -95,58 +100,105 @@ export default function ApplyButton({
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/50 px-4">
           <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
             <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="absolute right-4 top-4 text-slate-400 hover:text-slate-700"
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                setShowPriorityOffer(false);
+              }}
+              className="absolute right-4 top-4 text-slate-400 hover:text-slate-700"
             >
-           ✕
-         </button>
-            <h2 className="text-2xl font-bold text-slate-950">
-              Get Similar Jobs by Email
-            </h2>
+              ✕
+            </button>
 
-           <p className="mt-2 text-sm leading-6 text-slate-600">
-  {jobTitle
-    ? `Get notified when similar ${jobTitle} jobs are posted in New Jersey.`
-    : "Get notified when similar New Jersey school jobs are posted."}
-</p>
+            {showPriorityOffer ? (
+              <>
+                <h2 className="text-2xl font-bold text-slate-950">
+                  Want Faster Job Alerts?
+                </h2>
 
-            <input
-              type="email"
-              placeholder="Your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-5 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
-            />
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  You're subscribed to free alerts. Upgrade to Priority Job
+                  Alerts to get matching New Jersey school jobs sooner.
+                </p>
 
-            {error && (
-              <p className="mt-3 text-sm text-red-600">
-                {error}
-              </p>
+                <div className="mt-5 rounded-2xl bg-orange-50 p-4">
+                  <p className="text-lg font-bold text-slate-950">
+                    Priority Job Alerts
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    $12.99/month · Cancel anytime
+                  </p>
+                </div>
+
+                <div className="mt-5 flex flex-col gap-3">
+                  <a
+                    href={PRIORITY_ALERTS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl bg-orange-500 px-5 py-3 text-center font-semibold text-white transition hover:bg-orange-600"
+                  >
+                    Upgrade to Priority Alerts
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={continueToApply}
+                    className="rounded-xl border border-slate-300 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
+                  >
+                    No thanks, continue to application
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold text-slate-950">
+                  Get Similar Jobs by Email
+                </h2>
+
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {jobTitle
+                    ? `Get notified when similar ${jobTitle} jobs are posted in New Jersey.`
+                    : "Get notified when similar New Jersey school jobs are posted."}
+                </p>
+
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-5 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-orange-500 focus:outline-none"
+                />
+
+                {error && (
+                  <p className="mt-3 text-sm text-red-600">
+                    {error}
+                  </p>
+                )}
+
+                <div className="mt-5 flex flex-col gap-3">
+                  <button
+                    type="button"
+                    onClick={handleContinue}
+                    disabled={loading}
+                    className="rounded-xl bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60"
+                  >
+                    {loading ? "Continuing..." : "Continue to Apply"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={continueToApply}
+                    className="rounded-xl border border-slate-300 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
+                  >
+                    No thanks, continue
+                  </button>
+                </div>
+
+                <p className="mt-4 text-xs text-slate-500">
+                  Free alerts. No spam. Unsubscribe anytime.
+                </p>
+              </>
             )}
-
-            <div className="mt-5 flex flex-col gap-3">
-              <button
-                type="button"
-                onClick={handleContinue}
-                disabled={loading}
-                className="rounded-xl bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60"
-              >
-                {loading ? "Continuing..." : "Continue to Apply"}
-              </button>
-
-              <button
-                type="button"
-                onClick={continueToApply}
-                className="rounded-xl border border-slate-300 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
-              >
-                No thanks, continue
-              </button>
-            </div>
-
-            <p className="mt-4 text-xs text-slate-500">
-              Free alerts. No spam. Unsubscribe anytime.
-            </p>
           </div>
         </div>
       )}
