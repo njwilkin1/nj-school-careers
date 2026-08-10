@@ -48,6 +48,29 @@ export async function POST(req: Request) {
       (lineItems.data[0]?.price?.product as Stripe.Product)?.name || ""
     );
 
+
+    if (productName.includes("Priority Job Alerts")) {
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { error } = await supabase
+    .from("job_alert_subscribers")
+    .update({
+      priority_status: "active",
+      stripe_customer_id: session.customer?.toString() || null,
+      stripe_subscription_id: session.subscription?.toString() || null,
+    })
+    .eq("email", email.toLowerCase());
+
+  if (error) {
+    console.error("Priority subscriber update error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ received: true });
+}
     let planType = "single_job";
     let remainingPosts: number | null = 1;
     let unlimitedUntil: string | null = null;
