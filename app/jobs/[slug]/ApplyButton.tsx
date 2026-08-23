@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 const PRIORITY_ALERTS_URL =
-  "https://buy.stripe.com/cNibJ3d6S6iv2hn9SO8IU08";
+  "https://buy.stripe.com/eVq9AVc2OgX9e055Cy8IU09";
 
 type ApplyButtonProps = {
   href: string;
@@ -126,7 +126,7 @@ export default function ApplyButton({
                     Priority Job Alerts
                   </p>
                   <p className="mt-1 text-sm text-slate-600">
-                    $12.99/month · Cancel anytime
+                    $9.99/month · Cancel anytime
                   </p>
                 </div>
 

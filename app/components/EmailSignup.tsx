@@ -6,7 +6,7 @@ function cleanSearchTerm(value: string) {
   return value.trim();
 }
 const PRIORITY_ALERTS_URL =
-  "https://buy.stripe.com/cNibJ3d6S6iv2hn9SO8IU08";
+  "https://buy.stripe.com/eVq9AVc2OgX9e055Cy8IU09";
 
 export default function EmailSignup({
   searchTerm = "",
@@ -62,7 +62,7 @@ export default function EmailSignup({
       const data = await res.json();
 
       if (res.ok) {
-        setMessage("You're subscribed. Want faster alerts? Upgrade to Priority Job Alerts for $12.99/month.");
+        setMessage("You're subscribed. Want faster alerts? Upgrade to Priority Job Alerts for $9.99/month.");
         setMessageType("success");
         setEmail("");
       } else {
@@ -120,7 +120,7 @@ export default function EmailSignup({
     rel="noopener noreferrer"
     className="mt-3 inline-block rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
   >
-    Upgrade to Priority Alerts — $12.99/month
+    Upgrade to Priority Alerts — $9.99/month
   </a>
 )}
 
