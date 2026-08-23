@@ -425,14 +425,25 @@ export default function PostJobForm() {
           <label className={labelClass}>Job Description *</label>
           <textarea
             name="description"
-            placeholder="Enter the job description"
+            placeholder="Briefly describe the position, key responsibilities, and essential qualifications."
             required
             rows={7}
+            maxLength={2000}
             value={formData.description}
             onChange={handleChange}
             className={`${inputClass} resize-y`}
           />
-       
+
+          <div className="mt-2 flex items-start justify-between gap-4 text-sm text-slate-600">
+            <p>
+              Keep the description concise and professional. Applicants can view
+              complete details through your application link.
+            </p>
+
+            <span className="shrink-0 font-medium">
+              {formData.description.length}/2000
+            </span>
+          </div>
         </div>
 
         <div>
@@ -448,10 +459,11 @@ export default function PostJobForm() {
         </div>
 
         <div className="border-t border-slate-200 pt-6">
-          <label className={labelClass}>Contact Name</label>
+          <label className={labelClass}>Contact Name *</label>
           <input
             name="contactName"
             placeholder="Enter contact name"
+            required
             value={formData.contactName}
             onChange={handleChange}
             className={inputClass}
@@ -459,10 +471,11 @@ export default function PostJobForm() {
         </div>
 
         <div>
-          <label className={labelClass}>Contact Title</label>
+          <label className={labelClass}>Contact Title *</label>
           <input
             name="contactTitle"
             placeholder="Example: HR Director, Principal"
+            required
             value={formData.contactTitle}
             onChange={handleChange}
             className={inputClass}
@@ -470,10 +483,11 @@ export default function PostJobForm() {
         </div>
 
         <div>
-          <label className={labelClass}>Contact Email</label>
+          <label className={labelClass}>Contact Email *</label>
           <input
             name="contactEmail"
             type="email"
+            required
             placeholder="Enter contact email"
             value={formData.contactEmail}
             onChange={handleChange}
@@ -514,8 +528,34 @@ export default function PostJobForm() {
               </p>
               <p><strong>Salary:</strong> {formData.salary}</p>
               <p><strong>Benefits:</strong> {formData.benefits}</p>
-              <p><strong>Description:</strong> {formData.description}</p>
+              <div>
+                <p className="font-semibold text-slate-900">Job Description</p>
+                <div className="mt-2 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-7 text-slate-700">
+                  {formData.description
+                    .split(/\n+/)
+                    .map((paragraph) => paragraph.trim())
+                    .filter(Boolean)
+                    .map((paragraph, index) => (
+                      <p key={index} className={index > 0 ? "mt-3" : ""}>
+                        {paragraph}
+                      </p>
+                    ))}
+                </div>
+              </div>
               <p><strong>Apply:</strong> {formData.applyUrl}</p>
+
+              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <p className="font-semibold text-slate-900">Employer Contact</p>
+                <p className="mt-2">
+                  <strong>Name:</strong> {formData.contactName}
+                </p>
+                <p>
+                  <strong>Title:</strong> {formData.contactTitle}
+                </p>
+                <p>
+                  <strong>Email:</strong> {formData.contactEmail}
+                </p>
+              </div>
             </div>
 
             <div className="mt-6 flex gap-4">

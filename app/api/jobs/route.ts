@@ -70,6 +70,19 @@ export async function POST(req: Request) {
     if (!salary) return NextResponse.json({ error: "Salary range is required." }, { status: 400 });
     if (!benefits) return NextResponse.json({ error: "Benefits summary is required." }, { status: 400 });
     if (!description) return NextResponse.json({ error: "Job description is required." }, { status: 400 });
+    if (!contactName) return NextResponse.json({ error: "Contact name is required." }, { status: 400 });
+    if (!contactTitle) return NextResponse.json({ error: "Contact title is required." }, { status: 400 });
+    if (!contactEmail) return NextResponse.json({ error: "Contact email is required." }, { status: 400 });
+
+    if (description.length > 2000) {
+      return NextResponse.json(
+        {
+          error:
+            "Job description must be 2,000 characters or fewer. Please shorten the description and try again.",
+        },
+        { status: 400 }
+      );
+    }
 
     if (!applyUrl || !isValidUrlOrEmail(applyUrl)) {
       return NextResponse.json(

@@ -145,6 +145,57 @@ function parseStructuredText(text?: string | null): DetailSection[] {
   return sections.filter((section) => section.content.length > 0);
 }
 
+function parseManualDescription(text?: string | null): DetailSection[] {
+  if (!text) return [];
+
+  const cleaned = text
+    .replace(/�/g, "-")
+    .replace(/\r/g, "")
+    .trim();
+
+  const headings = [
+    "Job Description",
+    "Position Description",
+    "Responsibilities",
+    "Qualifications",
+    "Requirements",
+    "Benefits",
+    "Salary Range",
+    "Salary",
+    "Hours",
+  ];
+
+  const headingRegex = new RegExp(`^(${headings.join("|")}):?$`, "i");
+  const sections: DetailSection[] = [];
+  let current: DetailSection = { title: null, content: [] };
+
+  for (const rawLine of cleaned.split("\n")) {
+    const line = cleanLine(rawLine);
+    if (!line) continue;
+
+    const headingMatch = line.match(headingRegex);
+
+    if (headingMatch) {
+      if (current.content.length > 0 || current.title) {
+        sections.push(current);
+      }
+
+      current = {
+        title: normalizeHeading(headingMatch[1]),
+        content: [],
+      };
+    } else {
+      current.content.push(line);
+    }
+  }
+
+  if (current.content.length > 0 || current.title) {
+    sections.push(current);
+  }
+
+  return sections.filter((section) => section.content.length > 0);
+}
+
 function toArray(value: unknown): string[] {
   if (Array.isArray(value)) {
     return value.map((item) => String(item).trim()).filter(Boolean);
@@ -313,7 +364,7 @@ export default async function JobDetailPage({ params }: PageProps) {
     : [];
 
   const manualDescriptionSections = !isImportedJob
-    ? parseStructuredText(job.job_description || job.overview)
+    ? parseManualDescription(job.job_description || job.overview)
     : [];
 
   const benefits = !isImportedJob ? toArray(job.benefits) : [];
@@ -558,13 +609,21 @@ export default async function JobDetailPage({ params }: PageProps) {
                         </h3>
                       )}
 
-                      <ul className="space-y-2 text-sm leading-7 text-slate-700">
-                        {section.content.map((line, i) => (
-                          <li key={i} className="ml-5 list-disc">
-                            {line}
-                          </li>
-                        ))}
-                      </ul>
+                      {section.title ? (
+                        <ul className="space-y-2 text-sm leading-7 text-slate-700">
+                          {section.content.map((line, i) => (
+                            <li key={i} className="ml-5 list-disc">
+                              {line}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className="space-y-3 text-sm leading-7 text-slate-700">
+                          {section.content.map((line, i) => (
+                            <p key={i}>{line}</p>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
