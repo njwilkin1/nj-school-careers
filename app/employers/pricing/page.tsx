@@ -1,52 +1,52 @@
 const pricingPlans = [
   {
     title: "Standard Job Posting",
-    price: "$99",
+    price: "$149",
     description:
       "30-day school job listing with featured search placement and direct application links.",
     button: "Post a Job",
-    link: "https://buy.stripe.com/28E00l4AmbCP6xD6GC8IU00",
+    link: "https://buy.stripe.com/cNi4gBeaWfT5cW16GC8IU0a",
   },
   {
     title: "Featured Job Visibility",
-    price: "$49",
+    price: "$79",
     description:
       "Highlighted placement for urgent or hard-to-fill educational positions.",
     button: "Boost a Job",
-    link: "https://buy.stripe.com/14AfZj4AmfT59JPe948IU03",
+    link: "https://buy.stripe.com/cNiaEZeaWdKXbRXe948IU0b",
   },
   {
     title: "Urgent Hiring Promotion",
-    price: "$99",
+    price: "$149",
     description:
       "Priority promotion for urgent hiring needs and hard-to-fill educational positions.",
     button: "Promote Opening",
-    link: "https://buy.stripe.com/00w00l9UGfT5e058OK8IU04",
+    link: "https://buy.stripe.com/cNieVf6Iu7mze054yu8IU0c",
   },
   {
     title: "Social Media Promotion",
-    price: "$49",
+    price: "$79",
     description:
       "Additional promotion of school job openings through NJSchoolCareers social channels.",
     button: "Add Promotion",
-    link: "https://buy.stripe.com/9B68wRgj4bCP3lrfd88IU05",
+    link: "https://buy.stripe.com/14AaEZ6IugX94pv7KG8IU0d",
   },
   {
     title: "Monthly Unlimited Plan",
-    price: "$349 / month",
+    price: "$499 / month",
     description:
       "Unlimited monthly job postings with priority placement and featured employer visibility. Annual agreement required.",
     button: "Start Monthly Plan",
-    link: "https://buy.stripe.com/dRmcN73widKX8FL0ie8IU02",
+    link: "https://buy.stripe.com/dRmaEZ8QC7mz4pv8OK8IU0e",
     badge: "Most Popular",
   },
   {
     title: "District Unlimited Plan",
-    price: "$1,999 / year",
+    price: "$3,999 / year",
     description:
-      "Unlimited school-year job postings with featured district visibility, ongoing recruitment promotion, priority employer placement, and over 50% savings compared to monthly billing.",
+      "Unlimited school-year job postings with featured district visibility, ongoing recruitment promotion, and priority employer placement.",
     button: "Start Annual Plan",
-    link: "https://buy.stripe.com/28EeVf0k65er09f8OK8IU01",
+    link: "https://buy.stripe.com/6oU14p7My5er1dj9SO8IU0f",
     badge: "Best Value",
   },
 ];
