@@ -530,16 +530,104 @@ export default function PostJobForm() {
               <p><strong>Benefits:</strong> {formData.benefits}</p>
               <div>
                 <p className="font-semibold text-slate-900">Job Description</p>
+
                 <div className="mt-2 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-7 text-slate-700">
-                  {formData.description
-                    .split(/\n+/)
-                    .map((paragraph) => paragraph.trim())
-                    .filter(Boolean)
-                    .map((paragraph, index) => (
-                      <p key={index} className={index > 0 ? "mt-3" : ""}>
-                        {paragraph}
-                      </p>
-                    ))}
+                  {(() => {
+                    const lines = formData.description
+                      .replace(/\r/g, "")
+                      .split("\n")
+                      .map((line) => line.trim())
+                      .filter(Boolean);
+
+                    const sections: {
+                      title: string | null;
+                      items: string[];
+                    }[] = [];
+
+                    const recognizedHeadings = [
+                      "Position Description",
+                      "Job Description",
+                      "Responsibilities",
+                      "Qualifications",
+                      "Requirements",
+                    ];
+
+                    let current: {
+                      title: string | null;
+                      items: string[];
+                    } = {
+                      title: null,
+                      items: [],
+                    };
+
+                    for (const line of lines) {
+                      const cleanedHeading = line.replace(/:$/, "");
+
+                      const matchedHeading = recognizedHeadings.find(
+                        (heading) =>
+                          heading.toLowerCase() === cleanedHeading.toLowerCase()
+                      );
+
+                      if (matchedHeading) {
+                        if (current.title || current.items.length > 0) {
+                          sections.push(current);
+                        }
+
+                        current = {
+                          title: matchedHeading,
+                          items: [],
+                        };
+                      } else {
+                        current.items.push(
+                          line.replace(/^[-•]\s*/, "")
+                        );
+                      }
+                    }
+
+                    if (current.title || current.items.length > 0) {
+                      sections.push(current);
+                    }
+
+                    return (
+                      <div className="space-y-5">
+                        {sections.map((section, sectionIndex) => {
+                          const useBullets =
+                            section.title === "Responsibilities" ||
+                            section.title === "Qualifications" ||
+                            section.title === "Requirements";
+
+                          return (
+                            <div key={sectionIndex}>
+                              {section.title && (
+                                <h3 className="mb-2 text-base font-semibold text-slate-900">
+                                  {section.title}
+                                </h3>
+                              )}
+
+                              {useBullets ? (
+                                <ul className="space-y-1">
+                                  {section.items.map((item, itemIndex) => (
+                                    <li
+                                      key={itemIndex}
+                                      className="ml-5 list-disc"
+                                    >
+                                      {item}
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <div className="space-y-2">
+                                  {section.items.map((item, itemIndex) => (
+                                    <p key={itemIndex}>{item}</p>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
               <p><strong>Apply:</strong> {formData.applyUrl}</p>
