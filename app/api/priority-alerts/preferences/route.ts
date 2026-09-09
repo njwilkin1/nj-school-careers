@@ -46,38 +46,29 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    const { data: subscriber, error: lookupError } = await supabase
+    const normalizedEmail = email.toLowerCase();
+
+    const { error: upsertError } = await supabase
       .from("job_alert_subscribers")
-      .select("id, priority_status")
-      .eq("email", email.toLowerCase())
-      .maybeSingle();
-
-    if (lookupError) {
-      return NextResponse.json(
-        { error: lookupError.message },
-        { status: 500 }
+      .upsert(
+        {
+          email: normalizedEmail,
+          county: county || null,
+          keyword: keyword || null,
+          job_type: jobType || null,
+          priority_status: "active",
+          stripe_customer_id: session.customer?.toString() || null,
+          stripe_subscription_id:
+            session.subscription?.toString() || null,
+        },
+        {
+          onConflict: "email",
+        }
       );
-    }
 
-    if (!subscriber || subscriber.priority_status !== "active") {
+    if (upsertError) {
       return NextResponse.json(
-        { error: "Active Priority Job Alerts subscription not found." },
-        { status: 403 }
-      );
-    }
-
-    const { error: updateError } = await supabase
-      .from("job_alert_subscribers")
-      .update({
-        county: county || null,
-        keyword: keyword || null,
-        job_type: jobType || null,
-      })
-      .eq("id", subscriber.id);
-
-    if (updateError) {
-      return NextResponse.json(
-        { error: updateError.message },
+        { error: upsertError.message },
         { status: 500 }
       );
     }
