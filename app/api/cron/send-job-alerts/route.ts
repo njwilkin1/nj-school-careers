@@ -180,8 +180,17 @@ function buildEmailHtml(
   `;
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const authHeader = req.headers.get("authorization");
+    const cronSecret = process.env.CRON_SECRET;
+
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceRoleKey =
       process.env.SUPABASE_SERVICE_ROLE_KEY;
