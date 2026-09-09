@@ -92,36 +92,64 @@ export async function POST(req: Request) {
 
     // Priority Job Alerts purchase
     if (productName.includes("Priority Job Alerts")) {
-      const { data, error } = await supabase
-        .from("job_alert_subscribers")
-        .update({
-          priority_status: "active",
-          stripe_customer_id: session.customer?.toString() || null,
-          stripe_subscription_id:
-            session.subscription?.toString() || null,
-        })
-        .eq("email", email.toLowerCase())
-        .select("id");
+      const normalizedEmail = email.toLowerCase();
 
-      if (error) {
-        console.error("Priority subscriber update error:", error);
+      const { data: existing, error: lookupError } = await supabase
+        .from("job_alert_subscribers")
+        .select("id")
+        .eq("email", normalizedEmail)
+        .maybeSingle();
+
+      if (lookupError) {
+        console.error("Priority subscriber lookup error:", lookupError);
 
         return NextResponse.json(
-          { error: error.message },
+          { error: lookupError.message },
           { status: 500 }
         );
       }
 
-      if (!data || data.length === 0) {
-        console.error(
-          "Priority subscriber not found for email:",
-          email.toLowerCase()
-        );
+      if (existing) {
+        const { error: updateError } = await supabase
+          .from("job_alert_subscribers")
+          .update({
+            priority_status: "active",
+            stripe_customer_id: session.customer?.toString() || null,
+            stripe_subscription_id:
+              session.subscription?.toString() || null,
+          })
+          .eq("id", existing.id);
 
-        return NextResponse.json(
-          { error: "Priority subscriber not found" },
-          { status: 404 }
-        );
+        if (updateError) {
+          console.error("Priority subscriber update error:", updateError);
+
+          return NextResponse.json(
+            { error: updateError.message },
+            { status: 500 }
+          );
+        }
+      } else {
+        const { error: insertError } = await supabase
+          .from("job_alert_subscribers")
+          .insert({
+            email: normalizedEmail,
+            county: null,
+            keyword: null,
+            job_type: null,
+            priority_status: "active",
+            stripe_customer_id: session.customer?.toString() || null,
+            stripe_subscription_id:
+              session.subscription?.toString() || null,
+          });
+
+        if (insertError) {
+          console.error("Priority subscriber insert error:", insertError);
+
+          return NextResponse.json(
+            { error: insertError.message },
+            { status: 500 }
+          );
+        }
       }
 
       return NextResponse.json({ received: true });

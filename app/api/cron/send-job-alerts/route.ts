@@ -25,8 +25,6 @@ type Job = {
   requirements?: string[];
 };
 
-const FREE_ALERT_INTERVAL_MS = 24 * 60 * 60 * 1000;
-
 function normalize(value: string | null | undefined): string {
   return String(value || "").trim().toLowerCase();
 }
@@ -263,35 +261,18 @@ export async function GET() {
       const isPriority =
         normalize(sub.priority_status) === "active";
 
-      /*
-       * FREE USERS
-       * ----------
-       * Free subscribers can receive a maximum of one
-       * alert email in any 24-hour period.
-       *
-       * PRIORITY USERS
-       * --------------
-       * Priority subscribers bypass this restriction and
-       * are eligible every time this cron route runs.
-       */
-      if (!isPriority && sub.last_alert_sent_at) {
-        const lastSentAt = new Date(
-          sub.last_alert_sent_at
-        ).getTime();
+      // Priority Job Alerts are a paid service.
+      // Legacy free subscribers remain in the database
+      // but no longer receive automated job alerts.
+      if (!isPriority) {
+        debugResults.push({
+          email: sub.email,
+          priority: false,
+          sent: false,
+          skipped: "priority_subscription_required",
+        });
 
-        if (
-          Number.isFinite(lastSentAt) &&
-          now - lastSentAt < FREE_ALERT_INTERVAL_MS
-        ) {
-          debugResults.push({
-            email: sub.email,
-            priority: false,
-            sent: false,
-            skipped: "free_24_hour_limit",
-          });
-
-          continue;
-        }
+        continue;
       }
 
       const matches = allJobs.filter((job) => {
