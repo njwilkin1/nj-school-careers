@@ -52,12 +52,12 @@ export default function PriorityAlertsPopup() {
           className="w-full"
         />
 
-        <div className="p-4">
+        <div className="p-3 sm:p-4">
           <a
             href={PRIORITY_ALERTS_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full rounded-xl bg-orange-500 px-5 py-4 text-center text-lg font-bold text-white transition hover:bg-orange-600"
+            className="block w-full rounded-xl bg-orange-500 px-4 py-3 text-center text-base font-bold text-white transition hover:bg-orange-600 sm:px-5 sm:py-4 sm:text-lg"
           >
             Get Priority Job Alerts — $9.99/month
           </a>
