@@ -212,10 +212,36 @@ export async function GET() {
       .select("*")
       .eq("status", "published");
 
-    const { data: importedJobs } = await supabase
-      .from("job_imports")
-      .select("*")
-      .or("status.eq.new,status.eq.published,status.is.null");
+    const importedJobs: any[] = [];
+    const batchSize = 1000;
+    let from = 0;
+
+    while (true) {
+      const { data: batch, error: importError } = await supabase
+        .from("job_imports")
+        .select("*")
+        .or("status.eq.new,status.eq.published,status.is.null")
+        .range(from, from + batchSize - 1);
+
+      if (importError) {
+        return NextResponse.json(
+          { error: `Imported jobs fetch failed: ${importError.message}` },
+          { status: 500 }
+        );
+      }
+
+      if (!batch || batch.length === 0) {
+        break;
+      }
+
+      importedJobs.push(...batch);
+
+      if (batch.length < batchSize) {
+        break;
+      }
+
+      from += batchSize;
+    }
 
     const allJobs: Job[] = [
       ...(manualJobs || []).map((job) => ({
@@ -236,7 +262,7 @@ export async function GET() {
         county: job.county || "",
         type: job.position_type || job.type || "",
         posted: job.date_posted || job.created_at || "",
-        applyUrl: job.apply_url || "",
+        applyUrl: job.applyUrl || job.apply_url || "",
       })),
     ];
 
