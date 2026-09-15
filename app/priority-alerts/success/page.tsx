@@ -12,18 +12,71 @@ function PriorityAlertsSuccessContent() {
   const [jobType, setJobType] = useState("");
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [purchaseVerified, setPurchaseVerified] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!sessionId) {
       setError("We could not verify your Priority Job Alerts purchase.");
+      return;
     }
+
+    let cancelled = false;
+
+    async function verifyPurchase() {
+      try {
+        const response = await fetch("/api/priority-alerts/verify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ sessionId }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.verified) {
+          throw new Error(data.error || "Unable to verify purchase.");
+        }
+
+        if (cancelled) return;
+
+        setPurchaseVerified(true);
+
+        const storageKey = `priority-alert-purchase-${sessionId}`;
+
+        if (!localStorage.getItem(storageKey)) {
+          if (typeof window.gtag === "function") {
+            window.gtag("event", "priority_alert_purchase", {
+              value: 9.99,
+              currency: "USD",
+            });
+          }
+
+          localStorage.setItem(storageKey, "1");
+        }
+      } catch (err) {
+        if (cancelled) return;
+
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Unable to verify purchase."
+        );
+      }
+    }
+
+    verifyPurchase();
+
+    return () => {
+      cancelled = true;
+    };
   }, [sessionId]);
 
   async function savePreferences(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!sessionId) return;
+    if (!sessionId || !purchaseVerified) return;
 
     setLoading(true);
     setError("");
@@ -159,7 +212,7 @@ function PriorityAlertsSuccessContent() {
 
           <button
             type="submit"
-            disabled={loading || !sessionId}
+            disabled={loading || !sessionId || !purchaseVerified}
             className="w-full rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600 disabled:opacity-50"
           >
             {loading ? "Saving..." : "Start My Priority Job Alerts"}
