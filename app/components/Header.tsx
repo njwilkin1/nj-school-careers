@@ -29,10 +29,6 @@ export default function Header() {
               Career Resources
             </Link>
 
-            <Link href="/advertise" className="hover:text-orange-600">
-             Advertise
-            </Link>
-
             <Link href="/about" className="hover:text-orange-600">
               About
             </Link>
@@ -64,10 +60,6 @@ export default function Header() {
             <Link href="/career-resources" onClick={() => setOpen(false)}>
               Career Resources
             </Link>
-
-            <Link href="/advertise" onClick={() => setOpen(false)}>
-              Advertise
-              </Link>
 
             <Link href="/about" onClick={() => setOpen(false)}>
               About
