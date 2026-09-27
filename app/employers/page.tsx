@@ -6,71 +6,78 @@ export default function EmployersPage() {
       <section className="bg-gradient-to-b from-slate-50 to-white px-6 py-24 text-center">
         <div className="mx-auto max-w-5xl">
           <p className="text-sm font-bold uppercase tracking-[0.35em] text-orange-500">
-            For New Jersey Schools
+            NEW JERSEY EDUCATION RECRUITING
           </p>
 
-          <h1 className="mt-6 text-5xl font-bold tracking-tight text-slate-950 md:text-6xl">
-            Reach New Jersey Educators Where They're Already Looking.
+          <h1 className="mt-6 text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">
+            Put Your Openings in Front of New Jersey Education Job Seekers
           </h1>
 
           <p className="mx-auto mt-8 max-w-3xl text-xl leading-9 text-slate-600">
             NJSchoolCareers helps schools, districts, charter schools, private
-            schools, and education organizations promote openings to candidates
-            searching specifically for New Jersey education jobs.
+            schools, and education organizations reach candidates searching for
+            New Jersey jobs. Candidates can continue to the employer’s existing
+            application system.
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              href="/employers/pricing"
+              href="/post-job"
               className="rounded-xl bg-[#007c89] px-8 py-4 text-lg font-bold text-white shadow-sm transition hover:bg-[#006b75]"
             >
-              View Pricing
+              Post a Job
             </Link>
 
             <Link
-              href="https://calendly.com/njschoolcareers-info/recruitment-consultation"
+              href="/employers/pricing"
               className="rounded-xl border border-slate-300 bg-white px-8 py-4 text-lg font-bold text-slate-800 transition hover:bg-slate-100"
             >
-              Request Info
+              View Pricing
             </Link>
           </div>
         </div>
       </section>
 
       <section className="px-6 py-16">
-        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-4xl font-bold text-orange-500">13,400+</p>
+            <p className="text-4xl font-bold text-orange-500">108,000+</p>
             <h2 className="mt-5 text-2xl font-bold text-slate-950">
-              Search impressions
+              Google Search Impressions
             </h2>
             <p className="mt-5 leading-8 text-slate-600">
-              NJSchoolCareers is gaining visibility in Google search for New
-              Jersey education hiring terms.
+              Google Search Console · past 3 months (approximately June 25–September 25, 2026).
             </p>
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-4xl font-bold text-orange-500">2,800+</p>
+            <p className="text-4xl font-bold text-orange-500">4,930</p>
             <h2 className="mt-5 text-2xl font-bold text-slate-950">
-              Recent site sessions
+              Google Search Clicks
             </h2>
             <p className="mt-5 leading-8 text-slate-600">
-              Educators and job seekers are actively visiting the platform to
-              search for school opportunities.
+              Google Search Console · past 3 months (approximately June 25–September 25, 2026).
             </p>
           </div>
+        </div>
+      </section>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-4xl font-bold text-orange-500">3,900+</p>
-            <h2 className="mt-5 text-2xl font-bold text-slate-950">
-              Active NJ Education Jobs
-            </h2>
-            <p className="mt-5 leading-8 text-slate-600">
-              Reach candidates looking specifically for New Jersey teaching,
-              leadership, coaching, and school support roles.
-            </p>
-          </div>
+      <section className="bg-[#0f172a] px-6 py-16 text-white">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-sm font-bold uppercase tracking-[0.35em] text-orange-300">
+            Organic discovery and paid promotion
+          </p>
+          <h2 className="mt-5 max-w-4xl text-3xl font-bold tracking-tight md:text-4xl">
+            Your Jobs May Already Be Listed. Paid Promotion Helps Them Stand Out.
+          </h2>
+          <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-300">
+            NJSchoolCareers helps people discover education openings across New Jersey.
+            Paid promotion gives employers additional visibility for priority, urgent,
+            and hard-to-fill positions. Featured listings receive a visible featured
+            label and sort ahead of standard listings; urgent listings are labeled and
+            sorted first in job browsing. Candidates can continue to the employer’s
+            existing application system.
+          </p>
         </div>
       </section>
 
@@ -81,22 +88,24 @@ export default function EmployersPage() {
           </p>
 
           <h2 className="mt-5 text-4xl font-bold tracking-tight text-slate-950">
-            Choose the plan that fits your hiring needs.
+            Get More Visibility for the Positions You Need to Fill
           </h2>
 
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600">
-            Post a single job, promote urgent openings, or choose an unlimited
-            plan for ongoing school-year recruitment.
+            Promote one opening or support hiring throughout the school year with an
+            option that fits your needs.
           </p>
 
           <div className="mt-12 grid gap-8 md:grid-cols-3">
             <div className="rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-sm">
               <h3 className="text-2xl font-bold text-slate-950">
-                One-Time Job Posts
+                Standard Job Posting
               </h3>
               <p className="mt-5 leading-8 text-slate-600">
-                Ideal for schools with occasional hiring needs or individual
-                openings.
+                Submit one employer-provided opening with its application URL for
+                review. Imported listings come from configured feeds; this gives you
+                a direct way to submit a role yourself. Standard posts are not marked
+                featured or urgent.
               </p>
             </div>
 
@@ -105,8 +114,9 @@ export default function EmployersPage() {
                 Visibility Add-Ons
               </h3>
               <p className="mt-5 leading-8 text-slate-600">
-                Increase exposure for urgent, specialized, or hard-to-fill
-                roles.
+                Featured Job Visibility adds a featured label and improved browse
+                placement. Urgent Hiring Promotion marks urgent roles and moves them
+                to the top of job browsing.
               </p>
             </div>
 
@@ -115,8 +125,8 @@ export default function EmployersPage() {
                 Unlimited Plans
               </h3>
               <p className="mt-5 leading-8 text-slate-700">
-                Best for districts and organizations with ongoing hiring needs
-                throughout the year.
+                Choose monthly or annual plans that support unlimited job postings
+                for organizations with ongoing hiring needs.
               </p>
             </div>
           </div>
@@ -163,21 +173,21 @@ export default function EmployersPage() {
             </p>
 
             <h2 className="mt-5 text-4xl font-bold tracking-tight text-slate-950">
-              Reach candidates beyond your district website.
+              Reach Candidates Beyond Your District Website
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-slate-700">
-              Many candidates search across multiple sources when looking for
-              education jobs. Posting on NJSchoolCareers helps increase
-              visibility with educators actively searching for New Jersey school
-              opportunities.
+              Candidates search for education jobs in more than one place.
+              NJSchoolCareers gives your openings additional exposure while directing
+              candidates to your existing application process.
             </p>
 
-            <p className="mt-6 text-lg leading-8 text-slate-700">
-              NJSchoolCareers gives schools and districts a simple way to
-              advertise openings while directing candidates back to their own
-              application process.
-            </p>
+            <ul className="mt-6 space-y-3 text-base leading-7 text-slate-700">
+              <li>• Reach New Jersey education job seekers.</li>
+              <li>• Give priority vacancies additional visibility.</li>
+              <li>• Extend exposure beyond your district website.</li>
+              <li>• Link candidates to your existing application system.</li>
+            </ul>
 
             <Link
               href="/employers/pricing"
@@ -189,53 +199,55 @@ export default function EmployersPage() {
 
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
             <p className="text-sm font-bold uppercase tracking-[0.35em] text-orange-500">
-              Why Schools Use Us
+              Keep Your Application Process
             </p>
 
-            <ul className="mt-8 space-y-6 text-lg leading-8 text-slate-700">
-              <li>● Post jobs quickly without complicated setup.</li>
-              <li>● Reach candidates searching specifically in New Jersey.</li>
-              <li>● Support direct applications to your hiring process.</li>
-              <li>● Increase visibility beyond your district website.</li>
-              <li>● Connect with educators, administrators, and support staff.</li>
-            </ul>
+            <p className="mt-6 text-lg leading-8 text-slate-700">
+              Include the application URL your school already uses. When candidates
+              choose to continue, they are sent to that destination to complete the
+              employer’s application process.
+            </p>
           </div>
         </div>
       </section>
 
       <section className="px-6 py-20">
-        <div className="mx-auto flex max-w-6xl flex-col gap-8 rounded-3xl bg-[#0f172a] p-10 text-white md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto max-w-6xl rounded-3xl bg-[#0f172a] p-8 text-white md:p-10">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.35em] text-orange-300">
-              Ready to reach candidates?
+              New Jersey education recruiting
             </p>
 
             <h2 className="mt-4 text-4xl font-bold tracking-tight">
-              Start reaching New Jersey educators today.
+              Need More Candidates for an Open Position?
             </h2>
 
             <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-300">
-              Review our pricing options or contact us to discuss job posting,
-              visibility, and recruitment advertising options for your school or
-              district.
+              Promote your opening to people searching for New Jersey education
+              opportunities.
             </p>
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="mt-8 grid w-full max-w-2xl gap-4 sm:grid-cols-2">
             <Link
-              href="/employers/pricing"
-              className="rounded-xl bg-[#007c89] px-8 py-4 text-center text-lg font-bold text-white transition hover:bg-[#006b75]"
+              href="/post-job"
+              className="flex min-h-16 items-center justify-center rounded-xl bg-[#007c89] px-6 py-4 text-center text-lg font-bold text-white transition hover:bg-[#006b75]"
             >
-              View Pricing
+              Post a Job
             </Link>
 
             <Link
-              href="/contact"
-              className="rounded-xl border border-slate-500 px-8 py-4 text-center text-lg font-bold text-white transition hover:bg-slate-800"
+              href="/employers/pricing"
+              className="flex min-h-16 items-center justify-center rounded-xl border border-slate-500 px-6 py-4 text-center text-lg font-bold text-white transition hover:bg-slate-800"
             >
-              Contact Us
+              View Employer Pricing
             </Link>
           </div>
+
+          <p className="mt-6 max-w-3xl text-sm leading-6 text-slate-300">
+            Already use Frontline/AppliTrack or another hiring system? Candidates can
+            be directed to your existing application.
+          </p>
         </div>
       </section>
     </main>

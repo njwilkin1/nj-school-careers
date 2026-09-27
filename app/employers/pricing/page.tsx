@@ -3,7 +3,7 @@ const pricingPlans = [
     title: "Standard Job Posting",
     price: "$149",
     description:
-      "30-day school job listing with featured search placement and direct application links.",
+      "Submit one job opening with your application link. We review it before it goes live; it does not receive Featured or Urgent placement.",
     button: "Post a Job",
     link: "https://buy.stripe.com/cNi4gBeaWfT5cW16GC8IU0a",
   },
@@ -11,7 +11,7 @@ const pricingPlans = [
     title: "Featured Job Visibility",
     price: "$79",
     description:
-      "Highlighted placement for urgent or hard-to-fill educational positions.",
+      "Highlight one job with a Featured Placement badge and higher placement in job listings. Urgent jobs still appear first.",
     button: "Boost a Job",
     link: "https://buy.stripe.com/cNiaEZeaWdKXbRXe948IU0b",
   },
@@ -19,7 +19,7 @@ const pricingPlans = [
     title: "Urgent Hiring Promotion",
     price: "$149",
     description:
-      "Priority promotion for urgent hiring needs and hard-to-fill educational positions.",
+      "Mark one job as urgent. It gets an Urgent Hiring badge and appears before featured and standard listings.",
     button: "Promote Opening",
     link: "https://buy.stripe.com/cNieVf6Iu7mze054yu8IU0c",
   },
@@ -27,7 +27,7 @@ const pricingPlans = [
     title: "Social Media Promotion",
     price: "$79",
     description:
-      "Additional promotion of school job openings through NJSchoolCareers social channels.",
+      "Includes one job-submission credit and records a social-promotion add-on; the site code does not implement or verify social-channel delivery.",
     button: "Add Promotion",
     link: "https://buy.stripe.com/14AaEZ6IugX94pv7KG8IU0d",
   },
@@ -35,7 +35,7 @@ const pricingPlans = [
     title: "Monthly Unlimited Plan",
     price: "$499 / month",
     description:
-      "Unlimited monthly job postings with priority placement and featured employer visibility. Annual agreement required.",
+      "Post as many jobs as you need during the first month after checkout. This plan does not include Featured or Urgent placement.",
     button: "Start Monthly Plan",
     link: "https://buy.stripe.com/dRmaEZ8QC7mz4pv8OK8IU0e",
     badge: "Most Popular",
@@ -44,12 +44,19 @@ const pricingPlans = [
     title: "District Unlimited Plan",
     price: "$3,999 / year",
     description:
-      "Unlimited school-year job postings with featured district visibility, ongoing recruitment promotion, and priority employer placement.",
+      "Post as many jobs as you need during the first year after checkout. This plan does not include Featured or Urgent placement.",
     button: "Start Annual Plan",
     link: "https://buy.stripe.com/6oU14p7My5er1dj9SO8IU0f",
     badge: "Best Value",
   },
 ];
+
+const visiblePricingPlans = pricingPlans.filter(
+  (plan) =>
+    plan.title !== "Social Media Promotion" &&
+    plan.title !== "Monthly Unlimited Plan" &&
+    plan.title !== "District Unlimited Plan"
+);
 
 export default function PricingPage() {
   return (
@@ -74,8 +81,7 @@ export default function PricingPage() {
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-          {pricingPlans.map((plan) => (
+          {visiblePricingPlans.map((plan) => (
             <div
   key={plan.title}
   className={`rounded-2xl border bg-white p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition ${
