@@ -389,7 +389,7 @@ export default async function Home() {
               Hiring for your school or district?
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
-              Post jobs, promote urgent openings, or choose an unlimited plan to reach New Jersey educators.
+              Post a job or promote a priority opening to reach New Jersey educators.
             </p>
           </div>
 

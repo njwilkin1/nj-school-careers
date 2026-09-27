@@ -7,7 +7,7 @@ export const metadata = {
 };
 
 const audienceStats = [
-  ["6,000+", "NJ Education Jobs"],
+  ["Thousands", "NJ Education Jobs"],
   ["150+", "School Districts Represented"],
   ["Growing", "Email Audience"],
   ["Updated", "Daily"],
@@ -72,7 +72,7 @@ const adPlacements = [
 
 const whyAdvertise = [
   "Reach a highly targeted New Jersey education audience",
-  "Advertise alongside 6,000+ education job opportunities",
+  "Advertise alongside thousands of education job opportunities",
   "Connect with educators actively searching for career advancement",
   "A more targeted alternative than broad online advertising"
 ];

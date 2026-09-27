@@ -122,11 +122,11 @@ export default function EmployersPage() {
 
             <div className="rounded-3xl border border-orange-200 bg-orange-50 p-8 text-left shadow-sm">
               <h3 className="text-2xl font-bold text-slate-950">
-                Unlimited Plans
+                Purchase Order Billing
               </h3>
               <p className="mt-5 leading-8 text-slate-700">
-                Choose monthly or annual plans that support unlimited job postings
-                for organizations with ongoing hiring needs.
+                Public school districts and education organizations can contact us
+                about invoice or purchase order billing.
               </p>
             </div>
           </div>
