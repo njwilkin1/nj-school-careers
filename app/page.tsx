@@ -78,35 +78,22 @@ export default async function Home() {
 
   const featuredJobs: Job[] = data ?? [];
 
-  const { data: searchData, error: searchError } = await supabase
-    .from("search_queries")
-    .select("query, created_at")
-    .gte(
-      "created_at",
-      new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-    );
+  const { data: recentData, error: recentError } = await supabase
+    .from("jobs")
+    .select("slug, title, district, location, county, type, posted, applyUrl, is_featured, is_urgent")
+    .eq("status", "published")
+    .order("posted", { ascending: false })
+    .limit(6);
 
-  if (searchError) {
-    console.error("Popular searches fetch error:", searchError);
+  if (recentError) {
+    console.error("Homepage recent jobs fetch error:", recentError);
   }
 
-  const popularSearches =
-    searchData && searchData.length > 0
-      ? Object.entries(
-          searchData.reduce<Record<string, number>>((acc, item) => {
-            const query = item.query
-              .trim()
-              .toLowerCase()
-              .replace(/\b\w/g, (char: string) => char.toUpperCase());
+  const recentJobs: Job[] = recentData ?? [];
+  const showFeatured = featuredJobs.length > 0;
+  const displayedJobs = showFeatured ? featuredJobs : recentJobs;
 
-            acc[query] = (acc[query] || 0) + 1;
-            return acc;
-          }, {})
-        )
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 10)
-          .map(([query]) => query)
-      : defaultSearches;
+  const popularSearches = defaultSearches;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -129,10 +116,17 @@ export default async function Home() {
             <JobSearchForm />
           </div>
 
+          <p className="mt-5 text-sm text-slate-700">
+            Hiring for a New Jersey school or education organization?{" "}
+            <a href="/employers/pricing" className="font-semibold text-blue-700 underline underline-offset-4 hover:text-blue-900">
+              Post an opening from $149 →
+            </a>
+          </p>
+
           {/* POPULAR SEARCHES */}
           <div className="mx-auto mt-8 max-w-5xl">
             <p className="text-base font-semibold text-slate-700">
-              Popular Searches
+              Explore jobs by role
             </p>
 
             <div className="mt-4 flex flex-wrap justify-center gap-3">
@@ -185,7 +179,7 @@ export default async function Home() {
               Direct
             </div>
             <p className="mt-1 text-sm font-medium text-slate-600">
-              Apply to Schools
+              Apply on employer sites
             </p>
           </div>
         </div>
@@ -196,13 +190,13 @@ export default async function Home() {
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-              Featured Jobs
+              {showFeatured ? "Featured Jobs" : "Recent Jobs"}
             </p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight">
-              Highlighted openings from New Jersey schools
+              {showFeatured ? "Highlighted openings from New Jersey schools" : "Recent New Jersey education jobs"}
             </h2>
             <p className="mt-3 max-w-2xl text-sm text-slate-600">
-              Explore featured school openings across New Jersey.
+              {showFeatured ? "Explore featured school openings across New Jersey." : "Explore newly posted opportunities and apply with the employer."}
             </p>
           </div>
 
@@ -210,23 +204,25 @@ export default async function Home() {
             href="/employers/pricing"
             className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-orange-500 hover:text-orange-600"
           >
-            Post a Featured Job
+            {showFeatured ? "Post a Featured Job" : "Promote a Job"}
           </a>
         </div>
 
         <div className="mt-8 grid gap-5 lg:grid-cols-2">
-          {featuredJobs.length > 0 ? (
-            featuredJobs.map((job) => (
+          {displayedJobs.length > 0 ? (
+            displayedJobs.map((job) => (
               <article
                 key={`${job.slug || job.applyUrl || job.title}-${job.district}`}
-                className="rounded-3xl border-2 border-teal-300 bg-white p-5 shadow-sm transition hover:shadow-lg"
+                className={`rounded-3xl border-2 bg-white p-5 shadow-sm transition hover:shadow-lg ${showFeatured ? "border-teal-300" : "border-slate-200"}`}
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal-700">
-                        Featured Employer
-                      </span>
+                      {showFeatured && (
+                        <span className="rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-teal-700">
+                          Featured Employer
+                        </span>
+                      )}
 
                       {job.is_urgent && (
                         <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-700">
@@ -284,7 +280,7 @@ export default async function Home() {
           ) : (
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <p className="text-slate-600">
-                No featured jobs are available right now.
+                Browse all jobs to find current openings.
               </p>
             </div>
           )}
@@ -305,11 +301,11 @@ export default async function Home() {
         <div className="mx-auto max-w-[1400px] px-6 py-12">
           <div className="text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-              Trusted Across New Jersey
+              Organizations That Have Posted With Us
             </p>
 
             <h2 className="mt-2 text-3xl font-bold text-slate-950">
-              Schools and education organizations use NJSchoolCareers
+              New Jersey education employers have posted with NJSchoolCareers
             </h2>
 
             <p className="mt-3 text-slate-600">
