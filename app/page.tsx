@@ -33,7 +33,7 @@ function isNewJob(posted?: string) {
 }
 
 export default async function Home() {
-  const totalJobs = 8000;
+  const totalJobs = 12000;
 
   const defaultSearches = [
     "Teacher",
@@ -149,7 +149,7 @@ export default async function Home() {
         <div className="mx-auto grid max-w-[1400px] gap-4 px-6 py-8 text-center sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="text-3xl font-bold text-slate-950">
-              {totalJobs}+
+              {totalJobs.toLocaleString()}+
             </div>
             <p className="mt-1 text-sm font-medium text-slate-600">
               Jobs
@@ -158,7 +158,7 @@ export default async function Home() {
 
           <div>
             <div className="text-3xl font-bold text-slate-950">
-              150+
+              300+
             </div>
             <p className="mt-1 text-sm font-medium text-slate-600">
               School Districts
@@ -293,7 +293,7 @@ export default async function Home() {
             href="/jobs"
             className="inline-flex items-center justify-center rounded-xl bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800"
           >
-            Browse all {totalJobs}+ NJ education jobs →
+            Browse all {totalJobs.toLocaleString()}+ NJ education jobs →
           </a>
         </div>
       </section>
