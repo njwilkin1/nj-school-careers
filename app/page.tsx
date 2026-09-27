@@ -259,12 +259,14 @@ export default async function Home() {
                 </div>
 
                 <div className="mt-5 flex flex-wrap gap-3">
-                  <a
-                    href={`/jobs/${job.slug}`}
-                    className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-blue-400 hover:bg-blue-50"
-                  >
-                    View Details
-                  </a>
+                  {job.slug && job.slug !== "null" && (
+                    <a
+                      href={`/jobs/${job.slug}`}
+                      className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-blue-400 hover:bg-blue-50"
+                    >
+                      View Details
+                    </a>
+                  )}
 
                   <ApplyButton
                     href={job.applyUrl}
