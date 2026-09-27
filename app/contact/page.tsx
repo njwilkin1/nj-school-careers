@@ -17,7 +17,7 @@ export default function ContactPage() {
 
         <p className="mt-4 text-lg leading-8 text-slate-700">
           NJSchoolCareers helps connect New Jersey schools with educators
-          through a growing platform featuring 2,000+ New Jersey education jobs
+          through a growing platform featuring 12,000+ New Jersey education jobs
           across teaching, administration, coaching, and support staff roles.
         </p>
 
@@ -34,9 +34,7 @@ export default function ContactPage() {
 
           <p className="mt-3 leading-8 text-slate-700">
             Contact us to learn more about job postings, featured listings,
-            school-year plans, monthly options, and employer visibility
-            services. Flexible posting and recruitment advertising options are
-            available.
+            urgent hiring promotions, and advertising options.
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
