@@ -296,7 +296,7 @@ export default function AdvertisePage() {
           <div className="grid gap-8 lg:grid-cols-2">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-                Advertising Ratess
+                Advertising Rates
               </p>
 
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
