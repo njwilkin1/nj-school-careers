@@ -384,7 +384,7 @@ export default async function Home() {
               For Employers
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
-              Hiring for your school or district?
+              Hiring Educators in New Jersey?
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
               Post a job or promote a priority opening to reach New Jersey educators.
@@ -395,7 +395,7 @@ export default async function Home() {
             href="/employers/pricing"
             className="inline-flex justify-center rounded-xl bg-blue-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-800"
           >
-            View Employer Pricing
+            Post a Job — View Pricing
           </a>
         </div>
       </section>

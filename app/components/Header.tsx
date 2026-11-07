@@ -36,10 +36,12 @@ export default function Header() {
         </div>
 
         <nav className="hidden items-center gap-5 text-sm font-medium text-slate-700 md:flex">
-          <Link href="/employers" className="hover:text-orange-600">
-            Employers / Post Job
+          <Link
+            href="/employers/pricing"
+            className="inline-flex items-center justify-center rounded-xl bg-orange-500 px-4 py-2 font-semibold text-white transition hover:bg-orange-600"
+          >
+            Post a Job
           </Link>
-
         </nav>
 
         <button
@@ -67,10 +69,13 @@ export default function Header() {
 
             <div className="border-t border-slate-200 pt-5" />
 
-            <Link href="/employers" onClick={() => setOpen(false)}>
-              Employers / Post Job
+            <Link
+              href="/employers/pricing"
+              onClick={() => setOpen(false)}
+              className="inline-flex items-center justify-center rounded-xl bg-orange-500 px-4 py-2 font-semibold text-white"
+            >
+              Post a Job
             </Link>
-
           </nav>
         </div>
       )}
