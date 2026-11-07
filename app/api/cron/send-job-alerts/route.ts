@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+import { isEligibleAlertSubscriber } from "@/app/lib/job-alerts";
 
 type Subscriber = {
   email: string;
@@ -9,6 +10,12 @@ type Subscriber = {
   job_type: string | null;
   priority_status?: string | null;
   last_alert_sent_at?: string | null;
+  verified_at?: string | null;
+  email_verified?: boolean | null;
+  is_verified?: boolean | null;
+  unsubscribed_at?: string | null;
+  is_unsubscribed?: boolean | null;
+  status?: string | null;
 };
 
 type Job = {
@@ -221,7 +228,21 @@ export async function GET(req: Request) {
       .select("*")
       .eq("status", "published");
 
-    const importedJobs: any[] = [];
+    const importedJobs: Array<{
+      slug?: string | null;
+      id?: number | string | null;
+      title?: string | null;
+      district?: string | null;
+      city?: string | null;
+      location?: string | null;
+      county?: string | null;
+      position_type?: string | null;
+      type?: string | null;
+      date_posted?: string | null;
+      created_at?: string | null;
+      applyUrl?: string | null;
+      apply_url?: string | null;
+    }> = [];
     const batchSize = 1000;
     let from = 0;
 
@@ -278,7 +299,9 @@ export async function GET(req: Request) {
     const { data: subscribers, error: subscriberError } =
       await supabase
         .from("job_alert_subscribers")
-        .select("*");
+        .select(
+          "email, county, keyword, job_type, priority_status, last_alert_sent_at, verified_at, email_verified, is_verified, unsubscribed_at, is_unsubscribed, status"
+        );
 
     if (subscriberError) {
       return NextResponse.json(
@@ -289,25 +312,24 @@ export async function GET(req: Request) {
       );
     }
 
-    const debugResults = [];
-    const now = Date.now();
-
     for (const sub of (subscribers || []) as Subscriber[]) {
       const isPriority =
         normalize(sub.priority_status) === "active";
 
-      // Priority Job Alerts are a paid service.
-      // Legacy free subscribers remain in the database
-      // but no longer receive automated job alerts.
-      if (!isPriority) {
-        debugResults.push({
-          email: sub.email,
-          priority: false,
-          sent: false,
-          skipped: "priority_subscription_required",
-        });
-
-        continue;
+      if (isPriority) {
+        // Priority subscribers are still allowed if they are active, but they must not be unsubscribed or invalid.
+        if (
+          !sub.email ||
+          sub.unsubscribed_at ||
+          sub.is_unsubscribed === true ||
+          sub.status === "unsubscribed"
+        ) {
+          continue;
+        }
+      } else {
+        if (!isEligibleAlertSubscriber(sub)) {
+          continue;
+        }
       }
 
       const matches = allJobs.filter((job) => {
@@ -367,14 +389,6 @@ export async function GET(req: Request) {
       }
 
       if (unsentJobs.length === 0) {
-        debugResults.push({
-          email: sub.email,
-          priority: isPriority,
-          matchedJobs: matches.length,
-          newJobs: 0,
-          sent: false,
-        });
-
         continue;
       }
 
@@ -413,17 +427,6 @@ export async function GET(req: Request) {
       if (
         (emailResult as { error?: unknown })?.error
       ) {
-        debugResults.push({
-          email: sub.email,
-          priority: isPriority,
-          matchedJobs: matches.length,
-          newJobs: unsentJobs.length,
-          sent: false,
-          error: (
-            emailResult as { error?: unknown }
-          ).error,
-        });
-
         continue;
       }
 
@@ -461,14 +464,6 @@ export async function GET(req: Request) {
           timestampError
         );
       }
-
-      debugResults.push({
-        email: sub.email,
-        priority: isPriority,
-        matchedJobs: matches.length,
-        newJobs: unsentJobs.length,
-        sent: true,
-      });
     }
 
     return NextResponse.json({
@@ -476,7 +471,6 @@ export async function GET(req: Request) {
       totalSubscribers:
         subscribers?.length || 0,
       totalJobsInSystem: allJobs.length,
-      results: debugResults,
     });
   } catch (err) {
     const message =

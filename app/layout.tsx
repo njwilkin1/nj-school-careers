@@ -1,5 +1,5 @@
-import PriorityAlertsPopup from "./components/PriorityAlertsPopup";
 import Header from "./components/Header";
+import Link from "next/link";
 import Script from "next/script";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -46,15 +46,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
+        <Header />
 
-  <Header />
-  <PriorityAlertsPopup />
-
-  <main className="flex-1">{children}</main>
+        <main className="flex-1">{children}</main>
 
         <footer className="border-t border-slate-200 bg-white">
           <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-4">
-            
             {/* Brand */}
             <div>
               <div className="text-2xl font-bold tracking-tight text-slate-900">
@@ -71,49 +68,49 @@ export default function RootLayout({
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                 Job Seekers
               </h3>
-             <div className="mt-6 space-y-4 text-base text-slate-600">
-  <a href="/jobs" className="block hover:text-orange-600">
-    Browse Jobs
-  </a>
+              <div className="mt-6 space-y-4 text-base text-slate-600">
+                <Link href="/jobs" className="block hover:text-orange-600">
+                  Browse Jobs
+                </Link>
 
-  <a
-    href="/career-resources"
-    className="block hover:text-orange-600"
-  >
-    Career Resources
-  </a>
+                <Link
+                  href="/career-resources"
+                  className="block hover:text-orange-600"
+                >
+                  Career Resources
+                </Link>
 
-  <a
-    href="/jobs?search=Substitute"
-    className="block hover:text-orange-600"
-  >
-    Substitute Roles
-  </a>
-</div>
+                <Link
+                  href="/jobs?search=Substitute"
+                  className="block hover:text-orange-600"
+                >
+                  Substitute Roles
+                </Link>
+              </div>
             </div>
 
-           {/* Employers */}
-<div>
-  <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-    Employers
-  </h3>
-  <div className="mt-6 space-y-4 text-base text-slate-600">
-    <a href="/post-job" className="block hover:text-orange-600">
-      Post a Job
-    </a>
-   <a href="/employers" className="block hover:text-orange-600">
-  Employer Info
-</a>
+            {/* Employers */}
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Employers
+              </h3>
+              <div className="mt-6 space-y-4 text-base text-slate-600">
+                <Link href="/post-job" className="block hover:text-orange-600">
+                  Post a Job
+                </Link>
+                <Link href="/employers" className="block hover:text-orange-600">
+                  Employer Info
+                </Link>
 
-<a href="/advertise" className="block hover:text-orange-600">
-  Advertise
-</a>
+                <Link href="/advertise" className="block hover:text-orange-600">
+                  Advertise
+                </Link>
 
-<a href="/contact" className="block hover:text-orange-600">
-  Contact Us
-</a>
-  </div>
-</div>
+                <Link href="/contact" className="block hover:text-orange-600">
+                  Contact Us
+                </Link>
+              </div>
+            </div>
 
             {/* Company */}
             <div>
@@ -121,58 +118,57 @@ export default function RootLayout({
                 Company
               </h3>
               <div className="mt-6 space-y-4 text-base text-slate-600">
-                <a href="/about" className="block hover:text-orange-600">
+                <Link href="/about" className="block hover:text-orange-600">
                   About NJSchoolCareers
-                </a>
-                <a href="/terms" className="block hover:text-orange-600">
+                </Link>
+                <Link href="/terms" className="block hover:text-orange-600">
                   Terms of Use
-                </a>
-                <a href="/privacy" className="block hover:text-orange-600">
+                </Link>
+                <Link href="/privacy" className="block hover:text-orange-600">
                   Privacy Policy
-                </a>
-                <a href="/accessibility" className="hover:underline">
-  Accessibility
-</a>
+                </Link>
+                <Link href="/accessibility" className="hover:underline">
+                  Accessibility
+                </Link>
               </div>
             </div>
-
           </div>
 
-        <div className="border-t border-slate-200 px-6 py-8 text-center text-base text-slate-500">
-  <div>© 2026 NJSchoolCareers. All rights reserved.</div>
+          <div className="border-t border-slate-200 px-6 py-8 text-center text-base text-slate-500">
+            <div>© 2026 NJSchoolCareers. All rights reserved.</div>
 
-  <div className="mt-4 flex justify-center gap-4">
-    <a
-      href="https://www.linkedin.com/company/njschoolcareers"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="NJSchoolCareers on LinkedIn"
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 text-lg font-semibold hover:border-[#050B2C] hover:text-[#050B2C] transition"
-    >
-      <span className="font-bold">in</span>
-    </a>
+            <div className="mt-4 flex justify-center gap-4">
+              <a
+                href="https://www.linkedin.com/company/njschoolcareers"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="NJSchoolCareers on LinkedIn"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 text-lg font-semibold hover:border-[#050B2C] hover:text-[#050B2C] transition"
+              >
+                <span className="font-bold">in</span>
+              </a>
 
-    <a
-      href="https://www.facebook.com/NJSchoolCareers"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="NJSchoolCareers on Facebook"
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 text-lg font-semibold hover:border-[#050B2C] hover:text-[#050B2C] transition"
-    >
-      <span className="font-bold">f</span>
-    </a>
+              <a
+                href="https://www.facebook.com/NJSchoolCareers"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="NJSchoolCareers on Facebook"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 text-lg font-semibold hover:border-[#050B2C] hover:text-[#050B2C] transition"
+              >
+                <span className="font-bold">f</span>
+              </a>
 
-    <a
-  href="https://x.com/NJSchoolCareers"
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label="NJSchoolCareers on X"
-  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 text-sm font-bold hover:border-[#050B2C] hover:text-[#050B2C] transition"
->
-  X
-</a>
-  </div>
-</div>
+              <a
+                href="https://x.com/NJSchoolCareers"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="NJSchoolCareers on X"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 text-sm font-bold hover:border-[#050B2C] hover:text-[#050B2C] transition"
+              >
+                X
+              </a>
+            </div>
+          </div>
         </footer>
 
         <Script
