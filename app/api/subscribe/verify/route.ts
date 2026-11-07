@@ -128,8 +128,8 @@ export async function GET(req: Request) {
         <head><title>Email confirmed</title></head>
         <body style="font-family:Arial,sans-serif;padding:40px;background:#f8fafc;">
           <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:16px;border:1px solid #e2e8f0;padding:32px;">
-            <h2 style="margin-top:0;color:#0f172a;">Email confirmed</h2>
-            <p style="color:#475569;">Your free NJSchoolCareers job alerts subscription is active. We’ll send matching alerts to this address after verification.</p>
+            <h2 style="margin-top:0;color:#0f172a;">Email confirmed!</h2>
+            <p style="color:#475569;line-height:1.8;">Your email address has been successfully verified. You're subscribed to free NJSchoolCareers job alerts. We'll notify you when matching job alerts become available.</p>
           </div>
         </body>
       </html>
