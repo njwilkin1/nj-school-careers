@@ -13,16 +13,35 @@ export default function EmployerSuccessPage() {
         </h1>
 
         <p className="mt-6 text-lg leading-8 text-slate-600">
-          Your employer submission and payment were received successfully.
+          Your employer payment is being processed securely by Stripe.
         </p>
 
         <p className="mt-4 text-lg leading-8 text-slate-600">
-          NJSchoolCareers will review and process your posting shortly.
+          Once payment and access are confirmed, you can continue with your job
+          posting.
         </p>
 
-        <p className="mt-2 text-base text-slate-500">
-          Most submissions are reviewed within 1 business day.
+        <p className="mt-4 text-base leading-7 text-slate-600">
+          Please use the same email address you entered during checkout when you
+          continue to the posting form. Access may take a short time to become
+          available while payment processing completes.
         </p>
+
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Link
+            href="/post-job"
+            className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600"
+          >
+            Continue to Job Posting
+          </Link>
+
+          <Link
+            href="/"
+            className="rounded-xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-100"
+          >
+            Return Home
+          </Link>
+        </div>
 
         <div className="mt-8 rounded-2xl bg-slate-50 p-6">
           <h2 className="text-lg font-semibold text-slate-900">
@@ -30,10 +49,10 @@ export default function EmployerSuccessPage() {
           </h2>
 
           <ul className="mt-4 space-y-3 text-slate-600">
-            <li>• Your payment has been successfully received</li>
-            <li>• We will review your submission</li>
-            <li>• Your posting will be activated after approval</li>
-            <li>• You may be contacted if additional information is needed</li>
+            <li>• Your payment is being verified securely</li>
+            <li>• We confirm employer access after processing completes</li>
+            <li>• You can submit your job once your access is active</li>
+            <li>• We may contact you if additional information is needed</li>
           </ul>
         </div>
 
@@ -56,10 +75,10 @@ export default function EmployerSuccessPage() {
 
         <div className="mt-10 flex flex-wrap gap-4">
           <Link
-            href="/"
+            href="/post-job"
             className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600"
           >
-            Return Home
+            Continue to Job Posting
           </Link>
 
           <Link
