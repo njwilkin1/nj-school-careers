@@ -5,8 +5,53 @@ import { Resend } from "resend";
 import {
   buildVerificationUrl,
   isValidEmail,
-  shouldSendTransactionalEmails,
+  shouldSendVerificationEmails,
 } from "@/app/lib/job-alerts";
+
+async function sendVerificationEmail(
+  email: string,
+  token: string,
+  fromEmail: string,
+  resendApiKey: string
+) {
+  const resend = new Resend(resendApiKey);
+
+  const result = await resend.emails.send({
+    from: fromEmail,
+    to: email,
+    subject: "Confirm your NJSchoolCareers job alerts",
+    html: `
+      <div style="background:#f8fafc;padding:40px 20px;font-family:Arial,Helvetica,sans-serif;">
+        <div style="max-width:640px;margin:auto;background:#ffffff;border-radius:24px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 4px 14px rgba(15,23,42,0.06);">
+          <div style="background:#eff6ff;padding:40px 40px 28px;border-bottom:1px solid #dbeafe;">
+            <div style="font-size:15px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2563eb;margin-bottom:18px;">NJSchoolCareers</div>
+            <div style="font-size:32px;line-height:1.15;color:#020617;font-weight:800;margin-bottom:12px;">Confirm your email</div>
+            <div style="font-size:18px;color:#475569;line-height:1.7;">Please confirm that you want to receive free matching job alerts.</div>
+          </div>
+          <div style="padding:40px;">
+            <p style="font-size:18px;line-height:1.8;color:#475569;">Click the button below to verify your email and begin receiving free alerts.</p>
+            <div style="margin:26px 0;">
+              <a href="${buildVerificationUrl(email, token)}" style="display:inline-block;padding:14px 24px;border-radius:12px;background:#f97316;color:#ffffff;text-decoration:none;font-weight:700;">Confirm my email</a>
+            </div>
+            <p style="font-size:14px;line-height:1.8;color:#64748b;">If you did not request this, you can safely ignore this email.</p>
+          </div>
+        </div>
+      </div>
+    `,
+  });
+
+  if (result.error) {
+    const detail =
+      typeof result.error === "object" && result.error && "message" in result.error
+        ? String(result.error.message)
+        : "Verification email delivery failed.";
+
+    console.error("Verification email delivery failed:", detail);
+    throw new Error("Verification email delivery failed.");
+  }
+
+  return result;
+}
 
 export async function POST(req: Request) {
   try {
@@ -93,36 +138,18 @@ export async function POST(req: Request) {
         );
       }
 
-      const resend =
-        shouldSendTransactionalEmails() && resendApiKey && fromEmail
-          ? new Resend(resendApiKey)
-          : null;
-      const canSend = Boolean(resend && fromEmail);
-
-      if (canSend && resend && fromEmail) {
-        await resend.emails.send({
-          from: fromEmail,
-          to: email,
-          subject: "Confirm your NJSchoolCareers job alerts",
-          html: `
-            <div style="background:#f8fafc;padding:40px 20px;font-family:Arial,Helvetica,sans-serif;">
-              <div style="max-width:640px;margin:auto;background:#ffffff;border-radius:24px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 4px 14px rgba(15,23,42,0.06);">
-                <div style="background:#eff6ff;padding:40px 40px 28px;border-bottom:1px solid #dbeafe;">
-                  <div style="font-size:15px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2563eb;margin-bottom:18px;">NJSchoolCareers</div>
-                  <div style="font-size:32px;line-height:1.15;color:#020617;font-weight:800;margin-bottom:12px;">Confirm your email</div>
-                  <div style="font-size:18px;color:#475569;line-height:1.7;">Please confirm that you want to receive free job alerts for New Jersey education roles.</div>
-                </div>
-                <div style="padding:40px;">
-                  <p style="font-size:18px;line-height:1.8;color:#475569;">Click the button below to verify your email and begin receiving matches for your saved preferences.</p>
-                  <div style="margin:26px 0;">
-                    <a href="${buildVerificationUrl(email, token)}" style="display:inline-block;padding:14px 24px;border-radius:12px;background:#f97316;color:#ffffff;text-decoration:none;font-weight:700;">Confirm my email</a>
-                  </div>
-                  <p style="font-size:14px;line-height:1.8;color:#64748b;">If you did not request this, you can safely ignore this email.</p>
-                </div>
-              </div>
-            </div>
-          `,
-        });
+      if (shouldSendVerificationEmails() && resendApiKey && fromEmail) {
+        try {
+          await sendVerificationEmail(email, token, fromEmail, resendApiKey);
+        } catch (sendError) {
+          console.error("Verification email send failed:", sendError);
+          return NextResponse.json(
+            {
+              error: "Verification email delivery failed. Please try again later.",
+            },
+            { status: 502 }
+          );
+        }
       }
 
       return NextResponse.json({
@@ -156,35 +183,18 @@ export async function POST(req: Request) {
       );
     }
 
-    const resend =
-      shouldSendTransactionalEmails() && resendApiKey && fromEmail
-        ? new Resend(resendApiKey)
-        : null;
-
-    if (resend && fromEmail) {
-      await resend.emails.send({
-        from: fromEmail,
-        to: email,
-        subject: "Confirm your NJSchoolCareers job alerts",
-        html: `
-          <div style="background:#f8fafc;padding:40px 20px;font-family:Arial,Helvetica,sans-serif;">
-            <div style="max-width:640px;margin:auto;background:#ffffff;border-radius:24px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 4px 14px rgba(15,23,42,0.06);">
-              <div style="background:#eff6ff;padding:40px 40px 28px;border-bottom:1px solid #dbeafe;">
-                <div style="font-size:15px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2563eb;margin-bottom:18px;">NJSchoolCareers</div>
-                <div style="font-size:32px;line-height:1.15;color:#020617;font-weight:800;margin-bottom:12px;">Confirm your email</div>
-                <div style="font-size:18px;color:#475569;line-height:1.7;">Please confirm that you want to receive free matching job alerts.</div>
-              </div>
-              <div style="padding:40px;">
-                <p style="font-size:18px;line-height:1.8;color:#475569;">Click the button below to verify your email and begin receiving free alerts for ${county} ${keyword} roles.</p>
-                <div style="margin:26px 0;">
-                  <a href="${buildVerificationUrl(email, token)}" style="display:inline-block;padding:14px 24px;border-radius:12px;background:#f97316;color:#ffffff;text-decoration:none;font-weight:700;">Confirm my email</a>
-                </div>
-                <p style="font-size:14px;line-height:1.8;color:#64748b;">If you did not request this, you can safely ignore this email.</p>
-              </div>
-            </div>
-          </div>
-        `,
-      });
+    if (shouldSendVerificationEmails() && resendApiKey && fromEmail) {
+      try {
+        await sendVerificationEmail(email, token, fromEmail, resendApiKey);
+      } catch (sendError) {
+        console.error("Verification email send failed:", sendError);
+        return NextResponse.json(
+          {
+            error: "Verification email delivery failed. Please try again later.",
+          },
+          { status: 502 }
+        );
+      }
     }
 
     return NextResponse.json({

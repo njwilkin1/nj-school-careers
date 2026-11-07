@@ -2,12 +2,24 @@ export function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
 }
 
-export function shouldSendTransactionalEmails(): boolean {
+export function shouldSendVerificationEmails(): boolean {
+  if (process.env.NODE_ENV !== "production") {
+    return false;
+  }
+
+  return process.env.ALLOW_VERIFICATION_EMAILS === "true";
+}
+
+export function shouldSendDailyJobAlertEmails(): boolean {
   if (process.env.NODE_ENV !== "production") {
     return false;
   }
 
   return process.env.ALLOW_JOB_ALERT_EMAILS === "true";
+}
+
+export function shouldSendTransactionalEmails(): boolean {
+  return shouldSendDailyJobAlertEmails();
 }
 
 export function buildVerificationUrl(email: string, token: string): string {
