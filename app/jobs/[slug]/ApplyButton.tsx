@@ -13,7 +13,7 @@ type ApplyButtonProps = {
 
 declare global {
   interface Window {
-    gtag?: (...args: unknown[]) => void;
+    gtag?: (...args: any[]) => void;
   }
 }
 
