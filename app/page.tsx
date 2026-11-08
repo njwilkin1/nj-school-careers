@@ -33,8 +33,6 @@ function isNewJob(posted?: string) {
 }
 
 export default async function Home() {
-  const totalJobs = 12000;
-
   const defaultSearches = [
     "Teacher",
     "Kindergarten",
@@ -108,7 +106,7 @@ export default async function Home() {
             </h1>
 
             <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-600">
-              Search thousands of New Jersey education jobs.
+              Explore New Jersey Education Jobs.
             </p>
           </div>
 
@@ -149,19 +147,19 @@ export default async function Home() {
         <div className="mx-auto grid max-w-[1400px] gap-4 px-6 py-8 text-center sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="text-3xl font-bold text-slate-950">
-              {totalJobs.toLocaleString()}+
+              Current
             </div>
             <p className="mt-1 text-sm font-medium text-slate-600">
-              Jobs
+              Openings
             </p>
           </div>
 
           <div>
             <div className="text-3xl font-bold text-slate-950">
-              300+
+              New Jersey
             </div>
             <p className="mt-1 text-sm font-medium text-slate-600">
-              School Districts
+              School Community
             </p>
           </div>
 
@@ -293,7 +291,7 @@ export default async function Home() {
             href="/jobs"
             className="inline-flex items-center justify-center rounded-xl bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800"
           >
-            Browse all {totalJobs.toLocaleString()}+ NJ education jobs →
+            Browse all NJ education jobs →
           </a>
         </div>
       </section>
