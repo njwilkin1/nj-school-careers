@@ -301,11 +301,11 @@ export default async function Home() {
         <div className="mx-auto max-w-[1400px] px-6 py-12">
           <div className="text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-              Organizations That Have Posted With Us
+              Organizations That Have Featured Job Opportunities on NJSchoolCareers
             </p>
 
             <h2 className="mt-2 text-3xl font-bold text-slate-950">
-              New Jersey education employers have posted with NJSchoolCareers
+              Organizations That Have Featured Job Opportunities on NJSchoolCareers
             </h2>
 
             <p className="mt-3 text-slate-600">
@@ -382,10 +382,10 @@ export default async function Home() {
               For Employers
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
-              Hiring Educators in New Jersey?
+              Hiring Teachers or School Staff in New Jersey?
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
-              Post a job or promote a priority opening to reach New Jersey educators.
+              Reach educators searching for their next opportunity. Advertise your opening starting at $149. Purchase orders accepted.
             </p>
           </div>
 
