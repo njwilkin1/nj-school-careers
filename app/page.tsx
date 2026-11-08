@@ -305,7 +305,7 @@ export default async function Home() {
             </p>
 
             <h2 className="mt-2 text-3xl font-bold text-slate-950">
-              Organizations That Have Featured Job Opportunities on NJSchoolCareers
+              Connecting Schools and Educators Across New Jersey
             </h2>
 
             <p className="mt-3 text-slate-600">
